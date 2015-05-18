@@ -1,0 +1,46 @@
+body {
+	padding-left: 0px;
+	padding-top: 20px;
+	padding-bottom: 40px;
+}
+
+/* .wrapper {
+    width: 100%;
+    border: 1px solid black;
+    overflow: hidden;
+    
+} */
+
+.firstDiv {
+    width: 230px;
+    height: 500px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+    float:left;
+    clear: left;
+}
+
+
+.secondDiv {
+    width: 230px;
+    height: 500px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+    float: left;
+}
+
+.thirdDiv {
+    width: 230px;
+    height: 500px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+    float: left;
+}
+
+.fourthDiv {
+    width: 230px;
+    height: 500px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+    float: left;
+}
