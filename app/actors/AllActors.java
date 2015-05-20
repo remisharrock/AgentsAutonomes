@@ -1,7 +1,5 @@
 package actors;
 
-import com.apple.eawt.Application;
-
 import messages.AllMessages.DetectionOff;
 import messages.AllMessages.DetectionOn;
 import messages.AllMessages.EnterRoom;
