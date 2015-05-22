@@ -6,12 +6,14 @@ import java.util.concurrent.TimeUnit;
 
 import messages.AllMessages;
 import models.Channel;
+import models.User;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
+import views.html.*;
 import actors.AllActors;
+
 
 public class Application extends Controller {
 
@@ -19,9 +21,41 @@ public class Application extends Controller {
 	public static String turnOffCheckbox = "";	
 	
     public static Result index() {
-    	Boolean lampOn = false;
-    	List<Channel> channelsList = Channel.getAllChannels();
-        return ok(index.render(channelsList, lampOn));
+//    	Boolean lampOn = false;
+//    	List<Channel> channelsList = Channel.getAllChannels();
+//        return ok(index.render(channelsList, lampOn));
+    	
+    
+        return ok(index.render());
+    }
+    
+
+    
+    public static Result loginForm() {
+//    	DynamicForm requestData = Form.form().bindFromRequest();
+//    	
+//    	Form<User> loginForm = Form.form(User.class).bindFromRequest();
+    	DynamicForm requestData = Form.form().bindFromRequest();
+
+    	String username = requestData.get("username");
+    	String password = requestData.get("password");
+    	
+//        
+//        if (loginForm.hasErrors()) {
+//            return badRequest(index.render());
+//        } else {
+//            session().clear();
+//            session("email", loginForm.get().email);
+        	
+        	if (User.authenticate(username, password) == null) {
+      	      return ok(index.render());
+      	    }
+            Boolean lampOn = false;
+        	List<Channel> channelsList = Channel.getAllChannels();
+            return ok(userView.render(channelsList, lampOn));
+//        }
+//    	
+    	
     }
     
     public static Result submitForm() throws IOException {
@@ -49,6 +83,7 @@ public class Application extends Controller {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+        	
         	if (AllActors.Lamp.state.equals("ON"))
         		lampOn = true;
         	else lampOn = false;
@@ -76,7 +111,7 @@ public class Application extends Controller {
         }
         
         List<Channel> channelsList = Channel.getAllChannels();
-        return ok(index.render(channelsList, lampOn));
+        return ok(userView.render(channelsList, lampOn));
     }
 
 }

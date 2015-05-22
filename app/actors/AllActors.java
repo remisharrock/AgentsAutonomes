@@ -1,5 +1,4 @@
 package actors;
-
 import messages.AllMessages.DetectionOff;
 import messages.AllMessages.DetectionOn;
 import messages.AllMessages.EnterRoom;
@@ -8,8 +7,6 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-
-import controllers.*;
 
 public final class AllActors {
 	private AllActors() {

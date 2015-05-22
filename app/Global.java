@@ -3,6 +3,7 @@ import java.util.List;
 import models.Action;
 import models.Channel;
 import models.Trigger;
+import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
@@ -18,39 +19,57 @@ public class Global extends GlobalSettings {
 		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
 //		triggersList.removeAll(triggersList);
 		for (Trigger t : triggersList) {
-			System.out.println(t.name);
+			System.out.println(t.getName());
 			t.delete();
 		}
 		
 		List<Action> actionsList = Ebean.find(Action.class).findList();
 //		triggersList.removeAll(actionsList);
 		for (Action a : actionsList) {
-			System.out.println(a.name);
+			System.out.println(a.getName());
 			a.delete();
 		}
 		
-			List<Channel> channelsList = Ebean.find(Channel.class).findList();
-//			channelsList.removeAll(channelsList);
-			for (Channel c : channelsList) {
-				System.out.println(c);
-				c.delete();
-			}
+		List<Channel> channelsList = Ebean.find(Channel.class).findList();
+//		channelsList.removeAll(channelsList);
+		for (Channel c : channelsList) {				
+			System.out.println(c);
+			c.delete();
+		}
+		
+		List<User> usersList = Ebean.find(User.class).findList();
+//		channelsList.removeAll(channelsList);
+		for (User u : usersList) {				
+			System.out.println(u);
+			u.delete();
+		}
 			
 
 			Logger.info("Init Data");
+			
+			//Users
+			User user1 = new User("1", "1", "administrator", "home1");
+			user1.save();
+			
+			
+			
+			
+			
+			
+			
 			
 			//HUMAN CHANNEL
 			Channel human = new Channel("Human","Can enter or exit room");
 			human.save();
 			
 			Action humanEnterRoomAction = new Action("Enter room");
-			human.actions.add(humanEnterRoomAction);
-			humanEnterRoomAction.channel = human;
+			human.getActions().add(humanEnterRoomAction);
+			humanEnterRoomAction.setChannel(human);
 			humanEnterRoomAction.save();
 			
 			Action humanExitRoomAction = new Action("Exit room");
-			human.actions.add(humanExitRoomAction);
-			humanExitRoomAction.channel = human;
+			human.getActions().add(humanExitRoomAction);
+			humanExitRoomAction.setChannel(human);
 			humanExitRoomAction.save();
 			
 			
@@ -62,32 +81,50 @@ public class Global extends GlobalSettings {
 	    	
 	    	
 	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description");
-	    	detector.triggers.add(detectorTrigger1);
+	    	detector.getTriggers().add(detectorTrigger1);
 	    	
 	    	detectorTrigger1.save();
-	    	detectorTrigger1.channel = detector;
+	    	detectorTrigger1.setChannel(detector);
 	    	
 	    	
 	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger");
-	    	detector.triggers.add(detectorTrigger2);
-	    	detectorTrigger2.channel = detector;
+	    	detector.getTriggers().add(detectorTrigger2);
+	    	detectorTrigger2.setChannel(detector);
 	    	detectorTrigger2.save();
 	    	
 	    	detector.save();
 	    	
+	    	
+	    	//luminosity detector
+	    	Channel luminosityDetector = new Channel("Luminosity detector", "Detects luminosity");
+	    	luminosityDetector.save();
+	    	
+	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description");
+	    	luminosityDetector.getTriggers().add(detectorTrigger1);
+	    	
+	    	detectorTrigger12.save();
+	    	detectorTrigger12.setChannel(detector);
+	    	
+	    	
+	    	Trigger detectorTrigger22 = new Trigger("Non light Trigger");
+	    	luminosityDetector.getTriggers().add(detectorTrigger2);
+	    	detectorTrigger22.setChannel(luminosityDetector);
+	    	detectorTrigger22.save();
+	    	
+	    	luminosityDetector.save();
 	    	
 	    	//LAMP CHANNEL
 	    	Channel lamp = new Channel("Lamp", "I am a Lamp");
 	    	lamp.save();
 	    	
 	    	Action lampAction1 = new Action("Turn on lamp");
-	    	lamp.actions.add(lampAction1);
-	    	lampAction1.channel = lamp;
+	    	lamp.getActions().add(lampAction1);
+	    	lampAction1.setChannel(lamp);
 	    	lampAction1.save();
 	    	
 	    	Action lampAction2 = new Action("Turn off lamp");
-	    	lamp.actions.add(lampAction2);
-	    	lampAction2.channel = lamp;
+	    	lamp.getActions().add(lampAction2);
+	    	lampAction2.setChannel(lamp);
 	    	lampAction2.save();
 	    	
 	    	lamp.save();

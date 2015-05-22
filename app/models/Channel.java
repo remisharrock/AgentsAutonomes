@@ -17,20 +17,20 @@ public class Channel extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	public long id;
+	private long id;
 	
-	public String name;
+	private String name;
 	
-	public String description;
+	private String description;
 	
 	@OneToMany(mappedBy="channel", cascade=CascadeType.ALL)
-	public List<Trigger> triggers;
+	private List<Trigger> triggers;
 	
 	public static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(
 			Long.class, Channel.class);
 	
 	@OneToMany
-	public List<Action> actions;
+	private List<Action> actions;
 	
 	public Channel(String name, String description) {
 		this.name = name;
@@ -41,21 +41,48 @@ public class Channel extends Model {
 		return Ebean.find(Channel.class).findList();
 	}
 	
+	public long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+
+	public List<Trigger> getTriggers() {
+		return triggers;
+	}
+
+	public void setTriggers(List<Trigger> triggers) {
+		this.triggers = triggers;
+	}
+
+	public List<Action> getActions() {
+		return actions;
+	}
+
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
+	}
+
 	@Override
 	public String toString() {
-		String s = "";
-		s += "name: " + name + "\n";
-		s += "description: "  + description + "\n";
-		s += "triggers: ";
-		for (Trigger tr : triggers) {
-			s += tr.name + " ";
-		}
-		s += "\nactions: ";
-		for (Action ac : actions) {
-			s += ac.name + " ";
-		}
-		return s;
-		
+		return "Channel [id=" + id + ", name=" + name + ", description="
+				+ description + ", triggers=" + triggers + ", actions="
+				+ actions + "]";
 	}
 	
 }

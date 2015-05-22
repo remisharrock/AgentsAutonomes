@@ -14,14 +14,14 @@ public class Trigger extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	public long id;
+	private long id;
 	
-	public String name;
+	private String name;
 	
-	public String description;
+	private String description;
 	
 	@ManyToOne
-	public Channel channel;
+	private Channel channel;
 	
 	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
 			Long.class, Trigger.class);
@@ -34,4 +34,31 @@ public class Trigger extends Model {
 	public Trigger(String name) {
 		this.name = name;
 	}
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Channel getChannel() {
+		return channel;
+	}
+
+	public void setChannel(Channel channel) {
+		this.channel = channel;
+	}
+	
+	
 }
