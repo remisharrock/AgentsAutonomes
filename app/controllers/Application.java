@@ -61,9 +61,9 @@ public class Application extends Controller {
 		else if (currentUser.getRole() == "administrator"){
 			Boolean lampOn = false;
 			List<Channel> channelsList = Channel.getAllChannels();
-			HashMap<String, List<Trigger>> triggersDic = new HashMap<String, List<Trigger>>();
+			HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 			for (int i=0; i<channelsList.size(); i++){
-				triggersDic.put(channelsList.get(i).getName(), channelsList.get(i).getTriggers());
+				triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
 			}
 			return ok(administratorView.render(channelsList, lampOn, triggersDic));
 		}

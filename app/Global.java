@@ -84,10 +84,9 @@ public class Global extends GlobalSettings {
 	    	
 	    	
 	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description");
-	    	detector.getTriggers().add(detectorTrigger1);
-	    	
-	    	detectorTrigger1.save();
+	    	detector.getTriggers().add(detectorTrigger1);    	
 	    	detectorTrigger1.setChannel(detector);
+	    	detectorTrigger1.save();
 	    	
 	    	
 	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger");
@@ -104,10 +103,9 @@ public class Global extends GlobalSettings {
 	    	
 	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger1);
-	    	
-	    	detectorTrigger12.save();
 	    	detectorTrigger12.setChannel(detector);
-	    	
+	    	detectorTrigger12.save();
+	    		    	
 	    	
 	    	Trigger detectorTrigger22 = new Trigger("Non light Trigger");
 	    	luminosityDetector.getTriggers().add(detectorTrigger2);
