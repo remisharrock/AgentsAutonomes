@@ -54,5 +54,9 @@ public class User extends Model {
         return find.where().eq("username", username)
             .eq("password", password).findList().get(0);
     }
+	
+	public String getRole() {
+		return role;
+	}
 
 }

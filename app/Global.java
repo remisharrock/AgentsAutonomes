@@ -48,8 +48,11 @@ public class Global extends GlobalSettings {
 			Logger.info("Init Data");
 			
 			//Users
-			User user1 = new User("1", "1", "administrator", "home1");
+			User user1 = new User("1", "1", "user", "home1");
 			user1.save();
+			
+			User user2 = new User("2", "2", "administrator", "home1");
+			user2.save();
 			
 			
 			
