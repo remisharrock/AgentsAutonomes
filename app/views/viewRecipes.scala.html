@@ -1,0 +1,68 @@
+@(user: models.User)
+@import java.math.BigInteger; var counter = 0;
+@main("My recipes") {
+
+<article class="l-page-content">
+	<div id="statement_create">
+<!-- 		<form class="navbar-form pull-right"
+			action="@routes.Application.viewRecipes()"> -->
+			<!-- <input class="span2" type="text" placeholder="Email"> <input
+				class="span2" type="password" placeholder="Password">
+			<button type="submit" class="btn">Sign in</button>
+		 -->
+			<!-- Main hero unit for a primary marketing message or call to action -->
+			<br />
+			<div class="hero-unit">
+				<h1>View recipes</h1>
+				<p>Hello @user.getUsername()</p>
+			</div>
+			
+			<div class="l-clearfix non-mobile">
+			IF Recipes run automatically in the background.
+			</div>
+			
+ 			@if(user.getRecipes()!=null && user.getRecipes().size() > 0) {
+			
+				<div id="statements">
+					@for(recipe <- user.getRecipes()){
+					<div class="page-item">
+						@if(counter==0) {
+							@if(recipe.getActive()) {
+							<div class="personnal-recipe-manage first" id="statement_@user.getId()">
+							} else {
+							<div class="personnal-recipe-manage inactive first" id="statement_@user.getId()">
+							}
+							@{counter+=1}
+						} else {
+							@if(recipe.getActive()) {
+								<div class="personnal-recipe-manage" id="statement_@user.getId()">
+								} else {
+								<div class="personnal-recipe-manage inactive" id="statement_@user.getId()">
+								}
+						}
+								
+							<div class="personnal-recipe-manage_visual_and_desc">
+								<div class="personnal_recipe_manage_visual">
+								
+								@recipe.getTitle()
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				}
+			</div>
+			} else {
+				<div class="l-clearfix non-mobile">
+				You don't have any recipe.
+				</div>
+			}
+
+			
+			
+
+		</form>
+	</div>
+</article>
+
+}
