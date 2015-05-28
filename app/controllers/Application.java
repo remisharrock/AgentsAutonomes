@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,8 +61,11 @@ public class Application extends Controller {
 		else if (currentUser.getRole() == "administrator"){
 			Boolean lampOn = false;
 			List<Channel> channelsList = Channel.getAllChannels();
-			List<Trigger> triggersList = channelsList.get(0).getTriggers();
-			return ok(administratorView.render(channelsList, lampOn));
+			HashMap<String, List<Trigger>> triggersDic = new HashMap<String, List<Trigger>>();
+			for (int i=0; i<channelsList.size(); i++){
+				triggersDic.put(channelsList.get(i).getName(), channelsList.get(i).getTriggers());
+			}
+			return ok(administratorView.render(channelsList, lampOn, triggersDic));
 		}
 		
 		return ok(index.render());
