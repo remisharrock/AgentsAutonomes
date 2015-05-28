@@ -1,0 +1,51 @@
+@(channel: Channel)
+@import java.math.BigInteger; var counter=0; 
+@main("Choose your trigger") {
+
+<article class="l-page-content">
+	<div id="statement_create">
+		<form class="navbar-form pull-right"
+			action="@routes.Application.submitForm()">
+			<!-- <input class="span2" type="text" placeholder="Email"> <input
+				class="span2" type="password" placeholder="Password">
+			<button type="submit" class="btn">Sign in</button>
+		 -->
+			<!-- Main hero unit for a primary marketing message or call to action -->
+			<br/>
+			<div class="hero-unit">
+				<h1>Choose your trigger</h1>
+				<p>Agents Autonomes</p>
+			</div>
+			
+			
+			<div class='is-dimmable'> 
+			<h2 class='composer_section_header'>
+			<img alt="@channel.getName()" class="composer_section_header_icon" src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/405156688/icons/small.png"> 
+				Choose a trigger 
+			<span class='composer_section_step'>step 2 of 7</span>
+			</h2>
+
+		
+		<input id="statement_live_trigger_attribute_trigger_id" name="statement[@channel.getId()]" type="hidden" value="-1">
+		<div class="trigger-list">
+		@for(trigger <- channel.getTriggers()) {
+		  
+		<a class="trigger-list_item" data-track-data="{\"controller\":"statements","action":"choose_trigger","trigger_id":@trigger.getId(),"funnel":{"primary":"new_statement","primary_id":"3d7bbe4e0ac4655368202002e6b8f543"}}"
+		 data-track-event="src_choose_trigger" 
+		 data-trigger_id="@trigger.getId()" 
+		 href="@routes.Application.completeTriggerFields(channel.getId())" 
+		 id="trigger_@trigger.getId()">
+		 	<h3 class="trigger-list_item_name">@trigger.getName()</h3>
+		 	<p class="trigger-list_item_desc">@trigger.getDescription()</p>
+		 </a>
+		}
+		</div>
+		</div>
+			
+		</form>
+	
+	</div>
+
+
+</article>
+}

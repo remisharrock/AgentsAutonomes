@@ -1,4 +1,4 @@
-@(channels: List[Channel], lampOn: Boolean, triggers:List[Trigger])
+@(channels: List[Channel])
 @import java.math.BigInteger; var counter=0; 
 @main("Agents autonomes") {
 
@@ -7,41 +7,36 @@
 <div id="statement_create">
 <form class="navbar-form pull-right"
 	action="@routes.Application.submitForm()">
-	
 	<!-- <input class="span2" type="text" placeholder="Email"> <input
 		class="span2" type="password" placeholder="Password">
 	<button type="submit" class="btn">Sign in</button>
  -->
 	<!-- Main hero unit for a primary marketing message or call to action -->
-	
 	<br/>
 	<div class="hero-unit">
-		<h1>Agents autonomes (administrator)</h1>
+		<h1>Agents autonomes</h1>
 		<p>INF380</p>
 	</div>
 
-	<!-- Example row of columns -->
-	
-	
-	<div class='is-dimmable'> 
-			<a class='focus-here' href='#'></a>
+<!-- Choose Action -->
+	<div class="is-dimmable">
+		<a class='focus-here' href='#'></a>
 			<h2 class='composer_section_header'>
-				Choose Trigger Channel 
-			<span class='composer_section_step'>step 1 of 7</span>
+				Choose Action Channel 
+				<span class='composer_section_step'>step 4 of 7</span>
 			</h2>
 			<p class='composer_section_description'>
-				Showing Channels that provide at least one Trigger.
+				Showing Channels that provide at least one Action.
 			</p>
-		<div class="channel-list">
 		<input autocapitalization="off" autocomplete="off" autocorrect="off"
-			class="channels-search_input" id="trigger_search_channels_field"
+			class="channels-search_input" id="action_search_channels_field"
 			name="q" placeholder="Search Channels" type="text" />
 		<p class='channel_search_advice hide'
-			id='trigger_search_channels_field_advice'></p>
+			id='action_search_channels_field_advice'></p>
 
 		<script>
   //<![CDATA[
-    function triggersSearch(){
+    function actionsSearch(){
 /*       if(window.channelsSearch == undefined){
         window.channelsSearch = {
           escapeRegExp: function(str){
@@ -57,9 +52,9 @@
               }
       
       
-      channelsSearch["channels_trigger_search_channels_field"] = [
-		@for(channel <- channels) {   
-			@if(channel.getTriggers().size() > 0){
+      channelsSearch["channels_action_search_channels_field"] = [
+		@for(channel <- channels) { 
+			@if(channel.getActions()!=null && channel.getActions().size() > 0){
 				{"value":"@channel.getName()",
 				 "name":"@channel.getName()",
 				 "id":@channel.getId(),
@@ -69,7 +64,7 @@
 			}
 		 ]
       /* if(window.channelsList_evaluatePosition == undefined){ */
-          channelsList_evaluatePosition = function ($collection){
+          channelsList_evaluatePosition1 = function ($collection){
             if($collection){
               var index = 0;
               $collection.removeClass('mod-index-0 mod-index-1 mod-index-2 mod-index-3 mod-index-4 mod-index-5')
@@ -84,51 +79,50 @@
       
       var transitionTimeout = false;
       var showMessageTimeout = false;
-      var input = $( "#trigger_search_channels_field" );
-      var $channelsHolder = $( "#trigger_search_channels_field" ).parents().eq(2).find('.channel-list_holder');
-      var unhideAll = function (){
-        channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
-        $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('hide');
+      var input = $( "#action_search_channels_field" );
+/*       var $channelsHolder = $( "#action_search_channels_field" ).parents().eq(2).find('.channel-list_holder');
+ */      var unhideAll = function (){
+    	  channelsList_evaluatePosition1($( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+        $( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('hide');
       };
       var toggleFiltered = function(matched, unmatched){
         _.each(matched, function(el){
-          $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('hidden');
+          $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('hidden');
         });
         _.each(unmatched, function(el){
-          $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('hidden');
+          $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('hidden');
         });
-        channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+        channelsList_evaluatePosition1($( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
       };
       var performFiltering = function(ev){
-        if(!$channelsHolder.data('forcedHeight')){
-          $channelsHolder.height($channelsHolder.height());
-          !$channelsHolder.data('forcedHeight', true);
+        if(!$(document).find('.channel-list_holder').data('forcedHeight')){
+          $(document).find('.channel-list_holder').height($(document).find('.channel-list_holder').height());
+          !$(document).find('.channel-list_holder').data('forcedHeight', true);
         }
         var val = $(this).val().trim().toLowerCase();
-        /* alert(channelsSearch["channels_trigger_search_channels_field"].length); */
-        var matched = _.filter(channelsSearch["channels_trigger_search_channels_field"], function(el){
+        var matched = _.filter(channelsSearch["channels_action_search_channels_field"], function(el){
           return el.name.toLowerCase().match(channelsSearch.escapeRegExp(val))
         });
         
-        var unmatched = _.difference(channelsSearch["channels_trigger_search_channels_field"], matched);
+        var unmatched = _.difference(channelsSearch["channels_action_search_channels_field"], matched);
         
         if(val.length && matched.length){
-          $channelsHolder.removeClass('hidden');
-          $("#trigger_search_channels_field_advice").addClass('hide');
+          $(document).find('.channel-list_holder').removeClass('hidden');
+          $("#action_search_channels_field_advice").addClass('hide');
           if(transitionTimeout){
             clearTimeout(transitionTimeout);
           }
           _.each(matched, function(el){
 /*         	  alert(matched.length);
         	  alert("el id:" + el.id); */
-            $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('out_of_search hide');
+            $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('out_of_search hide');
           });
           _.each(unmatched, function(el){
-            $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('out_of_search hide');
+            $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('out_of_search hide');
           });
     
           transitionTimeout = setTimeout(function(){
-            $channelsHolder.removeClass('hide');
+            $(document).find('.channel-list_holder').removeClass('hide');
             transitionTimeout = setTimeout(function(){
               toggleFiltered(matched, unmatched)
             }, 150);
@@ -136,25 +130,25 @@
     
         
         } else if(matched.length == 0 && val.length > 0){
-          $channelsHolder.addClass('hide');
+          $(document).find('.channel-list_holder').addClass('hide');
           if(showMessageTimeout){
             clearTimeout(showMessageTimeout);
           }
           showMessageTimeout = setTimeout(function(){
-            $channelsHolder.addClass('hidden');
+            $(document).find('.channel-list_holder').addClass('hidden');
             showMessageTimeout = setTimeout(function(){
-              $("#trigger_search_channels_field_advice").removeClass('hide').text('No Channels match "'+val+'"')
+              $("#action_search_channels_field_advice").removeClass('hide').text('No Channels match "'+val+'"')
             }, 150)
           }, 150)
         } else {
-          $("#trigger_search_channels_field_advice").addClass('hide')
-          $channelsHolder.removeClass('hidden');
+          $("#action_search_channels_field_advice").addClass('hide')
+          $(document).find('.channel-list_holder').removeClass('hidden');
           if(transitionTimeout){
             clearTimeout(transitionTimeout);
           }
-          $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('out_of_search hidden');
+          $( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('out_of_search hidden');
           transitionTimeout = setTimeout(function(){
-            $channelsHolder.removeClass('hide');
+            $(document).find('.channel-list_holder').removeClass('hide');
             transitionTimeout = setTimeout(unhideAll, 100);
           }, 50)
         }
@@ -167,7 +161,7 @@
         });
      };
      
-     triggersSearch();
+     actionsSearch();
      
   //]]>
 </script>
@@ -176,22 +170,21 @@
 			<div class="channel-list_holder">
 				@for(channel <- channels) { 
 				@{counter %= 6} 
-				@if(channel.getTriggers().size() > 0){
+				@if(channel.getActions().size() > 0){
 					<a
-						class="mod-index-@counter channel-list_icon"
+						class="channel-list_icon mod-index-@counter"
 						data-channel_id='@channel.getId()'
-						data-channel_module_name='@channel.getName()'
+						data-channel_module_name='@channel.getName()' 
 						data-remote
 						data-track-data='{"controller":"statements",
 				   								"action":"new",
 				   								"channel_id":@channel.getId(),
 				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
-				   								"channel_type":"trigger"}'
+				   								"channel_type":"action"}'
 						data-track-event='scr_choose_channel'
-						href='choose_trigger?channel_id=@channel.getId()'
+						href='@routes.Application.chooseAction(channel.getId())'
 						id='ind_t_channel_@channel.getId()'
-						ifttt-trigger-channel-button='1' 
-						title="@channel.getDescription()">
+						ifttt-action-channel-button='1' title="@channel.getDescription()">
 						<img alt="@channel.getName()" 
 						class="channel-list_icon_img"
 						id="channel_1172726678"
@@ -203,38 +196,7 @@
 				}
 			</div>
 		</div>
-	</div>
-
-	<div class='is-dimmable'>
-		<h2 class='composer_section_header'>
-				Choose a Trigger 
-		<span class='composer_section_step'>step 2 of 7</span>
-		</h2>
-		<input id="statement_live_trigger_attributes_trigger_id" name="statement[live_trigger_attributes][trigger_id]" type="hidden">
-		<div class="trigger-list"></div>
-		
-		
-		<a 
-			class="trigger-list_item " 
-			data-track-data='{"controller":"statements",
-								"action":"choose_trigger",
-								"trigger_id":607940575,
-								"funnel":{"primary":"new_statement","primary_id":"bdcfc20d5ac183be6938f4aaab994beb"}}' 
-			data-track-event="scr_choose_trigger" 
-			data-trigger_id="607940575" 
-			href="#" 
-			id="trigger_607940575" 
-			onclick="onChooseTriggerInit(607940575, 'android_device', 'connect_to_any_wifi_network'); return false;">
-		
-		<h3 class="trigger-list_item_name">Connects to any WiFi network</h3>
-		<p class="trigger-list_item_desc">This Trigger fires every time your Android device connects to any WiFi network.</p>
-		</a>
-
-	</div>
-	
-	
 
 </form>
 </div>
-</article>
 }

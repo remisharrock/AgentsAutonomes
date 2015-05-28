@@ -1,8 +1,11 @@
 package models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
@@ -20,8 +23,12 @@ public class Trigger extends Model {
 	
 	private String description;
 	
+	
 	@ManyToOne
 	private Channel channel;
+	
+	@OneToMany 
+	private List<Field> fields;
 	
 	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
 			Long.class, Trigger.class);
@@ -34,15 +41,17 @@ public class Trigger extends Model {
 	public Trigger(String name) {
 		this.name = name;
 	}
+	
+	public long getId() {
+		return this.id;
+	}
 
 
 	public String getName() {
 		return name;
 	}
 	
-	public long getId() {
-		return id;
-	}
+
 
 	public void setName(String name) {
 		this.name = name;
@@ -62,6 +71,10 @@ public class Trigger extends Model {
 
 	public void setChannel(Channel channel) {
 		this.channel = channel;
+	}
+
+	public List<Field> getFields() {
+		return this.fields;
 	}
 	
 	

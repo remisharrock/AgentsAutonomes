@@ -1,15 +1,72 @@
-@() 
+@(channels: List[Channel], lampOn: Boolean) 
 @main("Agents autonomes") {
-<form class="navbar-form" action="@routes.Application.loginForm()">
- 	 <input class="span2" type="text" placeholder="Email" name="username">
- 	 <input class="span2" type="password" placeholder="Password" name="password">
+<form class="navbar-form pull-right" action="@routes.Application.submitForm()">
+	<!-- <input class="span2" type="text" placeholder="Email"> <input
+		class="span2" type="password" placeholder="Password">
 	<button type="submit" class="btn">Sign in</button>
-
+ -->
 <!-- Main hero unit for a primary marketing message or call to action -->
-</form>
 <br>
 <div class="hero-unit">
 	<h1>Agents autonomes</h1>
-	<p>INF380</p>
+	<p>INF344</p>
 </div>
+
+<!-- Example row of columns -->
+<div class="wrapper">
+	<div class="firstDiv">
+	<h2>Channels</h2>
+		@for(channel <- channels) {
+		<div class="span12">
+			<h3>@channel.name</h2>
+			<p>@channel.description</p>
+			@if(channel.triggers.size > 0) {
+				<strong>Triggers:</strong> <br/>
+			}
+			
+			@for(trigger <- channel.triggers){
+			<div>
+				 @trigger.name 
+			</div>
+			}
+			@if(channel.actions.size > 0) {
+				<strong>Actions:</strong> <br/>
+			}
+			
+			@for(action <- channel.actions){
+				@action.name <br/>
+			}
+		</div>
+		}
+	</div>
+	
+	<div class="secondDiv">
+		<h2>Recipes</h2>
+		<input type="checkbox" name="turnOnCheckbox" checked>  Turn On Activation<br/>
+		<input type="checkbox" name="turnOffCheckbox" checked>  Turn Off Activation<br/>
+	</div>
+	
+	
+	<div class="thirdDiv">
+		<h2>Event generator</h2>
+		<input type="submit" name="enterRoomButton" value="EnterRoom"><br/>
+		<input type="submit" name="exitRoomButton" value="ExitRoom"><br/>
+	</div>
+	
+	
+	<div class="fourthDiv" id="fourthDiv">
+	@if(lampOn){
+		<script> document.getElementById('fourthDiv').style.backgroundColor = 'yellow'</script>
+	} else {
+		<script> document.getElementById('fourthDiv').style.backgroundColor = 'gray'</script>
+	}
+	
+	
+		<h2>Result</h2>
+	</div>
+	
+</div>
+
+</form>
 }
+

@@ -1,17 +1,13 @@
 package models;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
 @Entity
-public class Action extends Model {
-
+public class Field extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -21,30 +17,22 @@ public class Action extends Model {
 	
 	private String description;
 	
-	@OneToMany
-	private List<Field> fields;
+	@ManyToOne
+	private Trigger trigger;
 	
 	@ManyToOne
-	private Channel channel;
+	private Action action;
 	
-	public static Model.Finder<Long, Action> find = new Model.Finder<Long, Action>(
-			Long.class, Action.class);
 	
-	public Action(String name, String description) {
+	public Field(String name, String description) {
 		this.name = name;
 		this.description = description;
 	}
-
 	
-	public Action(String name) {
-		this.name = name;
-	}
 	
-
 	public long getId() {
 		return id;
 	}
-
 
 	public String getName() {
 		return name;
@@ -62,16 +50,21 @@ public class Action extends Model {
 		this.description = description;
 	}
 
-	public Channel getChannel() {
-		return channel;
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
-	public void setChannel(Channel channel) {
-		this.channel = channel;
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
 	}
 	
-	public List<Field> getFields() {
-		return this.fields;
+	public Action getAction() {
+		return action;
 	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+	
 	
 }

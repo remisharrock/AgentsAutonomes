@@ -1,0 +1,35 @@
+@(user: models.User)
+@import java.math.BigInteger; var counter=0; 
+@main("Choose what to do") {
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<article class="l-page-content">
+	<div id="statement_create">
+		<form class="navbar-form pull-right"
+			action="@routes.Application.chooseView()">
+			<!-- <input class="span2" type="text" placeholder="Email"> <input
+				class="span2" type="password" placeholder="Password">
+			<button type="submit" class="btn">Sign in</button>
+		 -->
+			<!-- Main hero unit for a primary marketing message or call to action -->
+			<br/>
+			<div class="hero-unit">
+				<h1>What do you want to do?</h1>
+				<p>Hello @user.getUsername()</p>
+			</div>
+			<button type="submit" name="viewRecipesButton" value="View Recipes">View Recipes</button>
+			<button type="sumbit" name="createRecipeButton" value="Create Recipe">Create Recipe</button>
+			
+		</form>
+	</div>	
+</article>	
+}
+</body>
+</html>
