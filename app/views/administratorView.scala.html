@@ -1,0 +1,392 @@
+@(channels: List[Channel], lampOn: Boolean)
+@import java.math.BigInteger; var counter=0; 
+@main("Agents autonomes") {
+
+
+<article class="l-page-content">
+<div id="statement_create">
+<form class="navbar-form pull-right"
+	action="@routes.Application.submitForm()">
+	
+	<!-- <input class="span2" type="text" placeholder="Email"> <input
+		class="span2" type="password" placeholder="Password">
+	<button type="submit" class="btn">Sign in</button>
+ -->
+	<!-- Main hero unit for a primary marketing message or call to action -->
+	
+	<br/>
+	<div class="hero-unit">
+		<h1>Agents autonomes (administrator)</h1>
+		<p>INF380</p>
+	</div>
+
+	<!-- Example row of columns -->
+	
+	
+	<div class='is-dimmable'> 
+			<a class='focus-here' href='#'></a>
+			<h2 class='composer_section_header'>
+				Choose Trigger Channel 
+			<span class='composer_section_step'>step 1 of 7</span>
+			</h2>
+			<p class='composer_section_description'>
+				Showing Channels that provide at least one Trigger.
+			</p>
+		<div class="channel-list">
+		<input autocapitalization="off" autocomplete="off" autocorrect="off"
+			class="channels-search_input" id="trigger_search_channels_field"
+			name="q" placeholder="Search Channels" type="text" />
+		<p class='channel_search_advice hide'
+			id='trigger_search_channels_field_advice'></p>
+
+		<script>
+  //<![CDATA[
+    function triggersSearch(){
+/*       if(window.channelsSearch == undefined){
+        window.channelsSearch = {
+          escapeRegExp: function(str){
+            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          }
+        }
+      } */
+      
+      var channelsSearch = {
+              escapeRegExp: function(str){
+                  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                }
+              }
+      
+      
+      channelsSearch["channels_trigger_search_channels_field"] = [
+		@for(channel <- channels) {   
+			@if(channel.getTriggers().size() > 0){
+				{"value":"@channel.getName()",
+				 "name":"@channel.getName()",
+				 "id":@channel.getId(),
+				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
+				 "url":"/@channel.getName()"},
+				}
+			}
+		 ]
+      /* if(window.channelsList_evaluatePosition == undefined){ */
+          channelsList_evaluatePosition = function ($collection){
+            if($collection){
+              var index = 0;
+              $collection.removeClass('mod-index-0 mod-index-1 mod-index-2 mod-index-3 mod-index-4 mod-index-5')
+              $collection.each(function(){
+                $(this).addClass("mod-index-"+index);
+                index += 1;
+                index %= 6;
+              });
+            }
+          };
+        /* } */
+      
+      var transitionTimeout = false;
+      var showMessageTimeout = false;
+      var input = $( "#trigger_search_channels_field" );
+      var $channelsHolder = $( "#trigger_search_channels_field" ).parents().eq(2).find('.channel-list_holder');
+      var unhideAll = function (){
+        channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+        $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('hide');
+      };
+      var toggleFiltered = function(matched, unmatched){
+        _.each(matched, function(el){
+          $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('hidden');
+        });
+        _.each(unmatched, function(el){
+          $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('hidden');
+        });
+        channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+      };
+      var performFiltering = function(ev){
+        if(!$channelsHolder.data('forcedHeight')){
+          $channelsHolder.height($channelsHolder.height());
+          !$channelsHolder.data('forcedHeight', true);
+        }
+        var val = $(this).val().trim().toLowerCase();
+        /* alert(channelsSearch["channels_trigger_search_channels_field"].length); */
+        var matched = _.filter(channelsSearch["channels_trigger_search_channels_field"], function(el){
+          return el.name.toLowerCase().match(channelsSearch.escapeRegExp(val))
+        });
+        
+        var unmatched = _.difference(channelsSearch["channels_trigger_search_channels_field"], matched);
+        
+        if(val.length && matched.length){
+          $channelsHolder.removeClass('hidden');
+          $("#trigger_search_channels_field_advice").addClass('hide');
+          if(transitionTimeout){
+            clearTimeout(transitionTimeout);
+          }
+          _.each(matched, function(el){
+/*         	  alert(matched.length);
+        	  alert("el id:" + el.id); */
+            $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('out_of_search hide');
+          });
+          _.each(unmatched, function(el){
+            $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('out_of_search hide');
+          });
+    
+          transitionTimeout = setTimeout(function(){
+            $channelsHolder.removeClass('hide');
+            transitionTimeout = setTimeout(function(){
+              toggleFiltered(matched, unmatched)
+            }, 150);
+          }, 50);
+    
+        
+        } else if(matched.length == 0 && val.length > 0){
+          $channelsHolder.addClass('hide');
+          if(showMessageTimeout){
+            clearTimeout(showMessageTimeout);
+          }
+          showMessageTimeout = setTimeout(function(){
+            $channelsHolder.addClass('hidden');
+            showMessageTimeout = setTimeout(function(){
+              $("#trigger_search_channels_field_advice").removeClass('hide').text('No Channels match "'+val+'"')
+            }, 150)
+          }, 150)
+        } else {
+          $("#trigger_search_channels_field_advice").addClass('hide')
+          $channelsHolder.removeClass('hidden');
+          if(transitionTimeout){
+            clearTimeout(transitionTimeout);
+          }
+          $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('out_of_search hidden');
+          transitionTimeout = setTimeout(function(){
+            $channelsHolder.removeClass('hide');
+            transitionTimeout = setTimeout(unhideAll, 100);
+          }, 50)
+        }
+      };
+      input
+        .focus()
+        .on('keyup', function(ev){
+          if(ev.keyCode != 18 && ev.keyCode != 16 && ev.keyCode != 39 && ev.keyCode != 37)
+            performFiltering.call(this, ev); 
+        });
+     };
+     
+     triggersSearch();
+     
+  //]]>
+</script>
+
+		
+			<div class="channel-list_holder">
+				@for(channel <- channels) { 
+				@{counter %= 6} 
+				@if(channel.getTriggers().size() > 0){
+					<a
+						class="mod-index-@counter channel-list_icon"
+						data-channel_id='@channel.getId()'
+						data-channel_module_name='@channel.getName()'
+						data-remote
+						data-track-data='{"controller":"statements",
+				   								"action":"new",
+				   								"channel_id":@channel.getId(),
+				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
+				   								"channel_type":"trigger"}'
+						data-track-event='scr_choose_channel'
+						href='choose_trigger?channel_id=@channel.getId()'
+						id='ind_t_channel_@channel.getId()'
+						ifttt-trigger-channel-button='1' 
+						title="@channel.getDescription()">
+						<img alt="@channel.getName()" 
+						class="channel-list_icon_img"
+						id="channel_1172726678"
+						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
+						@channel.getName() 
+						@{counter += 1}
+					</a> 
+					}
+				}
+			</div>
+		</div>
+	</div>
+
+
+	
+	<div class="is-dimmable">
+		<a class='focus-here' href='#'></a>
+			<h2 class='composer_section_header'>
+				Choose Action Channel 
+				<span class='composer_section_step'>step 4 of 7</span>
+			</h2>
+			<p class='composer_section_description'>
+				Showing Channels that provide at least one Action.
+			</p>
+		<input autocapitalization="off" autocomplete="off" autocorrect="off"
+			class="channels-search_input" id="action_search_channels_field"
+			name="q" placeholder="Search Channels" type="text" />
+		<p class='channel_search_advice hide'
+			id='action_search_channels_field_advice'></p>
+
+		<script>
+  //<![CDATA[
+    function actionsSearch(){
+/*       if(window.channelsSearch == undefined){
+        window.channelsSearch = {
+          escapeRegExp: function(str){
+            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          }
+        }
+      } */
+      
+      var channelsSearch = {
+              escapeRegExp: function(str){
+                  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                }
+              }
+      
+      
+      channelsSearch["channels_action_search_channels_field"] = [
+		@for(channel <- channels) { 
+			@if(channel.getActions().size() > 0){
+				{"value":"@channel.getName()",
+				 "name":"@channel.getName()",
+				 "id":@channel.getId(),
+				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
+				 "url":"/@channel.getName()"},
+				}
+			}
+		 ]
+      /* if(window.channelsList_evaluatePosition == undefined){ */
+          channelsList_evaluatePosition1 = function ($collection){
+            if($collection){
+              var index = 0;
+              $collection.removeClass('mod-index-0 mod-index-1 mod-index-2 mod-index-3 mod-index-4 mod-index-5')
+              $collection.each(function(){
+                $(this).addClass("mod-index-"+index);
+                index += 1;
+                index %= 6;
+              });
+            }
+          };
+        /* } */
+      
+      var transitionTimeout = false;
+      var showMessageTimeout = false;
+      var input = $( "#action_search_channels_field" );
+      var $channelsHolder = $( "#action_search_channels_field" ).parents().eq(2).find('.channel-list_holder');
+      var unhideAll = function (){
+    	  channelsList_evaluatePosition1($( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+        $( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('hide');
+      };
+      var toggleFiltered = function(matched, unmatched){
+        _.each(matched, function(el){
+          $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('hidden');
+        });
+        _.each(unmatched, function(el){
+          $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('hidden');
+        });
+        channelsList_evaluatePosition1($( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
+      };
+      var performFiltering = function(ev){
+        if(!$channelsHolder.data('forcedHeight')){
+          $channelsHolder.height($channelsHolder.height());
+          !$channelsHolder.data('forcedHeight', true);
+        }
+        var val = $(this).val().trim().toLowerCase();
+        var matched = _.filter(channelsSearch["channels_action_search_channels_field"], function(el){
+          return el.name.toLowerCase().match(channelsSearch.escapeRegExp(val))
+        });
+        
+        var unmatched = _.difference(channelsSearch["channels_action_search_channels_field"], matched);
+        
+        if(val.length && matched.length){
+          $channelsHolder.removeClass('hidden');
+          $("#action_search_channels_field_advice").addClass('hide');
+          if(transitionTimeout){
+            clearTimeout(transitionTimeout);
+          }
+          _.each(matched, function(el){
+/*         	  alert(matched.length);
+        	  alert("el id:" + el.id); */
+            $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('out_of_search hide');
+          });
+          _.each(unmatched, function(el){
+            $( "#action_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").addClass('out_of_search hide');
+          });
+    
+          transitionTimeout = setTimeout(function(){
+            $channelsHolder.removeClass('hide');
+            transitionTimeout = setTimeout(function(){
+              toggleFiltered(matched, unmatched)
+            }, 150);
+          }, 50);
+    
+        
+        } else if(matched.length == 0 && val.length > 0){
+          $channelsHolder.addClass('hide');
+          if(showMessageTimeout){
+            clearTimeout(showMessageTimeout);
+          }
+          showMessageTimeout = setTimeout(function(){
+            $channelsHolder.addClass('hidden');
+            showMessageTimeout = setTimeout(function(){
+              $("#action_search_channels_field_advice").removeClass('hide').text('No Channels match "'+val+'"')
+            }, 150)
+          }, 150)
+        } else {
+          $("#action_search_channels_field_advice").addClass('hide')
+          $channelsHolder.removeClass('hidden');
+          if(transitionTimeout){
+            clearTimeout(transitionTimeout);
+          }
+          $( "#action_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('out_of_search hidden');
+          transitionTimeout = setTimeout(function(){
+            $channelsHolder.removeClass('hide');
+            transitionTimeout = setTimeout(unhideAll, 100);
+          }, 50)
+        }
+      };
+      input
+        .focus()
+        .on('keyup', function(ev){
+          if(ev.keyCode != 18 && ev.keyCode != 16 && ev.keyCode != 39 && ev.keyCode != 37)
+            performFiltering.call(this, ev); 
+        });
+     };
+     
+     actionsSearch();
+     
+  //]]>
+</script>
+
+		
+			<div class="channel-list_holder">
+				@for(channel <- channels) { 
+				@{counter %= 6} 
+				@if(channel.getActions().size() > 0){
+					<a
+						class="channel-list_icon mod-index-@counter"
+						data-channel_id='@channel.getId()'
+						data-channel_module_name='@channel.getName()' 
+						data-remote
+						data-track-data='{"controller":"statements",
+				   								"action":"new",
+				   								"channel_id":@channel.getId(),
+				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
+				   								"channel_type":"action"}'
+						data-track-event='scr_choose_channel'
+						href='choose_action?channel_id=@channel.getId()'
+						id='ind_t_channel_@channel.getId()'
+						ifttt-action-channel-button='1' title="@channel.getDescription()">
+						<img alt="@channel.getName()" 
+						class="channel-list_icon_img"
+						id="channel_1172726678"
+						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
+						@channel.getName() 
+						@{counter += 1}
+					</a> 
+					}
+				}
+			</div>
+		</div>
+
+</form>
+</div>
+</article>
+}
+
