@@ -31,10 +31,6 @@ public class Application extends Controller {
 	private static Recipe recipe;
 
 	public static Result index() {
-		// Boolean lampOn = false;
-		// List<Channel> channelsList = Channel.getAllChannels();
-		// return ok(index.render(channelsList, lampOn));
-
 		return ok(index.render());
 	}
 
@@ -45,20 +41,11 @@ public class Application extends Controller {
 		String username = requestData.get("username");
 		String password = requestData.get("password");
 
-		//
-		// if (loginForm.hasErrors()) {
-		// return badRequest(index.render());
-		// } else {
-		// session().clear();
-		// session("email", loginForm.get().email);
 		User user = User.authenticate(username, password);
 		if (user == null) {
 			return ok(index.render());
 		} else {
 			userLoggedIn = user;
-
-			// List<Channel> channelsList = Channel.getAllChannels();
-			// return ok(chooseTriggerChannel.render(channelsList));
 
 			if (userLoggedIn.getRole() == "administrator") {
 				Boolean lampOn = false;
@@ -78,26 +65,6 @@ public class Application extends Controller {
 			}
 
 		}
-
-		// <<<<<<< HEAD
-		// else if (currentUser.getRole() == "administrator"){
-		// Boolean lampOn = false;
-		// List<Channel> channelsList = Channel.getAllChannels();
-		// HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel,
-		// List<Trigger>>();
-		// for (int i=0; i<channelsList.size(); i++){
-		// triggersDic.put(channelsList.get(i),
-		// channelsList.get(i).getTriggers());
-		// }
-		// return ok(administratorView.render(channelsList, lampOn,
-		// triggersDic));
-		// }
-		// =======
-		// >>>>>>> 0654723d2499bbd1458748f18366879e87b0df94
-
-		// }
-		//
-
 	}
 
 	public static Result chooseView() {
