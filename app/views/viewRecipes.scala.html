@@ -1,68 +1,116 @@
-@(user: models.User)
-@import java.math.BigInteger; var counter = 0;
-@main("My recipes") {
+@(user: User)
+@import java.math.BigInteger; var counter=0;
+@main("Agents autonomes") {
 
-<article class="l-page-content">
-	<div id="statement_create">
-<!-- 		<form class="navbar-form pull-right"
-			action="@routes.Application.viewRecipes()"> -->
-			<!-- <input class="span2" type="text" placeholder="Email"> <input
-				class="span2" type="password" placeholder="Password">
-			<button type="submit" class="btn">Sign in</button>
-		 -->
-			<!-- Main hero unit for a primary marketing message or call to action -->
-			<br />
-			<div class="hero-unit">
-				<h1>View recipes</h1>
-				<p>Hello @user.getUsername()</p>
-			</div>
-			
-			<div class="l-clearfix non-mobile">
-			IF Recipes run automatically in the background.
-			</div>
-			
- 			@if(user.getRecipes()!=null && user.getRecipes().size() > 0) {
-			
-				<div id="statements">
-					@for(recipe <- user.getRecipes()){
-					<div class="page-item">
-						@if(counter==0) {
-							@if(recipe.getActive()) {
-							<div class="personnal-recipe-manage first" id="statement_@user.getId()">
-							} else {
-							<div class="personnal-recipe-manage inactive first" id="statement_@user.getId()">
-							}
-							@{counter+=1}
-						} else {
-							@if(recipe.getActive()) {
-								<div class="personnal-recipe-manage" id="statement_@user.getId()">
-								} else {
-								<div class="personnal-recipe-manage inactive" id="statement_@user.getId()">
-								}
-						}
-								
-							<div class="personnal-recipe-manage_visual_and_desc">
-								<div class="personnal_recipe_manage_visual">
-								
-								@recipe.getTitle()
-								</div>
-							</div>
-						</div>
-						
-					</div>
-				}
-			</div>
-			} else {
-				<div class="l-clearfix non-mobile">
-				You don't have any recipe.
-				</div>
-			}
 
-			
-			
+<!DOCTYPE html>
+<html class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js' debug='true' lang='en'>
+<body>
 
-		</form>
+
+
+<header class='l-header'>
+	<div class='l-page-header'>
+		<div class='l-page-header-inner'>
+			<div class='is-alone l-page-title-unit'>
+				<h1 class='l-page-title'>My Recipes</h1>
+			</div>
+		</div>
 	</div>
+</header>
+
+
+
+
+
+<article class='l-page-content'>
+
+
+@if(user.getRecipes()!=null && user.getRecipes().size() > 0){
+	@for(recipe <- user.getRecipes()) { 
+	
+<br>
+<br>
+<div class='build_size' id='start'>
+	<div class='is-dimmable'>
+		<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
+						data-channel_id='ID'
+						data-channel_module_name='NAME'
+						data-remote
+						data-track-data='{"controller":"statements",
+				   								"action":"new",
+				   								"channel_id":ID,
+				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
+				   								"channel_type":"trigger"}'
+						data-track-event='scr_choose_channel'
+						href='choose_trigger?channel_id=ID'
+						id='ind_t_channel_ID'
+						ifttt-trigger-channel-button='1' 
+						title="DESCRIPTION">
+						<img alt="NAME" 
+						class="channel-list_icon_img"
+						id="channel_1172726678"
+						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" /></a> <span style="display: none"> </span> </span></span><span class='create_recipe_inline_text_block'>then</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
+						data-channel_id='ID'
+						data-channel_module_name='NAME'
+						data-remote
+						data-track-data='{"controller":"statements",
+				   								"action":"new",
+				   								"channel_id":ID,
+				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
+				   								"channel_type":"trigger"}'
+						data-track-event='scr_choose_channel'
+						href='choose_trigger?channel_id=ID'
+						id='ind_t_channel_ID'
+						ifttt-trigger-channel-button='1' 
+						title="DESCRIPTION">
+						<img alt="NAME" 
+						class="channel-list_icon_img"
+						id="channel_1172726678"
+						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
+					</a></span>
+					
+	</div>
+</div>
+<br>
+<span><a class='personal-recipe-manage_description' >@recipe.getTitle()</a></span>
+<br>
+<div class='personal-recipe-manage_meta'>
+	<div class='personal-recipe-manage_buttons'>
+		<span class='activation_link animc control_link' id='activation_23874676'>
+			<input id="statement_23874676_enabled" name="statement_23874676_enabled" type="hidden" value="true" />
+			<a href="/" 
+				class="btn-square-icon" 
+				data-method="put" 
+				data-remote="true" 
+				data-statement_id="23874676" 
+				ifttt-task-activation-button="1" 
+				title="Turn Recipe off">
+			<span class='icon icon-power'>Turn off Recipe</span></a>
+		</span>
+		
+		<span class='control_link'>
+			<a href="/myrecipes/personal/23874676/logs" class=" btn-square-icon" title="View Recipe logs"><span class='icon icon-activity'>Log</span></a>
+		</span>
+	</div>
+</div>
+
+
+
+<br>
+<br>
+
+	
+	}			
+} else{
+You don't have any recipe
+}
+
+
+
 </article>
+</body>
+</html>
 
 }
+
