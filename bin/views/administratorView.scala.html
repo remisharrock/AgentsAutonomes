@@ -1,4 +1,4 @@
-@(channels: List[Channel], lampOn: Boolean, triggersMap: Map[Channel, List[Trigger]])
+@(channels: List[Channel], triggersMap: Map[Channel, List[Trigger]])
 @import java.math.BigInteger; var counter=0; 
 @main("Agents autonomes") {
 
@@ -85,7 +85,8 @@
       var transitionTimeout = false;
       var showMessageTimeout = false;
       var input = $( "#trigger_search_channels_field" );
-      var $channelsHolder = $( "#trigger_search_channels_field" ).parents().eq(2).find('.channel-list_holder');
+      
+      
       var unhideAll = function (){
         channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
         $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('hide');
@@ -100,9 +101,9 @@
         channelsList_evaluatePosition($( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").not('.hidden'));
       };
       var performFiltering = function(ev){
-        if(!$channelsHolder.data('forcedHeight')){
-          $channelsHolder.height($channelsHolder.height());
-          !$channelsHolder.data('forcedHeight', true);
+        if(!$(document).find('.channel-list_holder').data('forcedHeight')){
+          $(document).find('.channel-list_holder').height($(document).find('.channel-list_holder').height());
+          !$(document).find('.channel-list_holder').data('forcedHeight', true);
         }
         var val = $(this).val().trim().toLowerCase();
         /* alert(channelsSearch["channels_trigger_search_channels_field"].length); */
@@ -113,7 +114,7 @@
         var unmatched = _.difference(channelsSearch["channels_trigger_search_channels_field"], matched);
         
         if(val.length && matched.length){
-          $channelsHolder.removeClass('hidden');
+          $(document).find('.channel-list_holder').removeClass('hidden');
           $("#trigger_search_channels_field_advice").addClass('hide');
           if(transitionTimeout){
             clearTimeout(transitionTimeout);
@@ -128,7 +129,7 @@
           });
     
           transitionTimeout = setTimeout(function(){
-            $channelsHolder.removeClass('hide');
+            $(document).find('.channel-list_holder').removeClass('hide');
             transitionTimeout = setTimeout(function(){
               toggleFiltered(matched, unmatched)
             }, 150);
@@ -136,25 +137,25 @@
     
         
         } else if(matched.length == 0 && val.length > 0){
-          $channelsHolder.addClass('hide');
+          $(document).find('.channel-list_holder').addClass('hide');
           if(showMessageTimeout){
             clearTimeout(showMessageTimeout);
           }
           showMessageTimeout = setTimeout(function(){
-            $channelsHolder.addClass('hidden');
+            $(document).find('.channel-list_holder').addClass('hidden');
             showMessageTimeout = setTimeout(function(){
               $("#trigger_search_channels_field_advice").removeClass('hide').text('No Channels match "'+val+'"')
             }, 150)
           }, 150)
         } else {
           $("#trigger_search_channels_field_advice").addClass('hide')
-          $channelsHolder.removeClass('hidden');
+          $(document).find('.channel-list_holder').removeClass('hidden');
           if(transitionTimeout){
             clearTimeout(transitionTimeout);
           }
           $( "#trigger_search_channels_field" ).parents().eq(2).find(".channel-list_icon").removeClass('out_of_search hidden');
           transitionTimeout = setTimeout(function(){
-            $channelsHolder.removeClass('hide');
+            $(document).find('.channel-list_holder').removeClass('hide');
             transitionTimeout = setTimeout(unhideAll, 100);
           }, 50)
         }
@@ -252,8 +253,7 @@
 							data-track-event="scr_choose_trigger"
 							data-channel_id="@trigger.getChannel().getId()"
 							data-trigger_id="@trigger.getId()" href="#" id="trigger_607940575"
-							onclick="onChooseTriggerInit(607940575, '@key.getName()', '@trigger.getId()'); return false;">
-		
+							href="@routes.Application.activateTrigger(@trigger.getId())">
 							<h3 class="trigger-list_item_name">@trigger.getName()</h3>
 							<p class="trigger-list_item_desc">@trigger.getDescription()</p>
 						</a>

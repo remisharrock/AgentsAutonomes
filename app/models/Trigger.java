@@ -52,7 +52,6 @@ public class Trigger extends Model {
 	}
 	
 
-
 	public void setName(String name) {
 		this.name = name;
 	}

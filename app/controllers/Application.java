@@ -44,17 +44,23 @@ public class Application extends Controller {
 		User user = User.authenticate(username, password);
 		if (user == null) {
 			return ok(index.render());
-		} else {
+		}
+
+		else {
 			userLoggedIn = user;
 
+
 			if (userLoggedIn.getRole() == "administrator") {
-				Boolean lampOn = false;
+
 				List<Channel> channelsList = Channel.getAllChannels();
 				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 				for (int i = 0; i < channelsList.size(); i++) {
-					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
+					triggersDic.put(channelsList.get(i), channelsList.get(i)
+							.getTriggers());
 				}
-				return ok(administratorView.render(channelsList, lampOn, triggersDic));
+
+				return ok(administratorView.render(channelsList,
+						triggersDic));
 			} else {
 				recipe = new Recipe();
 				List<Recipe> recipeList = new ArrayList<Recipe>();
@@ -62,9 +68,11 @@ public class Application extends Controller {
 				recipe.setUser(userLoggedIn);
 				recipe.save();
 				return ok(chooseView.render(userLoggedIn));
+
 			}
 
 		}
+
 	}
 
 	public static Result chooseView() {
