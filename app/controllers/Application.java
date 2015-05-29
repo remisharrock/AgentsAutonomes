@@ -68,6 +68,16 @@ public class Application extends Controller {
 //			List<Channel> channelsList = Channel.getAllChannels();
 //			return ok(chooseTriggerChannel.render(channelsList));
 			
+			if (userLoggedIn.getRole() == "administrator"){
+				Boolean lampOn = false;
+				List<Channel> channelsList = Channel.getAllChannels();
+				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
+				for (int i=0; i<channelsList.size(); i++){
+					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
+				}
+				return ok(administratorView.render(channelsList, lampOn, triggersDic));
+			}
+			
 			return ok(chooseView.render(userLoggedIn));
 		}
 		
