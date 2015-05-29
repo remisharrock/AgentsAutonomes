@@ -50,6 +50,7 @@ public class Application extends Controller {
 			userLoggedIn = user;
 
 
+			
 			if (userLoggedIn.getRole() == "administrator") {
 
 				List<Channel> channelsList = Channel.getAllChannels();
