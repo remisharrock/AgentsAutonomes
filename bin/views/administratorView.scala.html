@@ -4,42 +4,42 @@
 
 
 <article class="l-page-content">
-<div id="statement_create">
-<form class="navbar-form pull-right"
-	action="@routes.Application.submitForm()">
-	
-	<!-- <input class="span2" type="text" placeholder="Email"> <input
+	<div id="statement_create">
+		<form class="navbar-form pull-right"
+			action="@routes.Application.submitForm()">
+
+			<!-- <input class="span2" type="text" placeholder="Email"> <input
 		class="span2" type="password" placeholder="Password">
 	<button type="submit" class="btn">Sign in</button>
  -->
-	<!-- Main hero unit for a primary marketing message or call to action -->
-	
-	<br/>
-	<div class="hero-unit">
-		<h1>Agents autonomes (administrator)</h1>
-		<p>INF380</p>
-	</div>
+			<!-- Main hero unit for a primary marketing message or call to action -->
 
-	<!-- Example row of columns -->
-	
-	
-	<div class='is-dimmable'> 
-			<a class='focus-here' href='#'></a>
-			<h2 class='composer_section_header'>
-				Choose Trigger Channel 
-			<span class='composer_section_step'>step 1 of 7</span>
-			</h2>
-			<p class='composer_section_description'>
-				Showing Channels that provide at least one Trigger.
-			</p>
-		<div class="channel-list">
-		<input autocapitalization="off" autocomplete="off" autocorrect="off"
-			class="channels-search_input" id="trigger_search_channels_field"
-			name="q" placeholder="Search Channels" type="text" />
-		<p class='channel_search_advice hide'
-			id='trigger_search_channels_field_advice'></p>
+			<br />
+			<div class="hero-unit">
+				<h1>Agents autonomes (administrator)</h1>
+				<p>INF380</p>
+			</div>
 
-		<script>
+			<!-- Example row of columns -->
+
+
+			<div class='is-dimmable'>
+				<a class='focus-here' href='#'></a>
+				<h2 class='composer_section_header'>
+					Choose Trigger Channel <span class='composer_section_step'>step
+						1 of 7</span>
+				</h2>
+				<p class='composer_section_description'>Showing Channels that
+					provide at least one Trigger.</p>
+				<div class="channel-list">
+					<input autocapitalization="off" autocomplete="off"
+						autocorrect="off" class="channels-search_input"
+						id="trigger_search_channels_field" name="q"
+						placeholder="Search Channels" type="text" />
+					<p class='channel_search_advice hide'
+						id='trigger_search_channels_field_advice'></p>
+
+					<script>
   //<![CDATA[
     function triggersSearch(){
 /*       if(window.channelsSearch == undefined){
@@ -170,7 +170,7 @@
      
      triggersSearch();
      
-     function dimTriggers(channel_id){
+     function filterTriggers(channel_id){
     	 /* We look for elements whose class are is-dimmable. The, we take the second element,
     	 	which contains the triggers. Finally we select all elements whose tag is a. */
     	 var triggers = document.getElementsByClassName("trigger-list_item");
@@ -185,93 +185,64 @@
   //]]>
 </script>
 
-		
-			<div class="channel-list_holder">
-				@for(channel <- channels) { 
-				@{counter %= 6} 
-				@if(channel.getTriggers().size() > 0){
-					<a
-						class="mod-index-@counter channel-list_icon"
-						data-channel_id='@channel.getId()'
-						data-channel_module_name='@channel.getName()'
-						data-remote
-						data-track-data='{"controller":"statements",
+
+					<div class="channel-list_holder">
+						@for(channel <- channels) { @{counter %= 6}
+						@if(channel.getTriggers().size() > 0){ <a
+							class="mod-index-@counter channel-list_icon"
+							data-channel_id='@channel.getId()'
+							data-channel_module_name='@channel.getName()' data-remote
+							data-track-data='{"controller":"statements",
 				   								"action":"new",
 				   								"channel_id":@channel.getId(),
 				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
 				   								"channel_type":"trigger"}'
-						data-track-event='scr_choose_channel'
-						onclick='dimTriggers(@channel.getId())'
-						id='ind_t_channel_@channel.getId()'
-						ifttt-trigger-channel-button='1' 
-						title="@channel.getDescription()">
-						<img alt="@channel.getName()" 
-						class="channel-list_icon_img"
-						id="channel_1172726678"
-						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-						@channel.getName() 
-						@{counter += 1}
-					</a> 
-					}
-				}
+							data-track-event='scr_choose_channel'
+							onclick='filterTriggers(@channel.getId())'
+							id='ind_t_channel_@channel.getId()'
+							ifttt-trigger-channel-button='1'
+							title="@channel.getDescription()"> <img
+							alt="@channel.getName()" class="channel-list_icon_img"
+							id="channel_1172726678"
+							src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
+							@channel.getName()
+							@{counter += 1}
+						</a> } }
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
 
-	<div class='is-dimmable'>
-		<h2 class='composer_section_header'>
-				Choose a Trigger 
-		<span class='composer_section_step'>step 2 of 7</span>
-		</h2>
-		<input id="statement_live_trigger_attributes_trigger_id" name="statement[live_trigger_attributes][trigger_id]" type="hidden">
-		<div class="trigger-list"></div>
-		
-		
-		<a 
-			class="trigger-list_item " 
-			data-track-data='{"controller":"statements",
-								"action":"choose_trigger",
-								"trigger_id":607940575,
-								"funnel":{"primary":"new_statement","primary_id":"bdcfc20d5ac183be6938f4aaab994beb"}}' 
-			data-track-event="scr_choose_trigger" 
-			data-trigger_id="607940575" 
-			href="#" 
-			id="trigger_607940575" 
-			onclick="onChooseTriggerInit(607940575, 'android_device', 'connect_to_any_wifi_network'); return false;">
-		
-		<h3 class="trigger-list_item_name">Connects to any WiFi network</h3>
-		<p class="trigger-list_item_desc">This Trigger fires every time your Android device connects to any WiFi network.</p>
-		</a> 
-			@for((key, value) <- triggersMap){
-				@if(value.size()>0){
-					@for(trigger <- value){
-						<a class="trigger-list_item"
+			<div class='is-dimmable'>
+				<h2 class='composer_section_header'>
+					Choose a Trigger <span class='composer_section_step'>step 2 of 7</span>
+				</h2>
+				<input id="statement_live_trigger_attributes_trigger_id"
+					name="statement[live_trigger_attributes][trigger_id]" type="hidden">
+				<div class="trigger-list"></div>
+
+				@for((key, value) <- triggersMap){
+					@if(value.size()>0){
+						@for(trigger <- value){
+							<a class="trigger-list_item"
 							data-track-data='{"controller":"statements",
-		 								"action":"choose_trigger", 
-										"trigger_id":@trigger.getId(), 
-										"funnel":{"primary":"new_statement","primary_id":"bdcfc20d5ac183be6938f4aaab994beb"}}'
+				 								"action":"choose_trigger", 
+												"trigger_id":@trigger.getId(), 
+												"funnel":{"primary":"new_statement","primary_id":"bdcfc20d5ac183be6938f4aaab994beb"}}'
 							data-track-event="scr_choose_trigger"
 							data-channel_id="@trigger.getChannel().getId()"
 							data-trigger_id="@trigger.getId()" href="#" id="trigger_607940575"
-							href="@routes.Application.activateTrigger(@trigger.getId())">
-							<h3 class="trigger-list_item_name">@trigger.getName()</h3>
-							<p class="trigger-list_item_desc">@trigger.getDescription()</p>
-						</a>
+							href="@routes.Application.activateTrigger(trigger.getId())">
+								<h3 class="trigger-list_item_name">@trigger.getName()</h3>
+								<p class="trigger-list_item_desc">@trigger.getDescription()</p>
+							</a>
+						}
 					}
 				}
-			}
-	
-	
-
-
-
-
-
 			</div>
-	
-	
 
-</form>
-</div>
+
+
+		</form>
+	</div>
 </article>
 }

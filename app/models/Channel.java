@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
+import actors.AllActors;
+import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
 
@@ -23,6 +25,8 @@ public class Channel extends Model {
 	
 	private String description;
 	
+	private final ActorRef actorRef;
+	
 	@OneToMany(mappedBy="channel", cascade=CascadeType.ALL)
 	private List<Trigger> triggers;
 	
@@ -32,9 +36,10 @@ public class Channel extends Model {
 	@OneToMany
 	private List<Action> actions;
 	
-	public Channel(String name, String description) {
+	public Channel(String name, String description, ActorRef actorRef) {
 		this.name = name;
 		this.description = description;
+		this.actorRef = actorRef;
 	}
 	
 	public static List<Channel> getAllChannels() {
@@ -76,6 +81,10 @@ public class Channel extends Model {
 
 	public void setActions(List<Action> actions) {
 		this.actions = actions;
+	}
+	
+	public ActorRef getActorRef(){
+		return actorRef;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
@@ -10,6 +11,7 @@ import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
+import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
@@ -82,7 +84,7 @@ public class Global extends GlobalSettings {
 			
 			
 			//HUMAN CHANNEL
-			Channel human = new Channel("Human","Can enter or exit room");
+			Channel human = new Channel("Human","Can enter or exit room", AllActors.human);
 			human.save();
 			
 			Action humanEnterRoomAction = new Action("Enter room");
@@ -102,17 +104,17 @@ public class Global extends GlobalSettings {
 			
 			
 			//PRESENCE DETECTOR CHANNEL
-	    	Channel detector = new Channel("Detector", "Detects humans");
+	    	Channel detector = new Channel("Detector", "Detects humans", AllActors.detector);
 	    	detector.save();
 	    	
 	    	
-	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description");
+	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description", AllMessages.DetectionOn.class);
 	    	detector.getTriggers().add(detectorTrigger1);    	
 	    	detectorTrigger1.setChannel(detector);
 	    	detectorTrigger1.save();
 	    	
 	    	
-	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger");
+	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger", AllMessages.DetectionOff.class);
 	    	detector.getTriggers().add(detectorTrigger2);
 	    	detectorTrigger2.setChannel(detector);
 	    	detectorTrigger2.save();
@@ -121,14 +123,14 @@ public class Global extends GlobalSettings {
 	    	
 	    	
 	    	//LUMINOSITY DETECTOR CHANNEL
-	    	Channel luminosityDetector = new Channel("Luminosity detector", "Detects luminosity");
+	    	Channel luminosityDetector = new Channel("Luminosity detector", "Detects luminosity", AllActors.luminosityDetector);
 	    	luminosityDetector.save();
 	    	
 	    	
 
 	    	
-	    	
-	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000");
+	    	//Keep in mind to change null pointer for messages
+	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger12);
 	    	
 	    	detectorTrigger12.save();
@@ -147,33 +149,33 @@ public class Global extends GlobalSettings {
 	    		    	
 	    	
 	    	
-	    	Trigger detectorTrigger13 = new Trigger("Non light Trigger");
+	    	Trigger detectorTrigger13 = new Trigger("Non light Trigger", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger13);
 	    	detectorTrigger13.setChannel(luminosityDetector);
 	    	detectorTrigger13.save();
 	    	
 	    	
-	    	Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description");
+	    	Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger14);
 	    	detectorTrigger14.save();
 	    	detectorTrigger14.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description");
+	    	Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger15);
 	    	detectorTrigger15.save();
 	    	detectorTrigger15.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description");
+	    	Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger16);
 	    	detectorTrigger16.save();
 	    	detectorTrigger16.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger17 = new Trigger("Light Trigger", "Trigger description");
+	    	Trigger detectorTrigger17 = new Trigger("Light Trigger", "Trigger description", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger17);
 	    	detectorTrigger17.save();
 	    	detectorTrigger17.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger18 = new Trigger("Light Trigger", "Trigger description");
+	    	Trigger detectorTrigger18 = new Trigger("Light Trigger", "Trigger description", null);
 	    	luminosityDetector.getTriggers().add(detectorTrigger18);
 	    	detectorTrigger18.save();
 	    	detectorTrigger18.setChannel(detector);
@@ -187,7 +189,7 @@ public class Global extends GlobalSettings {
 	    	
 	    	
 	    	//LAMP CHANNEL
-	    	Channel lamp = new Channel("Lamp", "I am a Lamp");
+	    	Channel lamp = new Channel("Lamp", "I am a Lamp", AllActors.lamp);
 	    	lamp.save();
 	    	
 	    	Action lampAction1 = new Action("Turn on lamp");

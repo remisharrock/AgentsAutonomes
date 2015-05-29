@@ -17,6 +17,7 @@ public final class AllActors {
     public final static ActorRef human = system.actorOf(Props.create(Human.class), "human");
     public final static ActorRef detector = system.actorOf(Props.create(Detector.class), "detector");
     public final static ActorRef lamp = system.actorOf(Props.create(Lamp.class), "lamp");
+    public final static ActorRef luminosityDetector = system.actorOf(Props.create(LuminosityDetector.class), "luminosityDetector");
 	
 	public static class Human extends UntypedActor {
         String state = "";
@@ -75,6 +76,14 @@ public final class AllActors {
             	}
             }
             else unhandled(message);
+        }
+    }
+	
+	public static class LuminosityDetector extends UntypedActor {
+
+        public void onReceive(Object message) {
+        
+            unhandled(message);
         }
     }
 

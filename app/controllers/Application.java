@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.avaje.ebean.Ebean;
+
 import messages.AllMessages;
 import models.Action;
 import models.Channel;
@@ -224,6 +226,30 @@ public class Application extends Controller {
 	}
 
 	public static Result activateTrigger(Long triggerId) {
+		List<Recipe>  recipesList = Ebean.find(Recipe.class).findList();
+		
+		for (int i=0; i<recipesList.size(); i++){
+			if (recipesList.get(i).getTriggerChannel().getId() == triggerId){
+				Trigger trigger = null;
+				for (int j=0; j<recipesList.get(i).getTriggerChannel().getTriggers().size(); j++){
+					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId){
+						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
+					}
+				}
+				@SuppressWarnings("rawtypes")
+				Class classe = trigger.getClass();
+				try {
+					recipesList.get(i).getActionChannel().getActorRef().tell(classe.newInstance(), recipesList.get(i).getTriggerChannel().getActorRef());
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		return ok();
 	}
 
