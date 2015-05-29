@@ -21,26 +21,19 @@ import views.html.index;
 import actors.AllActors;
 import views.html.*;
 
-
 public class Application extends Controller {
 
 	public static String turnOnCheckbox = "";
-	public static String turnOffCheckbox = "";	
-	
+	public static String turnOffCheckbox = "";
+
 	private static User userLoggedIn;
-	
+
 	private static Recipe recipe;
 
 	public static Result index() {
-		//    	Boolean lampOn = false;
-		//    	List<Channel> channelsList = Channel.getAllChannels();
-		//        return ok(index.render(channelsList, lampOn));
-
 
 		return ok(index.render());
 	}
-
-
 
 	public static Result loginForm() {
 
@@ -49,47 +42,50 @@ public class Application extends Controller {
 		String username = requestData.get("username");
 		String password = requestData.get("password");
 
-
 		User user = User.authenticate(username, password);
 		if (user == null) {
 			return ok(index.render());
-		} 
-		
+		}
+
 		else {
 			userLoggedIn = user;
-			recipe = new Recipe();
-			List<Recipe> recipeList = new ArrayList<Recipe>();
-			user.setRecipes(recipeList);
-			recipe.setUser(userLoggedIn);
-			recipe.save();
-			
-			if (userLoggedIn.getRole() == "administrator"){
+
+			if (userLoggedIn.getRole() == "administrator") {
+
 				List<Channel> channelsList = Channel.getAllChannels();
 				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
-				for (int i=0; i<channelsList.size(); i++){
-					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
+				for (int i = 0; i < channelsList.size(); i++) {
+					triggersDic.put(channelsList.get(i), channelsList.get(i)
+							.getTriggers());
 				}
-				return ok(administratorView.render(channelsList, triggersDic));
+
+				return ok(administratorView.render(channelsList,
+						triggersDic));
+			} else {
+				recipe = new Recipe();
+				List<Recipe> recipeList = new ArrayList<Recipe>();
+				user.setRecipes(recipeList);
+				recipe.setUser(userLoggedIn);
+				recipe.save();
+				return ok(chooseView.render(userLoggedIn));
+
 			}
-			
-			return ok(chooseView.render(userLoggedIn));
+
 		}
-		  	
 
 	}
-	
-	public static Result chooseView(){
-		
+
+	public static Result chooseView() {
+
 		DynamicForm requestData = Form.form().bindFromRequest();
-		
+
 		if (requestData.get("viewRecipesButton") != null) {
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
 			List<Channel> channelsList = Channel.getAllChannels();
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
-		
-		
+
 	}
 
 	public static Result submitForm() throws IOException {
@@ -101,7 +97,6 @@ public class Application extends Controller {
 		turnOffCheckbox = requestData.get("turnOffCheckbox");
 
 		System.out.println("turn off checkbox: " + turnOffCheckbox);
-
 
 		if (requestData.get("enterRoomButton") != null) {
 			// Tell the detector that a human entered the room
@@ -120,10 +115,11 @@ public class Application extends Controller {
 
 			if (AllActors.Lamp.state.equals("ON"))
 				lampOn = true;
-			else lampOn = false;
+			else
+				lampOn = false;
 			System.out.println("Enter room button - LampOn is TRUE");
 
-		} else if (requestData.get("exitRoomButton")!=null) {
+		} else if (requestData.get("exitRoomButton") != null) {
 			// Tell the detector that a human exited the room
 			if (turnOffCheckbox != null) {
 				AllActors.detector.tell(new AllMessages.ExitRoom(true), AllActors.human);
@@ -139,7 +135,8 @@ public class Application extends Controller {
 			}
 			if (AllActors.Lamp.state.equals("OFF"))
 				lampOn = false;
-			else lampOn = true;
+			else
+				lampOn = true;
 
 			System.out.println("Exit room button - LampOn is FALSE");
 		}
@@ -149,89 +146,89 @@ public class Application extends Controller {
 	}
 
 	public static Result chooseTrigger(Long channelId) {
-		
-		
+
 		System.out.println("channelId: " + channelId);
 		System.out.println(Channel.getAllChannels());
 		Channel channel = Channel.find.byId(channelId);
-		
+
 		recipe.setTriggerChannel(channel);
-		
+
 		System.out.println(channel);
 		return ok(chooseTrigger.render(channel));
 	}
-	
+
 	public static Result completeTriggerFields(Long triggerId) {
-		
+
 		Trigger trigger = Trigger.find.byId(triggerId);
-		
+
 		DynamicForm requestData = Form.form().bindFromRequest();
-		
+
 		HashMap<Field, String> triggerFields = new HashMap<Field, String>();
-		for(Field f: trigger.getFields()) {
+		for (Field f : trigger.getFields()) {
 			triggerFields.put(f, requestData.get(f.getName()));
 		}
-		
+
 		recipe.setTriggersMap(triggerFields);
-		
+
 		return ok(completeTriggerFields.render(trigger));
 	}
-	
-	
+
 	public static Result chooseActionChannel() {
 		List<Channel> channelsList = Channel.getAllChannels();
 		return ok(chooseActionChannel.render(channelsList));
 	}
-	
+
 	public static Result chooseAction(Long channelId) {
 		System.out.println("channelId: " + channelId);
 		System.out.println(Channel.getAllChannels());
 		Channel channel = Channel.find.byId(channelId);
-		
+
 		recipe.setActionChannel(channel);
-		
+
 		System.out.println(channel);
 		return ok(chooseAction.render(channel));
 	}
-	
+
 	public static Result completeActionFields(Long actionId) {
-		
+
 		Action action = Action.find.byId(actionId);
-		
+
 		DynamicForm requestData = Form.form().bindFromRequest();
-		
+
 		HashMap<Field, String> actionFields = new HashMap<Field, String>();
-		for(Field f: action.getFields()) {
+		for (Field f : action.getFields()) {
 			actionFields.put(f, requestData.get(f.getName()));
 		}
-		
+
 		recipe.setActionsMap(actionFields);
-		
+
 		return ok(completeActionFields.render(action));
 	}
-	
-	
+
 	public static Result createRecipe() {
 		return ok(createRecipe.render(recipe));
 	}
-	
-	
+
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
-		
+
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 		recipe.save();
 		List<Recipe> list = userLoggedIn.getRecipes();
 		list.add(recipe);
-		System.out.println("RECIPEEEEES:" +list.size());
+		System.out.println("RECIPEEEEES:" + list.size());
 		userLoggedIn.setRecipes(list);
 		userLoggedIn.save();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
-	
+
 	public static Result viewRecipes() {
 		return ok(viewRecipes.render(userLoggedIn));
 	}
-	
+
+	public static Result activateTrigger(Long triggerId) {
+		return ok();
+	}
+
 }

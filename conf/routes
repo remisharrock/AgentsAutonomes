@@ -8,6 +8,7 @@ GET		/submitForm						controllers.Application.submitForm()
 GET		/loginForm						controllers.Application.loginForm()
 GET		/chooseView						controllers.Application.chooseView()
 GET		/chooseTrigger					controllers.Application.chooseTrigger(channelId: Long)
+GET		/activateTrigger				controllers.Application.activateTrigger(triggerId: Long)
 GET		/completeTriggerFields			controllers.Application.completeTriggerFields(triggerId: Long)
 GET		/chooseActionChannel			controllers.Application.chooseActionChannel()
 GET		/chooseAction					controllers.Application.chooseAction(channelId: Long)
@@ -18,3 +19,4 @@ GET		/viewRecipesAfterCreate			controllers.Application.viewRecipesAfterCreate()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
