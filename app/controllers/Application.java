@@ -49,53 +49,32 @@ public class Application extends Controller {
 		String username = requestData.get("username");
 		String password = requestData.get("password");
 
-		//        
-		//        if (loginForm.hasErrors()) {
-		//            return badRequest(index.render());
-		//        } else {
-		//            session().clear();
-		//            session("email", loginForm.get().email);
+
 		User user = User.authenticate(username, password);
 		if (user == null) {
 			return ok(index.render());
-		} else {
+		} 
+		
+		else {
 			userLoggedIn = user;
 			recipe = new Recipe();
 			List<Recipe> recipeList = new ArrayList<Recipe>();
 			user.setRecipes(recipeList);
 			recipe.setUser(userLoggedIn);
 			recipe.save();
-//			List<Channel> channelsList = Channel.getAllChannels();
-//			return ok(chooseTriggerChannel.render(channelsList));
 			
 			if (userLoggedIn.getRole() == "administrator"){
-				Boolean lampOn = false;
 				List<Channel> channelsList = Channel.getAllChannels();
 				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 				for (int i=0; i<channelsList.size(); i++){
 					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
 				}
-				return ok(administratorView.render(channelsList, lampOn, triggersDic));
+				return ok(administratorView.render(channelsList, triggersDic));
 			}
 			
 			return ok(chooseView.render(userLoggedIn));
 		}
-		
-//<<<<<<< HEAD
-//		else if (currentUser.getRole() == "administrator"){
-//			Boolean lampOn = false;
-//			List<Channel> channelsList = Channel.getAllChannels();
-//			HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
-//			for (int i=0; i<channelsList.size(); i++){
-//				triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
-//			}
-//			return ok(administratorView.render(channelsList, lampOn, triggersDic));
-//		}
-//=======
-//>>>>>>> 0654723d2499bbd1458748f18366879e87b0df94
-		
-		//        }
-	//    	
+		  	
 
 	}
 	
