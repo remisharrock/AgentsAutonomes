@@ -31,7 +31,6 @@ public class Application extends Controller {
 	private static Recipe recipe;
 
 	public static Result index() {
-
 		return ok(index.render());
 	}
 
@@ -49,6 +48,7 @@ public class Application extends Controller {
 
 		else {
 			userLoggedIn = user;
+
 
 			if (userLoggedIn.getRole() == "administrator") {
 
