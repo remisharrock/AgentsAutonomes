@@ -85,6 +85,10 @@ public class Application extends Controller {
 		}
 
 	}
+	
+	public static Result viewAdministratorLog(){
+		return ok(administratorLog.render());
+	}
 
 	public static Result submitForm() throws IOException {
 		Boolean lampOn = false;
@@ -236,17 +240,17 @@ public class Application extends Controller {
 						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
 					}
 				}
-				@SuppressWarnings("rawtypes")
-				Class classe = trigger.getClass();
-				try {
-					recipesList.get(i).getActionChannel().getActorRef().tell(classe.newInstance(), recipesList.get(i).getTriggerChannel().getActorRef());
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				@SuppressWarnings("rawtypes")
+//				Class classe = trigger.getClass();
+//				try {
+//					recipesList.get(i).getActionChannel().getActorRef().tell(classe.newInstance(), recipesList.get(i).getTriggerChannel().getActorRef());
+//				} catch (InstantiationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IllegalAccessException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 		

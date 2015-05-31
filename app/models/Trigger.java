@@ -23,7 +23,7 @@ public class Trigger extends Model {
 	
 	private String description;
 	
-	private final Class messageRef;
+	//private final Class messageRef;
 	
 	
 	@ManyToOne
@@ -35,15 +35,24 @@ public class Trigger extends Model {
 	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
 			Long.class, Trigger.class);
 	
-	public Trigger(String name, String description, Class messageRef) {
+//	public Trigger(String name, String description, Class messageRef) {
+//		this.name = name;
+//		this.description = description;
+//		this.messageRef = messageRef;
+//	}
+	
+	public Trigger(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.messageRef = messageRef;
 	}
 	
-	public Trigger(String name, Class messageRef) {
+//	public Trigger(String name, Class messageRef) {
+//		this.name = name;
+//		this.messageRef = messageRef;
+//	}
+	
+	public Trigger(String name) {
 		this.name = name;
-		this.messageRef = messageRef;
 	}
 	
 	public long getId() {
@@ -76,9 +85,9 @@ public class Trigger extends Model {
 		this.channel = channel;
 	}
 	
-	public Class getMessageRef(){
-		return messageRef;
-	}
+//	public Class getMessageRef(){
+//		return messageRef;
+//	}
 
 	public List<Field> getFields() {
 		return this.fields;

@@ -108,13 +108,15 @@ public class Global extends GlobalSettings {
 	    	detector.save();
 	    	
 	    	
-	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description", AllMessages.DetectionOn.class);
+//	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description", AllMessages.DetectionOn.class);
+	    	Trigger detectorTrigger1 = new Trigger("Presence Trigger", "Trigger description");
 	    	detector.getTriggers().add(detectorTrigger1);    	
 	    	detectorTrigger1.setChannel(detector);
 	    	detectorTrigger1.save();
 	    	
 	    	
-	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger", AllMessages.DetectionOff.class);
+//	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger", AllMessages.DetectionOff.class);
+	    	Trigger detectorTrigger2 = new Trigger("Non presence Trigger");
 	    	detector.getTriggers().add(detectorTrigger2);
 	    	detectorTrigger2.setChannel(detector);
 	    	detectorTrigger2.save();
@@ -130,7 +132,8 @@ public class Global extends GlobalSettings {
 
 	    	
 	    	//Keep in mind to change null pointer for messages
-	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000", null);
+//	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000", null);
+	    	Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000");
 	    	luminosityDetector.getTriggers().add(detectorTrigger12);
 	    	
 	    	detectorTrigger12.save();
@@ -155,27 +158,32 @@ public class Global extends GlobalSettings {
 	    	detectorTrigger13.save();
 	    	
 	    	
-	    	Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description", null);
+//	    	Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description", null);
+	    	Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger14);
 	    	detectorTrigger14.save();
 	    	detectorTrigger14.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description", null);
+//	    	Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description", null);
+	    	Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger15);
 	    	detectorTrigger15.save();
 	    	detectorTrigger15.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description", null);
+//	    	Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description", null);
+	    	Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger16);
 	    	detectorTrigger16.save();
 	    	detectorTrigger16.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger17 = new Trigger("Light Trigger", "Trigger description", null);
+//	    	Trigger detectorTrigger17 = new Trigger("Light Trigger", "Trigger description", null);
+	    	Trigger detectorTrigger17 = new Trigger("Light Trigger", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger17);
 	    	detectorTrigger17.save();
 	    	detectorTrigger17.setChannel(detector);
 	    	
-	    	Trigger detectorTrigger18 = new Trigger("Light Trigger", "Trigger description", null);
+//	    	Trigger detectorTrigger18 = new Trigger("Light Trigger", "Trigger description", null);
+	    	Trigger detectorTrigger18 = new Trigger("Light Trigger", "Trigger description");
 	    	luminosityDetector.getTriggers().add(detectorTrigger18);
 	    	detectorTrigger18.save();
 	    	detectorTrigger18.setChannel(detector);
