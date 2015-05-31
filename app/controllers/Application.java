@@ -61,8 +61,6 @@ public class Application extends Controller {
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
 				recipe = new Recipe();
-				List<Recipe> recipeList = new ArrayList<Recipe>();
-				user.setRecipes(recipeList);
 				recipe.setUser(userLoggedIn);
 				recipe.save();
 				return ok(chooseView.render(userLoggedIn));
@@ -149,13 +147,10 @@ public class Application extends Controller {
 
 	public static Result chooseTrigger(Long channelId) {
 
-		System.out.println("channelId: " + channelId);
-		System.out.println(Channel.getAllChannels());
 		Channel channel = Channel.find.byId(channelId);
 
 		recipe.setTriggerChannel(channel);
 
-		System.out.println(channel);
 		return ok(chooseTrigger.render(channel));
 	}
 
@@ -181,13 +176,10 @@ public class Application extends Controller {
 	}
 
 	public static Result chooseAction(Long channelId) {
-		System.out.println("channelId: " + channelId);
-		System.out.println(Channel.getAllChannels());
 		Channel channel = Channel.find.byId(channelId);
 
 		recipe.setActionChannel(channel);
 
-		System.out.println(channel);
 		return ok(chooseAction.render(channel));
 	}
 

@@ -33,7 +33,6 @@ public class Recipe extends Model{
 	private HashMap<Field, String> triggersMap;
 	
 	
-	
 	private Channel actionChannel;
 	
 	@OneToMany

@@ -1,10 +1,11 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
@@ -29,7 +30,7 @@ public class User extends Model {
 	
 	private String category;
 	
-	@ManyToOne
+	@OneToMany
 	private List<Recipe> recipes;
 	
 	public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(
@@ -40,6 +41,7 @@ public class User extends Model {
 		this.password = password;
 		this.role = role;
 		this.category = category;
+		this.recipes = new ArrayList<Recipe>();
 	}
 	
 	
@@ -120,7 +122,9 @@ public class User extends Model {
 	
 	@Override
 	public String toString() {
-		return "Username: " + this.username + " / Password: " + this.password + " / Role: " + this.role + " / Category: " + this.category;
+		return "User [id=" + id + ", username=" + username + ", password="
+				+ password + ", role=" + role + ", category=" + category
+				+ ", recipes=" + recipes + "]";
 	}
 	
 	public static User authenticate(String username, String password) {
@@ -131,5 +135,7 @@ public class User extends Model {
 		
 		return null;
     }
+	
+	
 
 }
