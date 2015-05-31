@@ -7,6 +7,28 @@
 </head>
 <body>
 
+<header class="l-header">
+	<div class="l-site-header">
+		<div class="l-site-header-menus is-closed" id="site-header-menus">
+			<div class="l-site-header-menus-inner">
+				<nav class="l-site-header-flexible-nav">
+					<ul class="menu" class="nav nav-site is-authenticated">
+						<li class="nav_item" >
+							<a href="@routes.Application.administratorView()">Main</a>
+						</li>
+						<li class="nav_item" >
+							<a href="@routes.Application.viewAdministratorLog()">View log</a>
+						</li>
+						<li class="nav_item" >
+							<a href="@routes.Application.index()">Log out</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</header>
+
 
 <article class="l-page-content">
 	<div id="statement_create">
