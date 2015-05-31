@@ -36,13 +36,16 @@
 					<input autocapitalization="off" autocomplete="off"
 						autocorrect="off" class="channels-search_input"
 						id="trigger_search_channels_field" name="q"
-						placeholder="Search Channels" type="text" />
+						placeholder="Search Channels" type="text" onclick='hideStep2of7()' />
 					<p class='channel_search_advice hide'
 						id='trigger_search_channels_field_advice'></p>
 
 					<script>
   //<![CDATA[
+             
     function triggersSearch(){
+    	
+    	
 /*       if(window.channelsSearch == undefined){
         window.channelsSearch = {
           escapeRegExp: function(str){
@@ -171,17 +174,27 @@
      
      triggersSearch();
      
-     function filterTriggers(channel_id){
-    	 /* We look for elements whose class are is-dimmable. The, we take the second element,
-    	 	which contains the triggers. Finally we select all elements whose tag is a. */
-    	 var triggers = document.getElementsByClassName("trigger-list_item");
+     
+ 	function filterTriggers(channel_id){
+     	 /* We look for elements whose class are is-dimmable. The, we take the second element,
+     	 	which contains the triggers. Finally we select all elements whose tag is a. */
+     	 var triggers = document.getElementsByClassName("trigger-list_item");
+     	 document.getElementById("step2of7").style.display = "block";
 
-    	 for(i=0; i< triggers.length; i++) {
-    	 	var trigger = triggers[i];
-    	 	var trigger_channel_id = trigger.getAttribute("data-channel_id");
-   	 		trigger.style.display = (trigger_channel_id == channel_id) ? "block" : "none";
-    	 }
-     }
+
+     	 for(i=0; i< triggers.length; i++) {
+     	 	var trigger = triggers[i];
+     	 	var trigger_channel_id = trigger.getAttribute("data-channel_id");
+    	 		trigger.style.display = (trigger_channel_id == channel_id) ? "block" : "none";
+     	 }
+      };
+      
+      function hideStep2of7(){
+    	  document.getElementById("step2of7").style.display = "none";
+      }
+     
+      
+    
      
   //]]>
 </script>
@@ -213,7 +226,7 @@
 				</div>
 			</div>
 
-			<div class='is-dimmable'>
+			<div class='is-dimmable' id='step2of7' style='display: none'>
 				<h2 class='composer_section_header'>
 					Choose a Trigger <span class='composer_section_step'>step 2 of 7</span>
 				</h2>
