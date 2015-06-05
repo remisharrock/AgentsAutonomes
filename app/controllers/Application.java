@@ -59,14 +59,6 @@ public class Application extends Controller {
 
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
-				recipe = new Recipe();
-				recipe.setTitle("First recipe");
-				recipe.setId(1);
-				recipe.setUser(userLoggedIn);
-				recipe.setActive(true);
-				recipe.getLog().add("Recipe created.");
-				recipe.getLog().add("Recipe activated on creation.");
-				recipe.save();
 				return ok(chooseView.render(userLoggedIn));
 			}
 
@@ -90,6 +82,10 @@ public class Application extends Controller {
 		if (requestData.get("viewRecipesButton") != null) {
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
+			recipe = new Recipe();
+			recipe.getLog().add("Recipe created.");
+			recipe.getLog().add("Recipe activated on creation.");
+			
 			List<Channel> channelsList = Channel.getAllChannels();
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
@@ -219,6 +215,7 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		recipe.setTitle(requestData.get("recipeTitle"));
+		recipe.setUser(userLoggedIn);
 		recipe.setActive(true);
 		recipe.save();
 		List<Recipe> list = userLoggedIn.getRecipes();
