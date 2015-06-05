@@ -1,6 +1,7 @@
 package models;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -27,7 +28,8 @@ public class Recipe extends Model{
 	
 	private Channel triggerChannel;
 	
-	private Boolean active;
+	private boolean active;
+	private List<String> log;
 	
 	@OneToMany
 	private HashMap<Field, String> triggersMap;
@@ -41,21 +43,17 @@ public class Recipe extends Model{
 	@ManyToOne
 	private User user;
 	
+	public Recipe() {
+		log = new LinkedList<String>();
+	}
 	
-	public Recipe(User user, String title, Channel triggerChannel,
-			Channel actionChannel) {
+	public Recipe(User user, String title, Channel triggerChannel, Channel actionChannel) {
 		super();
 		this.user = user;
 		this.title = title;
 		this.triggerChannel = triggerChannel;
 		this.actionChannel = actionChannel;
 	}
-
-	
-	public Recipe() {
-		// TODO Auto-generated constructor stub
-	}
-
 
 	public static List<Recipe> getAllRecipes() {
 		return Ebean.find(Recipe.class).findList();
@@ -83,11 +81,11 @@ public class Recipe extends Model{
 		this.title = title;
 	}
 
-	public Boolean getActive() {
+	public boolean getActive() {
 		return active;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
@@ -147,6 +145,12 @@ public class Recipe extends Model{
 		return "Recipe [Id=" + Id + ", user=" + user + ", title=" + title
 				+ ", thisChannel=" + triggerChannel + ", thatChannel="
 				+ actionChannel + "]";
+	}
+	
+
+	
+	public List<String> getLog() {
+		return this.log;
 	}
 	
 	

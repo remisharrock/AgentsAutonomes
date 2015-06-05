@@ -3,28 +3,42 @@
 @main("Agents autonomes") {
 
 
+
 <!DOCTYPE html>
 <html class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js' debug='true' lang='en'>
 <body>
 
-
-
 <header class='l-header'>
+
+
+	<div class='l-site-header'>
+		<div class='l-site-header-menus is-closed' id='site-header-menus'>
+			<div class='l-site-header-menus-inner'>
+				<nav class='l-site-header-flexible-nav'>
+				<ul class='nav nav-site is-authenticated'>
+					<form class="navbar-form pull-right"
+						action="@routes.Application.userLogOut()"> 
+						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
+						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
+					</form> <br>
+				</ul></nav>
+			</div>
+		</div>
+	</div>
+
 	<div class='l-page-header'>
 		<div class='l-page-header-inner'>
 			<div class='is-alone l-page-title-unit'>
-				<h1 class='l-page-title'>My Recipes</h1>
+				<div class="hero-unit">
+				<h1>Your Recipes</h1>
+				<p>Hello @user.getUsername()</p>
+			</div>
 			</div>
 		</div>
 	</div>
 </header>
 
-
-
-
-
 <article class='l-page-content'>
-
 
 @if(user.getRecipes()!=null && user.getRecipes().size() > 0){
 	@for(recipe <- user.getRecipes()) { 
@@ -73,30 +87,17 @@
 	</div>
 </div>
 <br>
-<span><a class='personal-recipe-manage_description' >@recipe.getTitle()</a></span>
+
+<span><a class='personal-recipe-manage_description' >Recipe title: @recipe.getTitle() with id: @recipe.getId()</a></span>
 <br>
-<div class='personal-recipe-manage_meta'>
-	<div class='personal-recipe-manage_buttons'>
-		<span class='activation_link animc control_link' id='activation_23874676'>
-			<input id="statement_23874676_enabled" name="statement_23874676_enabled" type="hidden" value="true" />
-			<a href="/" 
-				class="btn-square-icon" 
-				data-method="put" 
-				data-remote="true" 
-				data-statement_id="23874676" 
-				ifttt-task-activation-button="1" 
-				title="Turn Recipe off">
-			<span class='icon icon-power'>Turn off Recipe</span></a>
-		</span>
-		
-		<span class='control_link'>
-			<a href="/myrecipes/personal/23874676/logs" class=" btn-square-icon" title="View Recipe logs"><span class='icon icon-activity'>Log</span></a>
-		</span>
-	</div>
-</div>
 
-
-
+<span><div id="statement_create">
+	<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
+			<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form> 
+	<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+			<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> <button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button></form>
+</div></span>
+				
 <br>
 <br>
 
@@ -110,6 +111,8 @@ You don't have any recipe
 
 </article>
 </body>
+
+
 </html>
 
 }

@@ -29,7 +29,6 @@ public class Application extends Controller {
 	public static String turnOffCheckbox = "";
 
 	private static User userLoggedIn;
-
 	private static Recipe recipe;
 
 	public static Result index() {
@@ -61,10 +60,14 @@ public class Application extends Controller {
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
 				recipe = new Recipe();
+				recipe.setTitle("First recipe");
+				recipe.setId(1);
 				recipe.setUser(userLoggedIn);
+				recipe.setActive(true);
+				recipe.getLog().add("Recipe created.");
+				recipe.getLog().add("Recipe activated on creation.");
 				recipe.save();
 				return ok(chooseView.render(userLoggedIn));
-
 			}
 
 		}
@@ -227,7 +230,10 @@ public class Application extends Controller {
 	}
 
 	public static Result viewRecipes() {
-		return ok(viewRecipes.render(userLoggedIn));
+		if(userLoggedIn!=null)
+			return ok(viewRecipes.render(userLoggedIn));
+		else 
+			return ok(index.render());
 	}
 
 	public static Result activateTrigger(Long triggerId) {
@@ -257,5 +263,81 @@ public class Application extends Controller {
 		
 		return ok();
 	}
+	
+	public static Result viewRecipeLog() {
+		/* //search the recipe and update it:
+		DynamicForm requestData = Form.form().bindFromRequest();
+		String value = requestData.get("viewRecipesLog");
+		long recipeId;
+		Recipe recipe;
+		if(value!=null){
+			recipeId = Long.parseLong(value);
+			recipe = Recipe.find.byId(recipeId);
+		}else{
+			recipe = null;
+		}
+		
+		if(userLoggedIn!=null && recipe != null)
+			return ok(viewRecipeLog.render(userLoggedIn, recipe));
+		else 
+			return ok(index.render());
+			*/
+		if(userLoggedIn!=null)
+			return ok(viewRecipeLog.render(userLoggedIn, recipe));
+		else 
+			return ok(index.render());
+	}
+	
+	public static Result activateRecipe() {
+		/*//search the recipe and update it:
+			Recipe recipe = Recipe.find.byId(recipeId);
+			if(recipe.getActive()){
+				recipe.setActive(false);
+				recipe.getLog().add("Recipe turned off");
+				recipe.save();
+			}
+			else{
+				recipe.setActive(true);
+				recipe.getLog().add("Recipe turned on");
+				recipe.save();
+			}
+			return ok();
+			*/
+		DynamicForm requestData = Form.form().bindFromRequest();
+		if (requestData.get("RecipeOff") != null ) {
+			if(recipe.getActive()){
+				recipe.setActive(false);
+				recipe.getLog().add("Recipe turned off.");
+				recipe.save();
+			}
+		}
+		else if (requestData.get("RecipeOn") != null ) {
+			if( !recipe.getActive()){
+				recipe.setActive(true);
+				recipe.getLog().add("Recipe turned on.");
+				recipe.save();
+			}
+		}
+		return ok(viewRecipes.render(userLoggedIn));
+	}
+
+	public static Result userLogOut() {
+		DynamicForm requestData = Form.form().bindFromRequest();
+		if (requestData.get("LogOutButton") != null) {
+			userLoggedIn = null;
+			recipe = null;
+			return index();
+		}
+		if(requestData.get("HomeButton") != null ) {
+		
+				if(userLoggedIn.getRole() == "administrator") 
+					//return ok(administratorView.render(channelsList, triggersDic));
+					return ok();
+				else
+					return ok(chooseView.render(userLoggedIn));
+		}else 
+				return index();
+	}
+
 
 }
