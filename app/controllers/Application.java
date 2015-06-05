@@ -218,10 +218,10 @@ public class Application extends Controller {
 		recipe.setUser(userLoggedIn);
 		recipe.setActive(true);
 		recipe.save();
-		List<Recipe> list = userLoggedIn.getRecipes();
-		list.add(recipe);
+		// List<Recipe> list = userLoggedIn.getRecipes();
+		// list.add(recipe);
 		System.out.println("RECIPEEEEES:" + list.size());
-		userLoggedIn.setRecipes(list);
+		// userLoggedIn.setRecipes(list);
 		userLoggedIn.save();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
