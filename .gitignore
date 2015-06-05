@@ -1,4 +1,6 @@
 */*.class
+bin/
+activator*
 logs
 project/project
 project/target
@@ -8,7 +10,6 @@ tmp
 dist
 *.class
 /.idea
-/bin
 /*.iml
 /out
 /.idea_modules
