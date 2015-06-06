@@ -67,6 +67,15 @@ public class Application extends Controller {
 				recipe.getLog().add("Recipe created.");
 				recipe.getLog().add("Recipe activated on creation.");
 				recipe.save();
+				
+				Recipe recipe2 = new Recipe();
+				recipe2.setTitle("Second recipe");
+				recipe2.setId(2);
+				recipe2.setUser(userLoggedIn);
+				recipe2.setActive(true);
+				recipe2.getLog().add("Recipe created.");
+				recipe2.getLog().add("Recipe activated on creation.");
+				recipe2.save();
 				return ok(chooseView.render(userLoggedIn));
 			}
 
@@ -304,19 +313,15 @@ public class Application extends Controller {
 			return ok();
 			*/
 		DynamicForm requestData = Form.form().bindFromRequest();
-		if (requestData.get("RecipeOff") != null ) {
-			if(recipe.getActive()){
-				recipe.setActive(false);
-				recipe.getLog().add("Recipe turned off.");
-				recipe.save();
-			}
+		if (requestData.get("RecipeOff") != null && recipe.getActive()) {	
+			recipe.setActive(false);
+			recipe.getLog().add("Recipe turned off.");
+			recipe.save();
 		}
-		else if (requestData.get("RecipeOn") != null ) {
-			if( !recipe.getActive()){
-				recipe.setActive(true);
-				recipe.getLog().add("Recipe turned on.");
-				recipe.save();
-			}
+		if (requestData.get("RecipeOn") != null && recipe.getActive()==false) {
+			recipe.setActive(true);
+			recipe.getLog().add("Recipe turned on.");
+			recipe.save();
 		}
 		return ok(viewRecipes.render(userLoggedIn));
 	}

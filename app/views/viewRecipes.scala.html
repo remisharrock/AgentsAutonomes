@@ -9,8 +9,6 @@
 <body>
 
 <header class='l-header'>
-
-
 	<div class='l-site-header'>
 		<div class='l-site-header-menus is-closed' id='site-header-menus'>
 			<div class='l-site-header-menus-inner'>
@@ -38,16 +36,18 @@
 	</div>
 </header>
 
+<br>
 <article class='l-page-content'>
+<div id='statements'>
 
 @if(user.getRecipes()!=null && user.getRecipes().size() > 0){
 	@for(recipe <- user.getRecipes()) { 
 	
-<br>
-<br>
-<div class='build_size' id='start'>
-	<div class='is-dimmable'>
-		<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
+
+	<div class='page-item'><div class='personal-recipe-manage  first' id='statement_24079820'>
+		<div class='build_size' id='start'>
+			<div class='is-dimmable'>
+				<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
 						data-channel_id='ID'
 						data-channel_module_name='NAME'
 						data-remote
@@ -82,25 +82,30 @@
 						class="channel-list_icon_img"
 						id="channel_1172726678"
 						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-					</a></span>
+					</a></span>		
+			</div>
+		</div>
+		<br>
+		<span><a class='personal-recipe-manage_description' > @recipe.getTitle() </a></span>
+		
+		<div class='personal-recipe-manage_meta'>
+			<div class='personal-recipe-manage_buttons'>
+				<span><div id="statement_create">
+					<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+					@if(recipe.getActive()){
+						<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> 
+					}else{
+						<button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button>
+					}
+					</form>
+					<br>
+					<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
+					<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form>
 					
-	</div>
-</div>
+				</span>
+		</div></div>
+	</div></div>
 <br>
-
-<span><a class='personal-recipe-manage_description' >Recipe title: @recipe.getTitle() with id: @recipe.getId()</a></span>
-<br>
-
-<span><div id="statement_create">
-	<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
-			<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form> 
-	<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
-			<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> <button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button></form>
-</div></span>
-				
-<br>
-<br>
-
 	
 	}			
 } else{
@@ -108,7 +113,7 @@ You don't have any recipe
 }
 
 
-
+</div>
 </article>
 </body>
 
