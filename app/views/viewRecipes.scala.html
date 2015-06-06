@@ -44,7 +44,7 @@
 	@for(recipe <- user.getRecipes()) { 
 	
 
-	<div class='page-item'><div class='personal-recipe-manage  first' id='statement_24079820'>
+	<div class='page-item'><div class='personal-recipe-manage' id='statement_24079820'>
 		<div class='build_size' id='start'>
 			<div class='is-dimmable'>
 				<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
@@ -91,14 +91,18 @@
 		<div class='personal-recipe-manage_meta'>
 			<div class='personal-recipe-manage_buttons'>
 				<span><div id="statement_create">
-					<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
 					@if(recipe.getActive()){
-						<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> 
+						<a class='personal-recipe-activation_ON' > Recipe ACTIVE </a>
+						<br>
+						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+							<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> 
 					}else{
-						<button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button>
+						<a class='personal-recipe-activation_OFF' > Recipe NOT ACTIVE </a>
+						<br>
+						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+							<button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button>
 					}
 					</form>
-					<br>
 					<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
 					<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form>
 					

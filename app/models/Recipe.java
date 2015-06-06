@@ -43,6 +43,9 @@ public class Recipe extends Model{
 	@ManyToOne
 	private User user;
 	
+	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
+			Long.class, Recipe.class);
+	
 	public Recipe() {
 		log = new LinkedList<String>();
 	}
