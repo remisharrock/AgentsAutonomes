@@ -2,6 +2,22 @@
 @import java.math.BigInteger; var counter=0; 
 @main("Agents autonomes") {
 
+<header class='l-header'>
+	<div class='l-site-header'>
+		<div class='l-site-header-menus is-closed' id='site-header-menus'>
+			<div class='l-site-header-menus-inner'>
+				<nav class='l-site-header-flexible-nav'>
+				<ul class='nav nav-site is-authenticated'>
+					<form class="navbar-form pull-right"
+						action="@routes.Application.userLogOut()"> 
+						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
+						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
+					</form> <br>
+				</ul></nav>
+			</div>
+		</div>
+	</div>
+</header>
 
 <article class="l-page-content">
 <div id="statement_create">

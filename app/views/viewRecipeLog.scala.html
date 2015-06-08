@@ -38,7 +38,7 @@
 <article class='l-page-content'>
 <ul>
 @if(recipe.getLog().size()>0 ) {
-	@for(log <- recipe.getLog() ){
+	@for(log <- recipe.getLogReverseOrder() ){
 		
 
 <li class='log-item log-item_alt'>
