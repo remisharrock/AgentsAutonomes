@@ -1,12 +1,6 @@
-@(logs: List[String])
-@main("Administrator Log") {
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+@(triggerId: Long)
+@main("Agents autonomes") {
+
 
 <header class="l-header">
 	<div class="l-site-header">
@@ -33,22 +27,26 @@
 
 <article class="l-page-content">
 	<div id="statement_create">
+		
+			<br />
+			<div class="hero-unit">
+				<h1>Random Activation (administrator)</h1>
+				<p>INF380</p>
+			</div>
 
-			
-		<!-- Main hero unit for a primary marketing message or call to action -->
-		<br/>
-		<div class="hero-unit">
-			<h1>Administrator Log</h1>
-		</div>
-		
-		@for(log <- logs){
-			<p class='composer_section_description'>@log</p>
-		}
-		
-		
 
-	</div>	
-</article>	
+			<div class='is-dimmable'>
+				<a class='focus-here' href='#'></a>
+				<h2 class='composer_section_header'>
+					Trigger @triggerId 
+				</h2>
+				<p class='composer_section_description'>Choose a law distribution for the activation</p>
+				<button class="btn" type="submit" name="activateTriggerPoissonButton" value="Poisson Activation">Poisson</button>
+				<button class="btn" type="submit" name="activateTriggerBrownButton" value="Brown Activation">Brown</button>				 
+			</div>
+
+
+	</div>
+</article>
+
 }
-</body>
-</html>

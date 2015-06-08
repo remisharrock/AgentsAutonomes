@@ -93,7 +93,11 @@ public class Application extends Controller {
 	}
 	
 	public static Result viewAdministratorLog(){
-		return ok(administratorLog.render());
+		ArrayList<String> logs = new ArrayList<String>();
+		logs.add("test0");
+		logs.add("test1");
+		logs.add("test2");
+		return ok(administratorLog.render(logs));
 	}
 
 	public static Result submitForm() throws IOException {
@@ -220,7 +224,7 @@ public class Application extends Controller {
 		recipe.save();
 		// List<Recipe> list = userLoggedIn.getRecipes();
 		// list.add(recipe);
-		System.out.println("RECIPEEEEES:" + list.size());
+		//System.out.println("RECIPEEEEES:" + list.size());
 		// userLoggedIn.setRecipes(list);
 		userLoggedIn.save();
 		return ok(viewRecipes.render(userLoggedIn));
@@ -259,6 +263,22 @@ public class Application extends Controller {
 		}
 		
 		return ok();
+	}
+	
+	public static Result chooseActivationType(){
+		
+		DynamicForm requestData = Form.form().bindFromRequest();
+	
+		
+		Long triggerId = Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
+
+		if (requestData.get("activateTriggerManuallyButton") != null) {
+			return ok(administratorActivateManually.render(triggerId));
+		} 
+		else if (requestData.get("activateTriggerPeriodicallyButton") != null) {			
+			return ok(administratorActivatePeriodically.render(triggerId));
+		}
+		else return ok(administratorActivateRandomly.render(triggerId));
 	}
 	
 	public static Result viewRecipeLog() {

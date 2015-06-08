@@ -28,14 +28,7 @@
 
 <article class="l-page-content">
 	<div id="statement_create">
-		<form class="navbar-form pull-right"
-			action="@routes.Application.viewAdministratorLog()">
-
-			<!-- <input class="span2" type="text" placeholder="Email"> <input
-		class="span2" type="password" placeholder="Password">
-	<button type="submit" class="btn">Sign in</button>
- -->
-			<!-- Main hero unit for a primary marketing message or call to action -->
+		
 
 			<br />
 			<div class="hero-unit">
@@ -56,7 +49,7 @@
 					<input autocapitalization="off" autocomplete="off"
 						autocorrect="off" class="channels-search_input"
 						id="trigger_search_channels_field" name="q"
-						placeholder="Search Channels" type="text" onclick='hideStep2of7()' />
+						placeholder="Search Channels" type="text" onclick='hideStep2of7(); hideStep3of7();' />
 					<p class='channel_search_advice hide'
 						id='trigger_search_channels_field_advice'></p>
 
@@ -211,7 +204,17 @@
       
       function hideStep2of7(){
     	  document.getElementById("step2of7").style.display = "none";
-      }
+      };
+      
+      function displayStep3of7(trigger_id){
+    	  document.getElementById("step3of7").style.display = "block";
+    	  document.getElementById("trigger_chosen_to_activate_id").value = trigger_id;
+    	  document.getElementById("choose_type_activation_subtitle").innerHTML = "Choose activation for trigger " + trigger_id;
+      };
+      
+      function hideStep3of7(){
+    	  document.getElementById("step3of7").style.display = "none";
+      };
      
       
     
@@ -264,19 +267,49 @@
 												"funnel":{"primary":"new_statement","primary_id":"bdcfc20d5ac183be6938f4aaab994beb"}}'
 							data-track-event="scr_choose_trigger"
 							data-channel_id="@trigger.getChannel().getId()"
-							data-trigger_id="@trigger.getId()" href="#" id="trigger_607940575"
-							href="@routes.Application.activateTrigger(trigger.getId())">
+							data-trigger_id="@trigger.getId()"  id="trigger_607940575"
+							onclick='displayStep3of7(@trigger.getId())'>
 								<h3 class="trigger-list_item_name">@trigger.getName()</h3>
 								<p class="trigger-list_item_desc">@trigger.getDescription()</p>
+								<p class="trigger-list_item_desc">@trigger.getId()</p>
 							</a>
 						}
 					}
 				}
 			</div>
+			
+			<div class='is-dimmable' id='step3of7' style='display: none'>
+				<form class="navbar-form pull-right"
+				action="@routes.Application.chooseActivationType()">
+					<input type="hidden" id="trigger_chosen_to_activate_id" name="trigger_chosen_to_activate_id" >
+					<h2 class='composer_section_header'>
+						Choose a Type of Activation <span class='composer_section_step'>step 3 of 7</span>
+					</h2>
+					<p class='composer_section_description' id="choose_type_activation_subtitle">...</p>
+					
+					
+					<a class="activation-list_item" id="activation-list_item_manual">
+						<h3 class="trigger-list_item_name">Manual</h3>
+						<p class="trigger-list_item_desc">Activate the trigger manually</p>
+						<button class="btn" type="submit" name="activateTriggerManuallyButton" value="Manual Activation">Manual</button>
+					</a>
+					<a class="activation-list_item">
+						<h3 class="trigger-list_item_name">Periodic</h3>
+						<p class="trigger-list_item_desc">Activate the trigger periodically</p>
+						<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Periodic</button>
+					</a>
+					<a class="activation-list_item">
+						<h3 class="trigger-list_item_name">Random</h3>
+						<p class="trigger-list_item_desc">Activate the trigger randomly</p>
+						<button class="btn" type="submit" name="activateTriggerRandomlyButton" value="Random Activation">Random</button>
+					</a>
+				</form>
+			</div>
 
 
 
-		</form>
+		
 	</div>
 </article>
+
 }
