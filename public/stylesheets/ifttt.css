@@ -224,8 +224,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup,
 	.non-forced-fullwidth .channel_title, .non-forced-fullwidth .featured_channels--channel_name,
 		.non-forced-fullwidth .channel-page_field_value span.long_value,
 		.channel-page_field_value .non-forced-fullwidth span.long_value,
-		.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list .single_field_item,
-		.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list .non-forced-fullwidth .single_field_item,
+		.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list .single_field_item,
+		.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list .non-forced-fullwidth .single_field_item,
 		.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_actions .action-list_item .fields_list .single_field_item,
 		.channel-page_triggers_and_actions .channel-page_actions .action-list_item .fields_list .non-forced-fullwidth .single_field_item,
 		.non-forced-fullwidth .show-trigger-action_ingredients_table th,
@@ -838,7 +838,7 @@ body {
 }
 
 .addin-select_inserter_explanation, #live_trigger_fields_complete ul li label,
-	#show_trigger_fields ul li label, .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list,
+	#show_trigger_fields ul li label, .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list,
 	.channel-page_triggers_and_actions .channel-page_actions .action-list_item .fields_list,
 	#iftttMapFieldHolder #searchForm #searchLocation, #iftttMapFieldHolder #searchForm input[type=submit]#locateBtn,
 	#iftttMapFieldHolder .infoWindowContent p, #iftttMapFieldHolder .infoWindowContent p.vicinity,
@@ -864,7 +864,7 @@ body {
 	.addin-info_sec-title, .addin-select_inserter, .channel_title,
 	.featured_channels--channel_name, .channels_filters--filter.-js_active,
 	.channel-page_current_user_links .link_num,
-	.channel-page_channel_offline, .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list h6,
+	.channel-page_channel_offline, .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list h6,
 	.channel-page_triggers_and_actions .channel-page_actions .action-list_item .fields_list h6,
 	.channel-page_header-bold, .channel-page-with_channel_image,
 	.channel-page_header-bold-big, .show-trigger-action_ingredients_table td.ingredient_name,
@@ -2483,31 +2483,31 @@ body {
 	}
 }
 
-.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item
+.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item
 	{
 	margin: 5px 1em 20px 0
 }
 
 @media ( min-width : 960px) {
-	.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item
+	.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item
 		{
 		width: 370px
 	}
 }
 
 @media ( max-width : 719px) {
-	.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item
+	.non-forced-fullwidth .channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item
 		{
 		max-width: 100%
 	}
 }
 
-.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list
+.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list
 	{
 	margin-top: 1em
 }
 
-.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .fields_list h6
+.channel-page_triggers_and_actions .channel-page_triggers .trigger-list_item .activation-list_item .fields_list h6
 	{
 	margin-bottom: 4px
 }
@@ -12188,7 +12188,7 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 	}
 }
 
-.trigger-list_item, .action-list_item {
+.trigger-list_item, .action-list_item, .activation-list_item {
 	display: block;
 	float: left;
 	width: 279px;
@@ -12207,31 +12207,31 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 }
 
 @media ( min-width : 960px) {
-	.non-forced-fullwidth .trigger-list_item.last, .non-forced-fullwidth .action-list_item.last
+	.non-forced-fullwidth .trigger-list_item.last, .non-forced-fullwidth .action-list_item.last, .non-forced-fullwidth .activation-list_item.last
 		{
 		margin-right: 0
 	}
 }
 
-.trigger-list_item:hover, .action-list_item:hover {
+.trigger-list_item:hover, .action-list_item:hover, .activation-list_item:hover {
 	border-color: #ccc
 }
 
 @media ( min-width : 720px) and (max-width: 959px) {
-	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item
+	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item, .non-forced-fullwidth .activation-list_item
 		{
 		margin: 5px 10px 5px 0px
 	}
 }
 
 @media ( max-width : 719px) {
-	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item
+	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item, .non-forced-fullwidth .activation-list_item
 		{
 		margin: 12px 0 0 0;
 		min-height: 110px;
 		width: 88%
 	}
-	.non-forced-fullwidth .trigger-list_item:after, .non-forced-fullwidth .action-list_item:after
+	.non-forced-fullwidth .trigger-list_item:after, .non-forced-fullwidth .action-list_item:after, .non-forced-fullwidth .activation-list_item:after
 		{
 		content: "";
 		display: table;
