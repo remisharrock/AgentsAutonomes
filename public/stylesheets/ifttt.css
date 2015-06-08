@@ -10708,6 +10708,18 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 	display: inline-block
 }
 
+.personal-recipe-activation_ON {
+	word-wrap: break-word;
+	color: #A4C739;
+	display: inline-block
+}
+
+.personal-recipe-activation_OFF {
+	word-wrap: break-word;
+	color: #f40;
+	display: inline-block
+}
+
 @media ( max-width : 719px) {
 	.non-forced-fullwidth .personal-recipe-manage_description {
 		margin-top: 0;

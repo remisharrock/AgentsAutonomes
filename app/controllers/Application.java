@@ -29,7 +29,7 @@ public class Application extends Controller {
 	public static String turnOffCheckbox = "";
 
 	private static User userLoggedIn;
-	private static Recipe recipe;
+	private static Recipe recipe; //used only for dynamic creation 
 
 	public static Result index() {
 		return ok(index.render());
@@ -59,14 +59,33 @@ public class Application extends Controller {
 
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
+                Recipe r = new Recipe();
+				r.setTitle("Default recipe");
+				r.setActive(true);
+				r.getLog().add("Recipe created.");
+				r.getLog().add("Recipe activated on creation.");
+				r.setUser(userLoggedIn);
+				r.save();
+				//userLoggedIn.getRecipes().add(r); // se scommentato ne salva due ! e non salva il log
+				userLoggedIn.save();
+				/*
+				Recipe recipe2 = new Recipe();
+				recipe2.setTitle("Second recipe");
+				recipe2.setId(2);
+				recipe2.setUser(userLoggedIn);
+				recipe2.setActive(true);
+				recipe2.getLog().add("Recipe created.");
+				recipe2.getLog().add("Recipe activated on creation.");
+				recipe2.save();*/
+                 
 				return ok(chooseView.render(userLoggedIn));
 			}
 
 		}
 
 	}
-	
-	public static Result administratorView(){
+
+	public static Result administratorView() {
 		List<Channel> channelsList = Channel.getAllChannels();
 		HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 		for (int i = 0; i < channelsList.size(); i++) {
@@ -82,15 +101,13 @@ public class Application extends Controller {
 		if (requestData.get("viewRecipesButton") != null) {
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
-			recipe = new Recipe();
-			recipe.getLog().add("Recipe created.");
-			recipe.getLog().add("Recipe activated on creation.");
-			
 			List<Channel> channelsList = Channel.getAllChannels();
+			recipe = new Recipe();
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
 
 	}
+
 	
 	public static Result viewAdministratorLog(){
 		ArrayList<String> logs = new ArrayList<String>();
@@ -99,6 +116,8 @@ public class Application extends Controller {
 		logs.add("test2");
 		return ok(administratorLog.render(logs));
 	}
+
+
 
 	public static Result submitForm() throws IOException {
 		Boolean lampOn = false;
@@ -121,7 +140,7 @@ public class Application extends Controller {
 			try {
 				TimeUnit.MILLISECONDS.sleep(10);
 			} catch (InterruptedException e) {
-				
+
 				e.printStackTrace();
 			}
 
@@ -160,7 +179,7 @@ public class Application extends Controller {
 	public static Result chooseTrigger(Long channelId) {
 
 		Channel channel = Channel.find.byId(channelId);
-
+		
 		recipe.setTriggerChannel(channel);
 
 		return ok(chooseTrigger.render(channel));
@@ -219,51 +238,65 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		recipe.setTitle(requestData.get("recipeTitle"));
-		recipe.setUser(userLoggedIn);
+		
 		recipe.setActive(true);
-		recipe.save();
+		recipe.getLog().add("Recipe created.");
+		recipe.getLog().add("Recipe activated on creation.");
+		
 		// List<Recipe> list = userLoggedIn.getRecipes();
 		// list.add(recipe);
-		//System.out.println("RECIPEEEEES:" + list.size());
-		// userLoggedIn.setRecipes(list);
+
+		// System.out.println("RECIPEEEEES:" + list.size());
+		// userLoggedIn.setRecipes(list)
+		//(userLoggedIn.getRecipes().add(recipe);
+		recipe.setUser(userLoggedIn);
+		recipe.save();
+		//userLoggedIn.getRecipes().add(recipe); //se scommentato ne aggiunge 2
+
 		userLoggedIn.save();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result viewRecipes() {
-		if(userLoggedIn!=null)
+		if (userLoggedIn != null)
 			return ok(viewRecipes.render(userLoggedIn));
-		else 
+		else
 			return ok(index.render());
 	}
 
 	public static Result activateTrigger(Long triggerId) {
-		List<Recipe>  recipesList = Ebean.find(Recipe.class).findList();
-		
-		for (int i=0; i<recipesList.size(); i++){
-			if (recipesList.get(i).getTriggerChannel().getId() == triggerId){
-				Trigger trigger = null;
-				for (int j=0; j<recipesList.get(i).getTriggerChannel().getTriggers().size(); j++){
-					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId){
-						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
-					}
-				}
-//				@SuppressWarnings("rawtypes")
-//				Class classe = trigger.getClass();
-//				try {
-//					recipesList.get(i).getActionChannel().getActorRef().tell(classe.newInstance(), recipesList.get(i).getTriggerChannel().getActorRef());
-//				} catch (InstantiationException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IllegalAccessException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-			}
-		}
-		
+
+		Ebean.find(Recipe.class)
+				.findList()
+				.parallelStream()
+				/* Now we have a stream, we filter on the id of TriggerChannel */
+				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
+				/* And now we send a message to each channel */
+				.forEach(
+						recipe -> {
+							/* This actor is the object which will be told */
+							try {
+								recipe.getActionChannel()
+										.getActorRef()
+										.tell(
+										/*
+										 * Message to be told: we send the
+										 * message of the first trigger found
+										 */
+										recipe.getTriggerChannel().getTriggers().stream()
+												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
+												.getClass().newInstance(),
+										/* Sender */
+										recipe.getTriggerChannel().getActorRef());
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						});
+
 		return ok();
 	}
+
 	
 	public static Result chooseActivationType(){
 		
@@ -280,60 +313,39 @@ public class Application extends Controller {
 		}
 		else return ok(administratorActivateRandomly.render(triggerId));
 	}
-	
+
 	public static Result viewRecipeLog() {
-		/* //search the recipe and update it:
 		DynamicForm requestData = Form.form().bindFromRequest();
-		String value = requestData.get("viewRecipesLog");
-		long recipeId;
-		Recipe recipe;
-		if(value!=null){
-			recipeId = Long.parseLong(value);
-			recipe = Recipe.find.byId(recipeId);
-		}else{
-			recipe = null;
+		if (userLoggedIn != null && requestData.get("viewRecipesLog") != null){
+				long recipeId = Long.parseLong( requestData.get("viewRecipesLog") );
+				Recipe r = userLoggedIn.getRecipesById(recipeId);
+				return ok(viewRecipeLog.render(userLoggedIn, r));
 		}
-		
-		if(userLoggedIn!=null && recipe != null)
-			return ok(viewRecipeLog.render(userLoggedIn, recipe));
-		else 
-			return ok(index.render());
-			*/
-		if(userLoggedIn!=null)
-			return ok(viewRecipeLog.render(userLoggedIn, recipe));
-		else 
+		else
 			return ok(index.render());
 	}
-	
+
 	public static Result activateRecipe() {
-		/*//search the recipe and update it:
-			Recipe recipe = Recipe.find.byId(recipeId);
-			if(recipe.getActive()){
-				recipe.setActive(false);
-				recipe.getLog().add("Recipe turned off");
-				recipe.save();
-			}
-			else{
-				recipe.setActive(true);
-				recipe.getLog().add("Recipe turned on");
-				recipe.save();
-			}
-			return ok();
-			*/
 		DynamicForm requestData = Form.form().bindFromRequest();
-		if (requestData.get("RecipeOff") != null ) {
-			if(recipe.getActive()){
-				recipe.setActive(false);
-				recipe.getLog().add("Recipe turned off.");
-				recipe.save();
+		if (userLoggedIn != null){
+			if (requestData.get("RecipeOff") != null) {	
+				long recipeId = Long.parseLong( requestData.get("RecipeOff") );
+				Recipe r = userLoggedIn.getRecipesById(recipeId);
+				if(r.getActive()){
+					r.setActive(false);
+					r.getLog().add("Recipe turned off.");
+					r.save();
+				}
+			}else if (requestData.get("RecipeOn") != null) {	
+				long recipeId = Long.parseLong( requestData.get("RecipeOn") );
+				Recipe r = userLoggedIn.getRecipesById(recipeId);
+				if(r.getActive()==false){
+					r.setActive(true);
+					r.getLog().add("Recipe turned on.");
+					r.save();
+				}
 			}
-		}
-		else if (requestData.get("RecipeOn") != null ) {
-			if( !recipe.getActive()){
-				recipe.setActive(true);
-				recipe.getLog().add("Recipe turned on.");
-				recipe.save();
-			}
+			userLoggedIn.save();
 		}
 		return ok(viewRecipes.render(userLoggedIn));
 	}
@@ -345,16 +357,18 @@ public class Application extends Controller {
 			recipe = null;
 			return index();
 		}
-		if(requestData.get("HomeButton") != null ) {
-		
-				if(userLoggedIn.getRole() == "administrator") 
-					//return ok(administratorView.render(channelsList, triggersDic));
-					return ok();
-				else
-					return ok(chooseView.render(userLoggedIn));
-		}else 
-				return index();
+		if (requestData.get("HomeButton") != null) {
+			recipe = null;
+			if (userLoggedIn.getRole() == "administrator")
+				return administratorView();
+			else
+				return ok(chooseView.render(userLoggedIn));
+		} 
+		if(requestData.get("AdminLog") != null){
+			return viewAdministratorLog();
+		}	
+		else
+			return index();
 	}
-
 
 }

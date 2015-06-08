@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import play.data.DynamicForm;
 import play.db.ebean.Model;
 
 import com.avaje.ebean.Ebean;
@@ -135,6 +136,16 @@ public class User extends Model {
 		
 		return null;
     }
+
+
+
+	public Recipe getRecipesById(long id) {
+		for(Recipe r : recipes){
+			if(r.getId() == id)
+				return r;
+		}
+		return null;
+	}
 	
 	
 

@@ -3,6 +3,7 @@ package models;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -42,6 +43,9 @@ public class Recipe extends Model{
 	
 	@ManyToOne
 	private User user;
+	
+	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
+			Long.class, Recipe.class);
 	
 	public Recipe() {
 		log = new LinkedList<String>();
@@ -146,11 +150,17 @@ public class Recipe extends Model{
 				+ ", thisChannel=" + triggerChannel + ", thatChannel="
 				+ actionChannel + "]";
 	}
-	
 
-	
 	public List<String> getLog() {
 		return this.log;
+	}
+	
+	public List<String> getLogReverseOrder() {
+		List<String> logReverse = new LinkedList<String>();
+		ListIterator<String> i = log.listIterator(log.size());
+		while(i.hasPrevious())
+			logReverse.add(i.previous());
+		return logReverse;
 	}
 	
 	
