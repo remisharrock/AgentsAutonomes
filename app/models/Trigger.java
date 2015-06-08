@@ -9,8 +9,6 @@ import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
-
-
 @Entity
 public class Trigger extends Model {
 
@@ -18,52 +16,37 @@ public class Trigger extends Model {
 
 	@Id
 	private long id;
-	
+
 	private String name;
-	
+
 	private String description;
-	
-	//private final Class messageRef;
-	
-	
+
+	// private final Class messageRef;
+
 	@ManyToOne
 	private Channel channel;
-	
-	@OneToMany 
+
+	@OneToMany
 	private List<Field> fields;
-	
-	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
-			Long.class, Trigger.class);
-	
-//	public Trigger(String name, String description, Class messageRef) {
-//		this.name = name;
-//		this.description = description;
-//		this.messageRef = messageRef;
-//	}
-	
+
+	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(Long.class, Trigger.class);
+
 	public Trigger(String name, String description) {
 		this.name = name;
 		this.description = description;
 	}
-	
-//	public Trigger(String name, Class messageRef) {
-//		this.name = name;
-//		this.messageRef = messageRef;
-//	}
-	
+
 	public Trigger(String name) {
 		this.name = name;
 	}
-	
+
 	public long getId() {
 		return this.id;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-	
 
 	public void setName(String name) {
 		this.name = name;
@@ -84,14 +67,8 @@ public class Trigger extends Model {
 	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
-	
-//	public Class getMessageRef(){
-//		return messageRef;
-//	}
 
 	public List<Field> getFields() {
 		return this.fields;
 	}
-	
-	
 }
