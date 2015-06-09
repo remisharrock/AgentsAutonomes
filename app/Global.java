@@ -13,7 +13,6 @@ import play.Logger;
 import actors.AllActors;
 import actors.AllMessages;
 import actors.AllMessages.Lamp.TurnOn;
-import actors.MessageFactory;
 
 import com.avaje.ebean.Ebean;
 
@@ -28,45 +27,52 @@ public class Global extends GlobalSettings {
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
 		 */
-		Controller.registerRecipe(AllActors.manythings, AllMessages.Manythings.MotionDetected.class, "FormalName",
-				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-				AllActors.lamp, new MessageFactory() {
+		Controller
+				.get()
+				.registerRecipe(
+						AllActors.manythings,
+						AllMessages.Manythings.MotionDetected.class,
+						"FormalName",
+						"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
+						AllActors.lamp,
+						triggerMessage -> {
 
-					@Override
-					public Object convert(Object triggerMessage) {
+							String colour = null;
+							Integer intensity = null;
+							Boolean lowConsumptionMode = null;
 
-						String colour = null;
-						Integer intensity = null;
-						Boolean lowConsumptionMode = null;
-
-						// Don't forget to check for nullity.
-						if (triggerMessage != null && triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
-							AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
-							colour = null;
-							switch (trigger.getDeviceId()) {
-							case 1:
-								colour = "Orange";
-								break;
-							default:
-								colour = "Green";
-								break;
+							// Don't forget to check for nullity.
+							if (triggerMessage != null
+									&& triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
+								AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
+								colour = null;
+								switch (trigger.getDeviceId()) {
+								case 1:
+									colour = "Orange";
+									break;
+								default:
+									colour = "Green";
+									break;
+								}
+								intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
+								lowConsumptionMode = true;
 							}
-							intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-							lowConsumptionMode = true;
-						}
-						AllMessages.Lamp.TurnOn message = new TurnOn(colour, intensity, lowConsumptionMode);
-						return message;
-					}
-				});
+							AllMessages.Lamp.TurnOn message = new TurnOn(colour, intensity, lowConsumptionMode);
+							return message;
+						});
 
-		Controller.bus.subscribe(AllActors.human, "room");
-		Controller.bus.subscribe(AllActors.detector, "room");
-		Controller.bus.subscribe(AllActors.lamp, "room");
-		Controller.bus.subscribe(AllActors.luminosityDetector, "room");
+		Controller.get().registerRecipe(AllActors.detector, AllMessages.DetectionOn.class, "",
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
+				AllActors.lamp, triggerMessage -> new AllMessages.TurnOnLamp(true));
 
-		Controller.bus.subscribe(AllActors.human, "house");
-		Controller.bus.subscribe(AllActors.manythings, "house");
-		Controller.bus.subscribe(AllActors.garage, "house");
+		// Controller.bus.subscribe(AllActors.human, "room");
+		// Controller.bus.subscribe(AllActors.detector, "room");
+		// Controller.bus.subscribe(AllActors.lamp, "room");
+		// Controller.bus.subscribe(AllActors.luminosityDetector, "room");
+		//
+		// Controller.bus.subscribe(AllActors.human, "house");
+		// Controller.bus.subscribe(AllActors.manythings, "house");
+		// Controller.bus.subscribe(AllActors.garage, "house");
 
 		System.out.println(Ebean.find(Channel.class).findRowCount());
 		// if (Ebean.find(Channel.class).findRowCount() != 0) {

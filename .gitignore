@@ -1,6 +1,7 @@
 */*.class
 bin
 activator*
+build.sbt
 logs
 project/project
 project/target
