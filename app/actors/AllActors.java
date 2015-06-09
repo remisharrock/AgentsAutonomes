@@ -79,6 +79,12 @@ public final class AllActors {
 				}
 			}
 
+			if (message instanceof AllMessages.Lamp.TurnOn) {
+				AllMessages.Lamp.TurnOn mess = (AllMessages.Lamp.TurnOn) message;
+				// Access messages fields.
+				mess.getColour();
+			}
+
 			else if (message instanceof DetectionOff) {
 				// Send the current greeting back to the sender
 				if (((DetectionOff) message).getChangeState()) {

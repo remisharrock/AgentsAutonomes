@@ -84,6 +84,9 @@ public class Controller {
 	public void registerRecipe(ActorRef triggerActor, Class triggerMessageClass, String name, String description,
 			ActorRef actionActor, UnaryOperator<Object> actionFunction) {
 
+		/**
+		 * Just allows one.
+		 */
 		eventBus.subscribe(actionActor, name);
 
 		// Do not replace, but nicely insert it into the right slot.
@@ -108,6 +111,7 @@ public class Controller {
 
 	public void removeRecipe(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor, Object actionMessage,
 			String name, String description) {
+		// TODO
 	}
 
 	/**

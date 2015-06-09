@@ -29,7 +29,7 @@ public class Global extends GlobalSettings {
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
 		 */
-		Controller.get().registerRecipe(AllActors.detector, AllMessages.DetectionOn.class, "",
+		Controller.get().registerRecipe(AllActors.detector, AllMessages.DetectionOn.class, "TurnOnLampWhenDetectorRecipe",
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
 				AllActors.lamp, triggerMessage -> new AllMessages.TurnOnLamp(true));
 
@@ -41,7 +41,7 @@ public class Global extends GlobalSettings {
 				.registerRecipe(
 						AllActors.manythings,
 						AllMessages.Manythings.MotionDetected.class,
-						"FormalName",
+						"TurnOnLampWhenMovementRecipe",
 						"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
 						AllActors.lamp,
 						triggerMessage -> {
