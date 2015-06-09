@@ -1,11 +1,13 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
+import actors.RandomScheduler;
 import actors.EventBusImpl;
 import actors.MsgEnvelope;
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 
 /**
  * This is a hook. Same logic would better be implemented with Router, Mailboxes
@@ -15,9 +17,23 @@ import akka.actor.ActorRef;
 public class Controller {
 
 	private static Controller controller = new Controller();
+	private ActorSystem system = ActorSystem.create("helloakka");
+	/**
+	 * There is one here but you're able to create as much as you want. For
+	 * example, one may use to set one for each device group.
+	 */
+	private RandomScheduler scheduler = new RandomScheduler();
 
 	public static Controller get() {
 		return Controller.controller;
+	}
+
+	public ActorSystem getSystem() {
+		return system;
+	}
+
+	public RandomScheduler getScheduler() {
+		return scheduler;
 	}
 
 	private Controller() {
@@ -26,7 +42,7 @@ public class Controller {
 	/**
 	 * <TriggerActor, <TriggerMessage, Action to perform>>
 	 */
-	private HashMap<ActorRef, HashMap<Class, Function<Object, Object>>> translator = new HashMap<>();
+	private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> translator = new HashMap<>();
 	private EventBusImpl eventBus = new EventBusImpl();
 
 	/**
@@ -66,15 +82,15 @@ public class Controller {
 	 *            can not be null
 	 */
 	public void registerRecipe(ActorRef triggerActor, Class triggerMessageClass, String name, String description,
-			ActorRef actionActor, Function<Object, Object> actionFunction) {
+			ActorRef actionActor, UnaryOperator<Object> actionFunction) {
 
 		eventBus.subscribe(actionActor, name);
 
 		// Do not replace, but nicely insert it into the right slot.
 		if (!translator.keySet().contains(triggerActor)) {
-			translator.put(triggerActor, new HashMap<Class, Function<Object, Object>>());
+			translator.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
 		}
-		HashMap<Class, Function<Object, Object>> value = new HashMap<>();
+		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
 		value.put(triggerMessageClass.getClass(), actionFunction);
 		translator.put(triggerActor, value);
 	}
@@ -94,6 +110,10 @@ public class Controller {
 			String name, String description) {
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	public void publish(MsgEnvelope event) {
 		eventBus.publish(event);
 	}

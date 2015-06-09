@@ -1,5 +1,6 @@
 package actors;
 
+import controllers.Controller;
 import actors.AllMessages.DetectionOff;
 import actors.AllMessages.DetectionOn;
 import actors.AllMessages.EnterRoom;
@@ -13,7 +14,7 @@ public final class AllActors {
 	private AllActors() {
 	}
 
-	public final static ActorSystem system = ActorSystem.create("helloakka");
+	public static ActorSystem system = Controller.get().getSystem();
 
 	public static ActorRef human;
 	public static ActorRef detector;

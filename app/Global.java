@@ -10,9 +10,11 @@ import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
+import scala.concurrent.duration.Duration;
 import actors.AllActors;
 import actors.AllMessages;
 import actors.AllMessages.Lamp.TurnOn;
+import actors.StdRandom;
 
 import com.avaje.ebean.Ebean;
 
@@ -26,6 +28,13 @@ public class Global extends GlobalSettings {
 		 * TODO Example of how to add a new recipe in the back-end side. Maybe
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
+		 */
+		Controller.get().registerRecipe(AllActors.detector, AllMessages.DetectionOn.class, "",
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
+				AllActors.lamp, triggerMessage -> new AllMessages.TurnOnLamp(true));
+
+		/**
+		 * More powerful example.
 		 */
 		Controller
 				.get()
@@ -61,18 +70,14 @@ public class Global extends GlobalSettings {
 							return message;
 						});
 
-		Controller.get().registerRecipe(AllActors.detector, AllMessages.DetectionOn.class, "",
-				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-				AllActors.lamp, triggerMessage -> new AllMessages.TurnOnLamp(true));
-
-		// Controller.bus.subscribe(AllActors.human, "room");
-		// Controller.bus.subscribe(AllActors.detector, "room");
-		// Controller.bus.subscribe(AllActors.lamp, "room");
-		// Controller.bus.subscribe(AllActors.luminosityDetector, "room");
-		//
-		// Controller.bus.subscribe(AllActors.human, "house");
-		// Controller.bus.subscribe(AllActors.manythings, "house");
-		// Controller.bus.subscribe(AllActors.garage, "house");
+		/**
+		 * Example how to schedule a random action to be performed.
+		 */
+		Controller
+				.get()
+				.getScheduler()
+				.scheduleActionMessage(Duration.Zero(), AllActors.garage, Void -> new AllMessages.Garage.Close(1),
+						Void -> 3 * StdRandom.gaussian(5, 2));
 
 		System.out.println(Ebean.find(Channel.class).findRowCount());
 		// if (Ebean.find(Channel.class).findRowCount() != 0) {

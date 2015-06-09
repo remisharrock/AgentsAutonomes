@@ -42,7 +42,7 @@
  *
  *************************************************************************/
 
-package models;
+package actors;
 
 import java.util.Random;
 
