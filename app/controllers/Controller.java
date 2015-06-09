@@ -111,6 +111,10 @@ public class Controller {
 	}
 
 	/**
+	 * Hint: please keep in mind this method is not the same as the overrided
+	 * `publish(MsgEnvelope event, ActorRef subscriber)` in EventBusImpl: the
+	 * latter specifically invoke actor.tell while this one is general. Event
+	 * passed to this one will be internally filtered.
 	 * 
 	 * @param event
 	 */

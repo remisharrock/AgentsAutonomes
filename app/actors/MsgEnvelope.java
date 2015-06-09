@@ -3,6 +3,10 @@ package actors;
 import akka.actor.ActorRef;
 
 public class MsgEnvelope {
+	/**
+	 * Defines which actors (which has suscribed) will get messages. It's a one
+	 * (suscribee) to many (suscriber) relation.
+	 */
 	public final String topic;
 	public final Object payload;
 	/**
