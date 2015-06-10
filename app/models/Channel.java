@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
-import actors.AllActors;
-import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
 
@@ -18,36 +16,57 @@ public class Channel extends Model {
 
 	private static final long serialVersionUID = 1L;
 
+	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+	private List<Trigger> triggers;
+	@OneToMany(mappedBy = "action", cascade = CascadeType.ALL)
+	private List<Action> actions;
+
 	@Id
 	private long id;
-	
 	private String name;
-	
 	private String description;
-	
-	private final ActorRef actorRef;
-	
-	@OneToMany(mappedBy="channel", cascade=CascadeType.ALL)
-	private List<Trigger> triggers;
-	
-	public static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(
-			Long.class, Channel.class);
-	
-	@OneToMany
-	private List<Action> actions;
-	
-	public Channel(String name, String description, ActorRef actorRef) {
-		this.name = name;
-		this.description = description;
-		this.actorRef = actorRef;
-	}
-	
+
+	public final static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(Long.class, Channel.class);
+
 	public static List<Channel> getAllChannels() {
 		return Ebean.find(Channel.class).findList();
 	}
-	
-	public long getId() {
-		return id;
+
+	@Override
+	public String toString() {
+		return "Channel [id=" + id + ", name=" + name + ", description=" + description + ", triggers=" + triggers
+				+ ", actions=" + actions + "]";
+	}
+
+	public Channel(List<Trigger> triggers, List<Action> actions, String name, String description) {
+		this.triggers = triggers;
+		this.actions = actions;
+		this.name = name;
+		this.description = description;
+	}
+
+	@SuppressWarnings("unused")
+	private void setId(long id) {
+	}
+
+	/*
+	 * Below, automatically generated methods.
+	 */
+
+	public List<Trigger> getTriggers() {
+		return triggers;
+	}
+
+	public void setTriggers(List<Trigger> triggers) {
+		this.triggers = triggers;
+	}
+
+	public List<Action> getActions() {
+		return actions;
+	}
+
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
 	}
 
 	public String getName() {
@@ -65,33 +84,16 @@ public class Channel extends Model {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 
-	public List<Trigger> getTriggers() {
-		return triggers;
-	}
-
-	public void setTriggers(List<Trigger> triggers) {
-		this.triggers = triggers;
+	public static Model.Finder<Long, Channel> getFind() {
+		return find;
 	}
 
-	public List<Action> getActions() {
-		return actions;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
-	public void setActions(List<Action> actions) {
-		this.actions = actions;
+	public long getId() {
+		return id;
 	}
-	
-	public ActorRef getActorRef(){
-		return actorRef;
-	}
-
-	@Override
-	public String toString() {
-		return "Channel [id=" + id + ", name=" + name + ", description="
-				+ description + ", triggers=" + triggers + ", actions="
-				+ actions + "]";
-	}
-	
 }

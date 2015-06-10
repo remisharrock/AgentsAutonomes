@@ -1,91 +1,69 @@
 package models;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
-import actors.RecipeAkka;
 
 import com.avaje.ebean.Ebean;
 
 @Entity
 public class Recipe extends Model {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	private long Id;
-
-	private String title;
-
-	private RecipeAkka recipeAkka;
-
+	@ManyToOne
 	private Channel triggerChannel;
+	@ManyToOne
+	private Trigger trigger;
+	@ManyToOne
+	private Channel actionChannel;
+	@ManyToOne
+	private Action action;
+	private String name;
 
+	private String description;
 	private boolean active;
 	private List<String> log;
-
-	@OneToMany
-	private HashMap<Field, String> triggersMap;
-
-	private Channel actionChannel;
-
-	@OneToMany
-	private HashMap<Field, String> actionsMap;
-
 	@ManyToOne
 	private User user;
+	@Id
+	private long id;
 
 	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(Long.class, Recipe.class);
-
-	public Recipe() {
-		log = new LinkedList<String>();
-	}
-
-	public Recipe(User user, String title, Channel triggerChannel, Channel actionChannel) {
-		super();
-		this.user = user;
-		this.title = title;
-		this.triggerChannel = triggerChannel;
-		this.actionChannel = actionChannel;
-	}
 
 	public static List<Recipe> getAllRecipes() {
 		return Ebean.find(Recipe.class).findList();
 	}
 
-	public long getId() {
-		return Id;
+	@Override
+	public String toString() {
+		return "Recipe [Id=" + id + ", user=" + user + ", name=" + name + ", thisChannel=" + triggerChannel
+				+ ", thatChannel=" + actionChannel + "]";
 	}
 
-	public void setId(long id) {
-		Id = id;
+	public Recipe(Trigger trigger, Action action, User user, String name, String description) {
+		super();
+		this.triggerChannel = trigger.getChannel();
+		this.trigger = trigger;
+		this.actionChannel = action.getChannel();
+		this.action = action;
+		this.user = user;
+		this.name = name;
+		this.log = new LinkedList<String>();
 	}
 
-	public String getTitle() {
-		return title;
+	@SuppressWarnings("unused")
+	private void setId(long id) {
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public boolean getActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+	/*
+	 * From here, generated methods
+	 */
 
 	public Channel getTriggerChannel() {
 		return triggerChannel;
@@ -95,12 +73,12 @@ public class Recipe extends Model {
 		this.triggerChannel = triggerChannel;
 	}
 
-	public HashMap<Field, String> getTriggersMap() {
-		return triggersMap;
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
-	public void setTriggersMap(HashMap<Field, String> triggersMap) {
-		this.triggersMap = triggersMap;
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
 	}
 
 	public Channel getActionChannel() {
@@ -111,12 +89,28 @@ public class Recipe extends Model {
 		this.actionChannel = actionChannel;
 	}
 
-	public HashMap<Field, String> getActionsMap() {
-		return actionsMap;
+	public Action getAction() {
+		return action;
 	}
 
-	public void setActionsMap(HashMap<Field, String> actionsMap) {
-		this.actionsMap = actionsMap;
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public User getUser() {
@@ -127,21 +121,31 @@ public class Recipe extends Model {
 		this.user = user;
 	}
 
-	@Override
-	public String toString() {
-		return "Recipe [Id=" + Id + ", user=" + user + ", title=" + title + ", thisChannel=" + triggerChannel
-				+ ", thatChannel=" + actionChannel + "]";
+	public static Model.Finder<Long, Recipe> getFind() {
+		return find;
+	}
+
+	public static void setFind(Model.Finder<Long, Recipe> find) {
+		Recipe.find = find;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public List<String> getLog() {
-		return this.log;
+		return log;
 	}
 
-	public RecipeAkka getRecipeAkka() {
-		return recipeAkka;
+	public long getId() {
+		return id;
 	}
 
-	public void setRecipeAkka(RecipeAkka recipeAkka) {
-		this.recipeAkka = recipeAkka;
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

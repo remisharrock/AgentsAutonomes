@@ -14,7 +14,7 @@ public final class AllActors {
 	private AllActors() {
 	}
 
-	public static ActorSystem system = Controller.get().getSystem();
+	public static ActorSystem system = Controller.get().system();
 
 	public static ActorRef human;
 	public static ActorRef detector;

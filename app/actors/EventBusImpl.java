@@ -1,8 +1,8 @@
 package actors;
 
-import controllers.Controller;
 import akka.actor.ActorRef;
 import akka.event.japi.LookupEventBus;
+import controllers.Controller;
 
 /**
  * Within the creation of a recipe, actors are made suscribers to this bus with

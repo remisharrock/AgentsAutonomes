@@ -1,11 +1,15 @@
 package controllers;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 
-import actors.RandomScheduler;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 import actors.EventBusImpl;
 import actors.MsgEnvelope;
+import actors.RandomScheduler;
+import akka.actor.ActorPath;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 
@@ -28,7 +32,7 @@ public class Controller {
 		return Controller.controller;
 	}
 
-	public ActorSystem getSystem() {
+	public ActorSystem system() {
 		return system;
 	}
 
@@ -84,11 +88,14 @@ public class Controller {
 	public void registerRecipe(ActorRef triggerActor, Class triggerMessageClass, String name, String description,
 			ActorRef actionActor, UnaryOperator<Object> actionFunction) {
 
-		/**
-		 * Just allows one.
+		/*
+		 * Just allows one. The first part is about actionActor.
 		 */
 		eventBus.subscribe(actionActor, name);
 
+		/*
+		 * The second part is about triggerActor.
+		 */
 		// Do not replace, but nicely insert it into the right slot.
 		if (!translator.keySet().contains(triggerActor)) {
 			translator.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
@@ -96,6 +103,14 @@ public class Controller {
 		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
 		value.put(triggerMessageClass.getClass(), actionFunction);
 		translator.put(triggerActor, value);
+	}
+
+	public void registerRecipe(ActorPath triggerActor, Class triggerMessageClass, String name, String description,
+			ActorPath actionActor, UnaryOperator<Object> actionFunction) {
+
+		Future<ActorRef> a = system.actorSelection(triggerActor).resolveOne(Duration.apply(2, TimeUnit.SECONDS));
+		a.onSuccess(arg0, arg1);
+
 	}
 
 	/**
@@ -109,8 +124,18 @@ public class Controller {
 		return translator.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
 	}
 
-	public void removeRecipe(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor, Object actionMessage,
-			String name, String description) {
+	/**
+	 * You have to unregister your recipe when you set it inactive.
+	 * 
+	 * @param triggerActor
+	 * @param triggerMessage
+	 * @param actionActor
+	 * @param actionMessage
+	 * @param name
+	 * @param description
+	 */
+	public void unregisterRecipe(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor,
+			Object actionMessage, String name, String description) {
 		// TODO
 	}
 

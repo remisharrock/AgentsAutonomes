@@ -23,7 +23,7 @@ public class RandomScheduler /* implements akka.actor.Scheduler */{
 	/**
 	 * TODO Hey, wait! shouldn't we make it final?
 	 */
-	private ActorSystem system = Controller.get().getSystem();
+	private ActorSystem system = Controller.get().system();
 
 	private ArrayList<CancellableRef> tickingCancellables;
 
