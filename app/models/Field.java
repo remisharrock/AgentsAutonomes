@@ -1,7 +1,9 @@
 package models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.db.ebean.Model;
 
@@ -20,6 +22,8 @@ public class Field<T> extends Model {
 	private long id;
 	private String name;
 	private String description;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Semantic semantic;
 
 	public Field(T value, String name, String description) {
 		this.value = value;
@@ -65,5 +69,13 @@ public class Field<T> extends Model {
 
 	public long getId() {
 		return id;
+	}
+
+	public Semantic getTrigger() {
+		return semantic;
+	}
+
+	public void setSemantic(Trigger semantic) {
+		this.semantic = semantic;
 	}
 }

@@ -18,7 +18,7 @@ public class Channel extends Model {
 
 	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
 	private List<Trigger> triggers;
-	@OneToMany(mappedBy = "action", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
 	private List<Action> actions;
 
 	@Id

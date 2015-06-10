@@ -2,30 +2,43 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
+/**
+ * I've been trying to make something "object-oriented" with trigger and actions
+ * but it gives me a NullPointerException in the play framework. Would it be a
+ * inner bug?
+ */
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Semantic extends Model {
 
-	@OneToMany
-	protected List<Field<?>> fields;
+	private static final long serialVersionUID = 1L;
+
 	protected String name;
 	/**
 	 * Important to be able to get it from this class because it can simplify
 	 * Recipe contructor.
 	 */
-	@ManyToOne
-	private Channel channel;
+	@ManyToOne(cascade = CascadeType.ALL)
+	protected Channel channel;
+	@SuppressWarnings("rawtypes")
+	@OneToMany(mappedBy = "semantic", cascade = CascadeType.ALL)
+	protected List<Field> fields;
 
 	@Id
-	private long id;
-	private String description;
-	private static final long serialVersionUID = 1L;
+	protected long id;
+	protected String description;
 
-	public Semantic(List<Field<?>> fields, Channel channel, String name, String description) {
+	public Semantic(@SuppressWarnings("rawtypes") List<Field> fields, Channel channel, String name, String description) {
 		this.fields = fields;
 		this.name = name;
 		this.channel = channel;
@@ -45,14 +58,6 @@ public abstract class Semantic extends Model {
 	/*
 	 * Below, generated methods.
 	 */
-
-	public List<Field<?>> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field<?>> fields) {
-		this.fields = fields;
-	}
 
 	public String getName() {
 		return name;
@@ -84,5 +89,13 @@ public abstract class Semantic extends Model {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<Field> fields) {
+		this.fields = fields;
 	}
 }
