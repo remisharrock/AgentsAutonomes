@@ -23,7 +23,9 @@ public class Field<T> extends Model {
 	private String name;
 	private String description;
 	@ManyToOne(cascade = CascadeType.ALL)
-	private Semantic semantic;
+	private Trigger trigger;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Action action;
 
 	public Field(T value, String name, String description) {
 		this.value = value;
@@ -71,11 +73,19 @@ public class Field<T> extends Model {
 		return id;
 	}
 
-	public Semantic getTrigger() {
-		return semantic;
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
-	public void setSemantic(Trigger semantic) {
-		this.semantic = semantic;
+	public void setTrigger(Trigger semantic) {
+		this.trigger = trigger;
+	}
+
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
 	}
 }

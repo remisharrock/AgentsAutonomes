@@ -69,8 +69,8 @@ public class Application extends Controller {
 
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
-				Recipe r = new Recipe();
-				r.setTitle("Default recipe");
+				Recipe r = new Recipe(null, null, null, null, null);
+				r.setName("Default recipe");
 				r.setActive(true);
 				r.getLog().add("Recipe created.");
 				r.getLog().add("Recipe activated on creation.");
@@ -110,7 +110,7 @@ public class Application extends Controller {
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
 			List<Channel> channelsList = Channel.getAllChannels();
-			recipe = new Recipe();
+			recipe = new Recipe(null, null, null, null, null);
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
 
@@ -197,7 +197,10 @@ public class Application extends Controller {
 			triggerFields.put(f, requestData.get(f.getName()));
 		}
 
-		recipe.setTriggersMap(triggerFields);
+		/**
+		 * TODO should not be commented but understood.
+		 */
+		//recipe.setTriggersMap(triggerFields);
 
 		return ok(completeTriggerFields.render(trigger));
 	}
@@ -226,7 +229,10 @@ public class Application extends Controller {
 			actionFields.put(f, requestData.get(f.getName()));
 		}
 
-		recipe.setActionsMap(actionFields);
+		/**
+		 * TODO should not be commented but corrected
+		 */
+		//recipe.setActionsMap(actionFields);
 
 		return ok(completeActionFields.render(action));
 	}
@@ -238,7 +244,7 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		recipe.setTitle(requestData.get("recipeTitle"));
+		recipe.setName(requestData.get("recipeTitle"));
 
 		recipe.setActive(true);
 		recipe.getLog().add("Recipe created.");
@@ -264,33 +270,33 @@ public class Application extends Controller {
 
 	public static Result activateTrigger(Long triggerId) {
 
-		Ebean.find(Recipe.class)
-				.findList()
-				.parallelStream()
-				/* Now we have a stream, we filter on the id of TriggerChannel */
-				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
-				/* And now we send a message to each channel */
-				.forEach(
-						recipe -> {
-							/* This actor is the object which will be told */
-							try {
-								recipe.getActionChannel()
-										.getActorRef()
-										.tell(
-										/*
-										 * Message to be told: we send the
-										 * message of the first trigger found
-										 */
-										recipe.getTriggerChannel().getTriggers().stream()
-												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
-												.getClass().newInstance(),
-										/* Sender */
-										recipe.getTriggerChannel().getActorRef());
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						});
+//		Ebean.find(Recipe.class)
+//				.findList()
+//				.parallelStream()
+//				/* Now we have a stream, we filter on the id of TriggerChannel */
+//				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
+//				/* And now we send a message to each channel */
+//				.forEach(
+//						recipe -> {
+//							/* This actor is the object which will be told */
+//							try {
+//								recipe.getActionChannel()
+//										.getActorRef()
+//										.tell(
+//										/*
+//										 * Message to be told: we send the
+//										 * message of the first trigger found
+//										 */
+//										recipe.getTriggerChannel().getTriggers().stream()
+//												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
+//												.getClass().newInstance(),
+//										/* Sender */
+//										recipe.getTriggerChannel().getActorRef());
+//							} catch (Exception e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						});
 
 		return ok();
 	}
@@ -319,11 +325,11 @@ public class Application extends Controller {
 		// long recipeId = Long.parseLong( requestData.get("RecipeOff") );
 		// search the recipe and update it:
 		Recipe r = userLoggedIn.getRecipes().get(0);
-		if (requestData.get("RecipeOff") != null && r.getActive()) {
+		if (requestData.get("RecipeOff") != null && r.isActive()) {
 			r.setActive(false);
 			r.getLog().add("Recipe turned off.");
 			r.save();
-		} else if (requestData.get("RecipeOn") != null && r.getActive() == false) {
+		} else if (requestData.get("RecipeOn") != null && r.isActive() == false) {
 			r.setActive(true);
 			r.getLog().add("Recipe turned on.");
 			r.save();

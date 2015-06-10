@@ -20,15 +20,18 @@ import akka.actor.ActorSystem;
 @SuppressWarnings("rawtypes")
 public class Controller {
 
-	private static Controller controller = new Controller();
-	private ActorSystem system = ActorSystem.create("helloakka");
+	private static Controller controller;
+	private ActorSystem system;
 	/**
 	 * There is one here but you're able to create as much as you want. For
 	 * example, one may use to set one for each device group.
 	 */
-	private RandomScheduler scheduler = new RandomScheduler();
+	private RandomScheduler scheduler;
 
 	public static Controller get() {
+		if (controller == null) {
+			controller = new Controller();
+		}
 		return Controller.controller;
 	}
 
@@ -41,6 +44,8 @@ public class Controller {
 	}
 
 	private Controller() {
+		this.system = ActorSystem.create("helloakka");
+		this.scheduler = new RandomScheduler();
 	}
 
 	/**
@@ -109,7 +114,6 @@ public class Controller {
 			ActorPath actionActor, UnaryOperator<Object> actionFunction) {
 
 		Future<ActorRef> a = system.actorSelection(triggerActor).resolveOne(Duration.apply(2, TimeUnit.SECONDS));
-		a.onSuccess(arg0, arg1);
 
 	}
 

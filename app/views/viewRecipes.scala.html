@@ -86,12 +86,12 @@
 			</div>
 		</div>
 		<br>
-		<span><a class='personal-recipe-manage_description' > @recipe.getTitle() </a></span>
+		<span><a class='personal-recipe-manage_description' > @recipe.getName() </a></span>
 		
 		<div class='personal-recipe-manage_meta'>
 			<div class='personal-recipe-manage_buttons'>
 				<span><div id="statement_create">
-					@if(recipe.getActive()){
+					@if(recipe.isActive()){
 						<a class='personal-recipe-activation_ON' > Recipe ACTIVE </a>
 						<br>
 						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 

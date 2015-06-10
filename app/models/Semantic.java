@@ -16,7 +16,13 @@ import play.db.ebean.Model;
  * I've been trying to make something "object-oriented" with trigger and actions
  * but it gives me a NullPointerException in the play framework. Would it be a
  * inner bug?
+ * 
+ * http://www.java-tips.org/java-ee-tips-100042/17-enterprise-java-beans/1959-
+ * inheritance-and-the-java-persistence-api.html
+ * 
+ * Expected children: Trigger and Action
  */
+@Deprecated
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Semantic extends Model {

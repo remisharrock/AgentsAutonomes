@@ -13,19 +13,24 @@ import play.db.ebean.Model;
 @Entity
 public class Action extends Model {
 
+	private static final long serialVersionUID = 1L;
+
 	public static Model.Finder<Long, Action> find = new Model.Finder<Long, Action>(Long.class, Action.class);
 
 	protected String name;
+	/**
+	 * Important to be able to get it from this class because it can simplify
+	 * Recipe contructor.
+	 */
 	@ManyToOne(cascade = CascadeType.ALL)
-	private Channel channel;
+	protected Channel channel;
 	@SuppressWarnings("rawtypes")
-	@OneToMany(mappedBy = "action", cascade=CascadeType.ALL)
-	private List<Field> fields;
+	@OneToMany(mappedBy = "action", cascade = CascadeType.ALL)
+	protected List<Field> fields;
 
 	@Id
-	private long id;
-	private String description;
-	private static final long serialVersionUID = 1L;
+	protected long id;
+	protected String description;
 
 	public Action(@SuppressWarnings("rawtypes") List<Field> fields, Channel channel, String name, String description) {
 		this.fields = fields;
@@ -34,26 +39,19 @@ public class Action extends Model {
 		this.description = description;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(@SuppressWarnings("rawtypes") List<Field> fields) {
-		this.fields = fields;
+	/**
+	 * id should be final, but if so the constructor should set it. This trick
+	 * avoids it.
+	 * 
+	 * @param id
+	 */
+	@SuppressWarnings("unused")
+	private void setId(long id) {
 	}
 
 	/*
-	 * From here, generated methods
+	 * Below, generated methods.
 	 */
-
-	public static Model.Finder<Long, Action> getFind() {
-		return find;
-	}
-
-	public static void setFind(Model.Finder<Long, Action> find) {
-		Action.find = find;
-	}
 
 	public String getName() {
 		return name;
@@ -71,14 +69,6 @@ public class Action extends Model {
 		this.channel = channel;
 	}
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -87,7 +77,19 @@ public class Action extends Model {
 		this.description = description;
 	}
 
+	public long getId() {
+		return id;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<Field> fields) {
+		this.fields = fields;
 	}
 }
