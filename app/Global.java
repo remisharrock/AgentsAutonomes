@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
 
 import messages.AllMessages;
 import models.Action;
@@ -16,6 +21,8 @@ import actors.AllActors;
 import actors.StdRandom;
 
 import com.avaje.ebean.Ebean;
+
+import controllers.routes.javascript;
 
 public class Global extends GlobalSettings {
 
@@ -194,18 +201,41 @@ public class Global extends GlobalSettings {
 
 		lamp.save();
 
-		/**
-		 * Example how to schedule a random action to be performed.
+		/*
+		 * Example how to schedule a random action to be performed. Here we
+		 * randomly send two actions to the lamp : it will result in a somewhat
+		 * erratic behaviour.
 		 */
-		AllActors.random.scheduleActionMessage(Duration.Zero(), AllActors.lamp,
-				Void -> new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
+		AllActors.random.scheduleActionMessage(Duration.Zero(), AllActors.lamp, new AllMessages.TurnOnLamp(true),
+				Void -> 3 * StdRandom.gaussian(5, 2));
+		AllActors.random.scheduleActionMessage(Duration.Zero(), AllActors.lamp, new AllMessages.TurnOffLamp(true),
+				Void -> 3 * StdRandom.gaussian(5, 2));
+		/*
+		 * The example above is poor. It's much nicer to use a function to
+		 * define on-the-fly which message will be sent. Then, we cancel all
+		 * we've done and we start again in a more proper way.
+		 */
+		AllActors.random.cancelAll(); // forget all we've done.
+		AllActors.random.scheduleActionMessage(
+		/* The initialisation delay */
+		Duration.Zero(),
+		/* The actor which will receive messages */
+		AllActors.lamp,
+		/* This function which will be called to define each message on the fly. */
+		Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true) : new AllMessages.TurnOnLamp(true),
+		/* As this function takes no argument, we show it with Void. */
+		Void -> 3 * StdRandom.gaussian(5, 2));
 
-		// } else {
-		// List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// for (Channel c : channelsList) {
-		// System.out.println(c);
-		// }
-		// }
+		/*
+		 * To make it clear about functions defined on the fly, this is such a
+		 * function that can multiply an integer by two:
+		 */
+		Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
+		/*
+		 * It's the same but the semantic is more precise to change for an unary
+		 * operator:
+		 */
+		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
 	}
 
 	public void onStop(Application app) {

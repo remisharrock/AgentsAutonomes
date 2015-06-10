@@ -57,13 +57,18 @@ public class RandomScheduler /* implements akka.actor.Scheduler */{
 	 * @param init
 	 * @param actionActor
 	 * @param actionFunction
-	 *            returns a message
+	 *            returns a message. This is used to define a message
+	 *            on-the-fly. It means, the action sent can change each time
+	 *            this schedule makes a tick.
 	 * @param randomFunction
 	 *            returns each time a random number according to your need.
 	 */
 	public CancellableRef scheduleActionMessage(FiniteDuration init, ActorRef triggerActor, ActorRef actionActor,
 			Function<Void, Object> actionFunction, Function<Void, Number> randomFunction) {
 
+		// A cencellable is a schedule object which alos has a button "stop".
+		// Then it's useful if you want to stop it. In this implementation you
+		// only can stop all random messages in a whole.
 		CancellableRef cancellableRef = new CancellableRef(system.scheduler().scheduleOnce(init, new Runnable() {
 			@Override
 			public void run() {
