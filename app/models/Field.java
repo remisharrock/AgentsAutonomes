@@ -1,8 +1,12 @@
 package models;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import play.db.ebean.Model;
 
@@ -15,18 +19,27 @@ public class Field extends Model {
 	
 	private String name;
 	
-	private String description;
+	private String value;
 	
-	@ManyToOne
-	private Trigger trigger;
+//	@OneToOne(mappedBy="field", cascade=CascadeType.ALL)
+//	private Trigger trigger;
+//	
+//	@OneToOne(mappedBy="field", cascade=CascadeType.ALL)
+//	private Action action;
 	
-	@ManyToOne
-	private Action action;
+	//RECIPES WHERE THE field IS FOR A TRIGGER
+	@OneToMany
+	private List<Recipe> triggerRecipes;
+	
+	//RECIPES WHERE THE field IS FOR AN ACTION
+	@OneToMany
+	private List<Recipe> actionRecipes;
 	
 	
-	public Field(String name, String description) {
+	
+	public Field(String name, String value) {
 		this.name = name;
-		this.description = description;
+		this.value = value;
 	}
 	
 	
@@ -42,29 +55,63 @@ public class Field extends Model {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
+//	public String getDescription() {
+//		return description;
+//	}
+//
+//	public void setDescription(String description) {
+//		this.description = description;
+//	}
+
+//	public Trigger getTrigger() {
+//		return trigger;
+//	}
+//
+//	public void setTrigger(Trigger trigger) {
+//		this.trigger = trigger;
+//	}
+//	
+//	public Action getAction() {
+//		return action;
+//	}
+//
+//	public void setAction(Action action) {
+//		this.action = action;
+//	}
+
+	public String getValue() {
+		return value;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Trigger getTrigger() {
-		return trigger;
-	}
-
-	public void setTrigger(Trigger trigger) {
-		this.trigger = trigger;
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
-	public Action getAction() {
-		return action;
+
+	public List<Recipe> getTriggerRecipes() {
+		return triggerRecipes;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;
+	public void setTriggerRecipes(List<Recipe> triggerRecipes) {
+		this.triggerRecipes = triggerRecipes;
 	}
+
+	public List<Recipe> getActionRecipes() {
+		return actionRecipes;
+	}
+
+	public void setActionRecipes(List<Recipe> actionRecipes) {
+		this.actionRecipes = actionRecipes;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Field [name=" + name + ", value=" + value + "]";
+	}
+
+
+	
 	
 	
 }

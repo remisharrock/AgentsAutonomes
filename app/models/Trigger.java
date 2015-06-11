@@ -2,11 +2,14 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 
@@ -19,6 +22,7 @@ public class Trigger extends Model {
 	@Id
 	private long id;
 	
+	@Required
 	private String name;
 	
 	private String description;
@@ -29,8 +33,11 @@ public class Trigger extends Model {
 	@ManyToOne
 	private Channel channel;
 	
-	@OneToMany 
-	private List<Field> fields;
+	@OneToOne
+	private String fieldName;
+	
+	@OneToMany
+	private List<Recipe> recipes;
 	
 	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
 			Long.class, Trigger.class);
@@ -88,10 +95,30 @@ public class Trigger extends Model {
 //	public Class getMessageRef(){
 //		return messageRef;
 //	}
-
-	public List<Field> getFields() {
-		return this.fields;
+	
+	public String getFieldName() {
+		return fieldName;
 	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+
+	@Override
+	public String toString() {
+		return "Trigger [id=" + id + ", name=" + name + ", description="
+				+ description + ", channel=" + channel + "]";
+	}
+	
+	
 	
 	
 }

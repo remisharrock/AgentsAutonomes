@@ -2,23 +2,6 @@
 @import java.math.BigInteger; var pointer=0; 
 @main("Choose your action") {
 
-<header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
-			</div>
-		</div>
-	</div>
-</header>
-
 <article class="l-page-content">
 	<div id="statement_create">
 		<form class="navbar-form pull-right"
@@ -47,28 +30,26 @@
 			
 			<div class="l-clearfix action_fields form-euprimary">
 			
-			@if(action.getFields.size() > 0) {
+			@if(action.getFieldName() != null && action.getFieldName() != "") {
 				<div class="action-field">
-				@for(field <- action.getFields()) {
 					<label class="action-field_label" for="string_value">
-					<img alt="@field.getName()" 
+					<img alt="@action.getFieldName()" 
 					class="simple-recipe-field_channel-icon" 
 					src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/small.png"
-					title="@field.getName()">
-					@field.getName()
+					title="@action.getFieldName()">
+					@action.getFieldName()
 					</label>
 					<div class="clear"></div>
 					<input autocapitalize="off" autocorrect="off" class="tf-text" 
 					id="statement_live_action_attributes_live_action_fields_attributes_@{pointer}_string_value"
-					name="field.getName()"
+					name="action.getField().getName()"
 					size="30"
 					type="text" value>
 					<div class="action_field_helper_text">
 						Write here ... :)
 					</div>
 				</div>
-				@{pointer+=1}
-				}
+
 				</div>
 			} else {
 				<p class="no_fields">

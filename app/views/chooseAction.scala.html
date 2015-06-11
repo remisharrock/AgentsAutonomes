@@ -2,24 +2,6 @@
 @import java.math.BigInteger; var counter=0; 
 @main("Choose your action") {
 
-<header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
-			</div>
-		</div>
-	</div>
-</header>
-
-
 <article class="l-page-content">
 	<div id="statement_create">
 		<form class="navbar-form pull-right"
@@ -51,7 +33,7 @@
 		<a class="action-list_item" data-track-data="{\"controller\":"statements","action":"choose_action","action_id":@action.getId(),"funnel":{"primary":"new_statement","primary_id":"3d7bbe4e0ac4655368202002e6b8f543"}}"
 		 data-track-event="src_choose_action" 
 		 data-action_id="@action.getId()" 
-		 href="@routes.Application.completeActionFields(channel.getId())" 
+		 href="@routes.Application.completeActionFields(action.getId())" 
 		 id="action_@action.getId()">
 		 	<h3 class="action-list_item_name">@action.getName()</h3>
 		 	<p class="action-list_item_desc">@action.getDescription()</p>

@@ -146,7 +146,7 @@ body {
 	}
 }
 
-.trigger-list_item, .action-list_item, .activation-list_item {
+.trigger-list_item, .action-list_item {
 	display: block;
 	float: left;
 	width: 279px;
@@ -165,31 +165,31 @@ body {
 }
 
 @media ( min-width : 960px) {
-	.non-forced-fullwidth .trigger-list_item.last, .non-forced-fullwidth .action-list_item.last, .non-forced-fullwidth .activation-list_item.last
+	.non-forced-fullwidth .trigger-list_item.last, .non-forced-fullwidth .action-list_item.last
 		{
 		margin-right: 0
 	}
 }
 
-.trigger-list_item:hover, .action-list_item:hover, .activation-list_item:hover {
+.trigger-list_item:hover, .action-list_item:hover {
 	border-color: #ccc
 }
 
 @media ( min-width : 720px) and (max-width: 959px) {
-	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item, .non-forced-fullwidth .activation-list_item
+	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item
 		{
 		margin: 5px 10px 5px 0px
 	}
 }
 
 @media ( max-width : 719px) {
-	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item, .non-forced-fullwidth .activation-list_item
+	.non-forced-fullwidth .trigger-list_item, .non-forced-fullwidth .action-list_item
 		{
 		margin: 12px 0 0 0;
 		min-height: 110px;
 		width: 88%
 	}
-	.non-forced-fullwidth .trigger-list_item:after, .non-forced-fullwidth .action-list_item:after, .non-forced-fullwidth .activation-list_item:after
+	.non-forced-fullwidth .trigger-list_item:after, .non-forced-fullwidth .action-list_item:after
 		{
 		content: "";
 		display: table;

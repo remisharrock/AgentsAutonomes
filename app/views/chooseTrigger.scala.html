@@ -2,23 +2,6 @@
 @import java.math.BigInteger; var counter=0; 
 @main("Choose your trigger") {
 
-<header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
-			</div>
-		</div>
-	</div>
-</header>
-
 <article class="l-page-content">
 	<div id="statement_create">
 		<form class="navbar-form pull-right"
@@ -50,7 +33,7 @@
 		<a class="trigger-list_item" data-track-data="{\"controller\":"statements","action":"choose_trigger","trigger_id":@trigger.getId(),"funnel":{"primary":"new_statement","primary_id":"3d7bbe4e0ac4655368202002e6b8f543"}}"
 		 data-track-event="src_choose_trigger" 
 		 data-trigger_id="@trigger.getId()" 
-		 href="@routes.Application.completeTriggerFields(channel.getId())" 
+		 href="@routes.Application.completeTriggerFields(trigger.getId())" 
 		 id="trigger_@trigger.getId()">
 		 	<h3 class="trigger-list_item_name">@trigger.getName()</h3>
 		 	<p class="trigger-list_item_desc">@trigger.getDescription()</p>

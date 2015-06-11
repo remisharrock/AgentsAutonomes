@@ -1,94 +1,164 @@
 package actors;
+import java.util.HashMap;
 
-import messages.AllMessages.DetectionOff;
-import messages.AllMessages.DetectionOn;
-import messages.AllMessages.EnterRoom;
-import messages.AllMessages.ExitRoom;
-import akka.actor.ActorRef;
+import models.RecipeAkka;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
 
-public final class AllActors {
+public class AllActors {
 	private AllActors() {
-	}
+    }
 
+	
+	
 	public final static ActorSystem system = ActorSystem.create("helloakka");
-	public final static RandomScheduler random = new RandomScheduler(system);
+    
+//    public final static ActorRef humanActor = system.actorOf(Props.create(HumanActor.class), "human");
+//    public final static ActorRef detectorActor = system.actorOf(Props.create(DetectorActor.class), "detector");
+//    public final static ActorRef lampActor = system.actorOf(Props.create(LampActor.class), "lamp");
+//    public final static ActorRef luminosityDetectorActor = system.actorOf(Props.create(LuminosityDetectorActor.class), "luminosityDetector");
+	
 
-	public final static ActorRef human = system.actorOf(Props.create(Human.class), "human");
-	public final static ActorRef detector = system.actorOf(Props.create(Detector.class), "detector");
-	public final static ActorRef lamp = system.actorOf(Props.create(Lamp.class), "lamp");
-	public final static ActorRef luminosityDetector = system.actorOf(Props.create(LuminosityDetector.class),
-			"luminosityDetector");
+	
 
-	public static class Human extends UntypedActor {
+	
+
+	
+	public class HumanActor extends UntypedActor {
+        String state = "";
+        String id;
+        public HumanActor(String id) {
+        	id = this.id;
+        }
+        
+        public HumanActor() {
+        	
+        }
+        
+        public void onReceive(Object message) {
+        }
+    }
+	
+	public class DetectorActor extends UntypedActor {
+	
+			
 		String state = "";
-
-		public void onReceive(Object message) {
+		String id;
+		
+		public DetectorActor(String id) {
+        	id = this.id;
 		}
-	}
-
-	public static class Detector extends UntypedActor {
-
-		String state = "";
-
+		
+		public DetectorActor() {
+			
+		}
+		
 		@Override
 		public void onReceive(Object message) throws Exception {
 			// TODO Auto-generated method stub
-			if (message instanceof EnterRoom) {
-				System.out.println("Detector Actor: DETECTION ON");
-				if (((EnterRoom) message).getChangeState())
-					lamp.tell(new DetectionOn(true), getSelf());
-				else
-					lamp.tell(new DetectionOn(false), getSelf());
-
-				state = "Detector: Someone entered the room";
-			} else if (message instanceof ExitRoom) {
-				// Send the current greeting back to the sender
-				System.out.println("Detector Actor: DETECTION OFF");
-				if (((ExitRoom) message).getChangeState())
-					lamp.tell(new DetectionOff(true), getSelf());
-				else
-					lamp.tell(new DetectionOff(false), getSelf());
-				state = "Detector: Someone left the room";
-			} else
-				unhandled(message);
+//			if (message instanceof EnterRoom) {
+//	            System.out.println("Detector Actor: DETECTION ON");
+//	            if (((EnterRoom) message).getChangeState())
+//	            	lampActor.tell(new DetectionOn(true), getSelf());
+//	            else lampActor.tell(new DetectionOn(false), getSelf());
+//	            
+//	            state = "Detector: Someone entered the room";
+//	        }
+//	        else if (message instanceof ExitRoom) {
+//	            // Send the current greeting back to the sender
+//	            System.out.println("Detector Actor: DETECTION OFF");
+//	            if (((ExitRoom) message).getChangeState())
+//	            	lampActor.tell(new DetectionOff(true), getSelf());
+//	            else lampActor.tell(new DetectionOff(false), getSelf());
+//	            state = "Detector: Someone left the room";
+//	        }
+//	        else unhandled(message);
 		}
 	}
-
-	public static class Lamp extends UntypedActor {
-		public static String state = "OFF";
-
-		public void onReceive(Object message) {
-			if (message instanceof DetectionOn) {
-				if (((DetectionOn) message).getChangeState()) {
-					System.out.println("Lamp Actor: LAMP ON");
-					state = "ON";
-				} else {
-					System.out.println("Detection ok But LAMP state didn't change");
-				}
-			}
-
-			else if (message instanceof DetectionOff) {
-				// Send the current greeting back to the sender
-				if (((DetectionOff) message).getChangeState()) {
-					System.out.println("Lamp Actor: LAMP OFF");
-					state = "OFF";
-				} else {
-					System.out.println("Detection ok But LAMP state didn't change");
-				}
-			} else
-				unhandled(message);
+	
+	public class LampActor extends UntypedActor {
+        public String state = "OFF";
+        
+        String id;
+        
+        public LampActor(String id) {
+        	id = this.id;
+        }
+        
+        //This constructor is necessary
+        public LampActor() {
 		}
-	}
 
-	public static class LuminosityDetector extends UntypedActor {
+        public void onReceive(Object message) {
+//            if (message instanceof DetectionOn) {
+//            	if (((DetectionOn) message).getChangeState()) {
+//                		System.out.println("Lamp Actor: LAMP ON");
+//                        state = "ON";
+//                } else {
+//            		System.out.println("Detection ok But LAMP state didn't change");
+//            	}  
+//            }
+//
+//            else if (message instanceof DetectionOff) {
+//                // Send the current greeting back to the sender
+//            	if (((DetectionOff) message).getChangeState()) {
+//            		System.out.println("Lamp Actor: LAMP OFF");
+//                    state = "OFF";
+//            	} else {
+//            		System.out.println("Detection ok But LAMP state didn't change");
+//            	}
+//            }
+//            else unhandled(message);
+        }
+    }
+	
+	public class LuminosityDetectorActor extends UntypedActor {
 
-		public void onReceive(Object message) {
-
-			unhandled(message);
+		String id;
+		public LuminosityDetectorActor(String id) {
+        	id = this.id;
 		}
-	}
 
+		public LuminosityDetectorActor() {
+		}
+		
+        public void onReceive(Object message) {
+        
+            unhandled(message);
+        }
+    }
+
+	
+    
+	/* this hashmap will be used to get the .class of the class from the class name
+	 when creating the recipe, we only have the class name of the actor that we want to work
+	 with, but it will be difficult for us to get the .class
+	 So this hashmap will return the .class by simply giving the classname
+	 
+	 !! The downside is that this map has to be filled manually 
+	 */
+	private static final HashMap<String, Class<?>> mapClassNameActor;
+	static
+    {
+		mapClassNameActor = new HashMap<String, Class<?>>();
+		mapClassNameActor.put("HumanActor", HumanActor.class);
+		mapClassNameActor.put("DetectorActor", DetectorActor.class);
+		mapClassNameActor.put("LampActor", LampActor.class);
+		mapClassNameActor.put("LuminosityDetectorActor", LuminosityDetectorActor.class);
+    }
+	
+	
+//	private static final HashMap<String, String> mapClassNameActor;
+//	static
+//    {
+//		mapClassNameActor = new HashMap<String, String>();
+//		mapClassNameActor.put("HumanActor", "HumanActor");
+//		mapClassNameActor.put("DetectorActor", "HumanActor");
+//		mapClassNameActor.put("LampActor", "HumanActor");
+//		mapClassNameActor.put("LuminosityDetectorActor", "HumanActor");
+//    }
+	
+	public static HashMap<String, Class<?>> getMapClassNameActor(){
+		return mapClassNameActor;
+	}
 }
