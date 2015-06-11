@@ -82,7 +82,8 @@ public class MessageMap {
 	}
 
 	/**
-	 * Bon appétit.
+	 * Bon appétit. One might find interesting to know I broke Eclipse syntax
+	 * hightlighter and code formatter when writing this piece.
 	 */
 	public List<UnaryOperator<Object>> getMappersByName(String name) {
 		return container.entrySet().parallelStream().flatMap(e -> e.getValue().values().parallelStream())

@@ -8,19 +8,18 @@ import models.Modality;
 import models.Recipe;
 import models.Trigger;
 import models.User;
-import play.Application;
 import play.GlobalSettings;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import actors.AllActors;
 import actors.AllMessages;
 import actors.AllMessages.Lamp;
-import actors.AllMessages.Lamp.TurnOn;
+import actors.Commutator;
 import actors.StdRandom;
 
 import com.avaje.ebean.Ebean;
 
-import controllers.Controller;
+import controllers.Application;
 
 public class Global extends GlobalSettings {
 
@@ -194,16 +193,16 @@ public class Global extends GlobalSettings {
 		 * How to programmatically instanciate actor for a Channel. Beware of
 		 * the name uniqueness constraint (if not null).
 		 */
-		Controller.sys().createActorOf(human, "Alice");
-		Controller.sys().createActorOf(human, "Bob");
-		Controller.sys().createActorOf(human, "Jean-Kevin");
+		Application.getSystemProxy().createActorOf(human, "Alice");
+		Application.getSystemProxy().createActorOf(human, "Bob");
+		Application.getSystemProxy().createActorOf(human, "Jean-Kevin");
 
 		/*
 		 * Example how to schedule a random action to be performed.
 		 */
-		Controller.getScheduler().scheduleActionMessage(
+		Application.getScheduler().scheduleActionMessage(
 				Duration.Zero(),
-				Controller.sys().getStaticActorFor(lamp),
+				Application.getSystemProxy().getStaticActorFor(lamp),
 				Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true)
 						: new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
 
@@ -212,21 +211,21 @@ public class Global extends GlobalSettings {
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
 		 */
-		Controller.recipeOf(Controller.sys().getStaticActorFor(detector), AllMessages.DetectionOn.class,
-				"TurnOnLampWhenDetectorRecipe",
-				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~", Controller
-						.sys().getStaticActorFor(lamp), triggerMessage -> new AllMessages.TurnOnLamp(true));
+		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
+				AllMessages.DetectionOn.class, "TurnOnLampWhenDetectorRecipe",
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
+				Application.getSystemProxy().getStaticActorFor(lamp), triggerMessage -> new AllMessages.TurnOnLamp(true));
 
 		/*
 		 * More powerful example. This might seem weird, example from previous
 		 * commit should be easier (without mapper).
 		 */
-		Controller.recipeOf(Controller.sys().getStaticActorFor(manythings),//
+		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(manythings),//
 				AllMessages.Manythings.MotionDetected.class,//
 				"TurnOnLampWhenMovementRecipe",//
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
-				Controller.sys().getStaticActorFor(lamp),//
-				Controller.getMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
+				Application.getSystemProxy().getStaticActorFor(lamp),//
+				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
 
 		System.out.println(Ebean.find(Channel.class).findRowCount());
 		// if (Ebean.find(Channel.class).findRowCount() != 0) {
@@ -288,9 +287,9 @@ public class Global extends GlobalSettings {
 		 * randomly send two actions to the lamp : it will result in a somewhat
 		 * erratic behaviour.
 		 */
-		Controller.getScheduler().scheduleActionMessage(Duration.Zero(), Controller.sys().getStaticActorFor(lamp),
+		Application.getScheduler().scheduleActionMessage(Duration.Zero(), Application.getSystemProxy().getStaticActorFor(lamp),
 				new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
-		Controller.getScheduler().scheduleActionMessage(Duration.Zero(), Controller.sys().getStaticActorFor(lamp),
+		Application.getScheduler().scheduleActionMessage(Duration.Zero(), Application.getSystemProxy().getStaticActorFor(lamp),
 				new AllMessages.TurnOffLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
 
 		/*
@@ -298,12 +297,12 @@ public class Global extends GlobalSettings {
 		 * define on-the-fly which message will be sent. Then, we cancel all
 		 * we've done and we start again in a more proper way.
 		 */
-		Controller.getScheduler().cancelAll(); // forget all we've done.
-		Controller.getScheduler().scheduleActionMessage(
+		Application.getScheduler().cancelAll(); // forget all we've done.
+		Application.getScheduler().scheduleActionMessage(
 		/* The initialisation delay */
 		Duration.Zero(),
 		/* The actor which will receive messages */
-		Controller.sys().getStaticActorFor(lamp),
+		Application.getSystemProxy().getStaticActorFor(lamp),
 		/*
 		 * This function which will be called to define each message on the fly.
 		 */

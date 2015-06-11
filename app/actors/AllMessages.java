@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 import javax.xml.bind.TypeConstraintException;
 
+import controllers.Application;
 import actors.AllMessages.Lamp.TurnOn;
-import controllers.Controller;
 
 public final class AllMessages {
 
 	{
 		// At initialization we define some common mappings
-		Controller
-				.getMap()
+		Application
+				.getMessageMap()
 				.setMapper(Manythings.MotionDetected.class,
 						Lamp.TurnOn.class,
 						triggerMessage -> {

@@ -23,13 +23,13 @@ create table channel (
   constraint pk_channel primary key (id))
 ;
 
-create table field (
+create table modality (
   id                        bigint not null,
   name                      varchar(255),
   description               varchar(255),
   trigger_id                bigint,
   action_id                 bigint,
-  constraint pk_field primary key (id))
+  constraint pk_modality primary key (id))
 ;
 
 create table recipe (
@@ -68,7 +68,7 @@ create sequence actor_seq;
 
 create sequence channel_seq;
 
-create sequence field_seq;
+create sequence modality_seq;
 
 create sequence recipe_seq;
 
@@ -78,10 +78,10 @@ create sequence user_seq;
 
 alter table action add constraint fk_action_channel_1 foreign key (channel_id) references channel (id) on delete restrict on update restrict;
 create index ix_action_channel_1 on action (channel_id);
-alter table field add constraint fk_field_trigger_2 foreign key (trigger_id) references trigger (id) on delete restrict on update restrict;
-create index ix_field_trigger_2 on field (trigger_id);
-alter table field add constraint fk_field_action_3 foreign key (action_id) references action (id) on delete restrict on update restrict;
-create index ix_field_action_3 on field (action_id);
+alter table modality add constraint fk_modality_trigger_2 foreign key (trigger_id) references trigger (id) on delete restrict on update restrict;
+create index ix_modality_trigger_2 on modality (trigger_id);
+alter table modality add constraint fk_modality_action_3 foreign key (action_id) references action (id) on delete restrict on update restrict;
+create index ix_modality_action_3 on modality (action_id);
 alter table recipe add constraint fk_recipe_triggerChannel_4 foreign key (trigger_channel_id) references channel (id) on delete restrict on update restrict;
 create index ix_recipe_triggerChannel_4 on recipe (trigger_channel_id);
 alter table recipe add constraint fk_recipe_trigger_5 foreign key (trigger_id) references trigger (id) on delete restrict on update restrict;
@@ -107,7 +107,7 @@ drop table if exists actor;
 
 drop table if exists channel;
 
-drop table if exists field;
+drop table if exists modality;
 
 drop table if exists recipe;
 
@@ -123,7 +123,7 @@ drop sequence if exists actor_seq;
 
 drop sequence if exists channel_seq;
 
-drop sequence if exists field_seq;
+drop sequence if exists modality_seq;
 
 drop sequence if exists recipe_seq;
 

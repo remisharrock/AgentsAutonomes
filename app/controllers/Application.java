@@ -29,11 +29,36 @@ import views.html.index;
 import views.html.viewRecipeLog;
 import views.html.viewRecipes;
 import actors.AllActors;
-import actors.AllMessages;
+import actors.Commutator;
+import actors.MessageMap;
+import actors.MockUp;
+import actors.RandomScheduler;
+import actors.SystemProxy;
 
 import com.avaje.ebean.Ebean;
 
 public class Application extends Controller {
+
+	private static RandomScheduler randomScheduler = new RandomScheduler();
+	private static MessageMap messageMap = new MessageMap();
+	private static SystemProxy systemProxy = new MockUp();
+	private static Commutator commutator = new Commutator();
+
+	public static RandomScheduler getScheduler() {
+		return randomScheduler;
+	}
+
+	public static SystemProxy getSystemProxy() {
+		return systemProxy;
+	}
+
+	public static MessageMap getMessageMap() {
+		return messageMap;
+	}
+
+	public static Commutator getCommutator() {
+		return commutator;
+	}
 
 	public static String turnOnCheckbox = "";
 	public static String turnOffCheckbox = "";
@@ -284,8 +309,8 @@ public class Application extends Controller {
 						recipe -> {
 							/* This actor is the object which will be told */
 							try {
-								controllers.Controller
-										.sys()
+								Application
+										.getSystemProxy()
 										.getStaticActorFor(recipe.getActionChannel())
 										.tell(
 										/*
@@ -296,7 +321,7 @@ public class Application extends Controller {
 												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
 												.getClass().newInstance(),
 										/* Sender */
-										controllers.Controller.sys().getStaticActorFor(recipe.getTriggerChannel()));
+										Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()));
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

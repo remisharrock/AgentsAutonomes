@@ -3,10 +3,10 @@ package actors;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import controllers.Application;
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorRef;
 import akka.actor.Cancellable;
-import controllers.Controller;
 
 /**
  * TODO
@@ -55,7 +55,7 @@ public class RandomScheduler /* implements akka.actor.Scheduler */{
 	public CancellableRef scheduleActionMessage(FiniteDuration init, ActorRef triggerActor, ActorRef actionActor,
 			Function<Void, Object> actionFunction, Function<Void, Number> randomFunction) {
 
-		CancellableRef cancellableRef = new CancellableRef(((MockUp) Controller.sys()).tem().scheduler()
+		CancellableRef cancellableRef = new CancellableRef(((MockUp) Application.getSystemProxy()).tem().scheduler()
 				.scheduleOnce(init, new Runnable() {
 					@Override
 					public void run() {
@@ -63,7 +63,7 @@ public class RandomScheduler /* implements akka.actor.Scheduler */{
 								: triggerActor);
 						scheduleActionMessage(init, actionActor, actionFunction, randomFunction);
 					}
-				}, ((MockUp) Controller.sys()).tem().dispatcher()));
+				}, ((MockUp) Application.getSystemProxy()).tem().dispatcher()));
 
 		tickingCancellables.add(cancellableRef);
 		return cancellableRef;

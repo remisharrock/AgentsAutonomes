@@ -25,7 +25,7 @@ Parler des patrons de conception : `Controller` est singleton et contient le seu
 
 Java 8 permet une manipulation intuitive des collections de données grace au λ-calcul (`filter`, `map`, `flatMap`)
 
-### Un défaut conceptuel
+### Un défaut conceptuel : le serpent qui se mord la queue
 
 Dans toute discussion sur ce sujet, nous commençons toujours par parler des canaux pour en venir ensuite aux acteurs, définis par rapport aux canaux. Notre utilisation de akka est sur ce point erronnée car nous définissons les acteurs dans le code et les canaux dans la base. Il serait séduisant de définir et de charger dynamiquement les classes des acteurs rendues nécessaires par les canaux.
 
@@ -39,6 +39,10 @@ Tout bien réfléchi, les acteurs ont tout de même une intelligence qui échapp
 
 En fin de compte, restons comme nous sommes. Les deux doivent être définis en étroite accointance.
 
+### What « Model is an abstraction of Actor » and how we could implement it
+
+Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
+
 ### Utilisation
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…
@@ -46,8 +50,9 @@ Parler des classes et des manières « pratiques » de les utiliser avec des exe
 ### Dernière soutenance
 
 Ce qui fait briller les yeux de Mme Vigne :
- * Qualimétrie
- * Java 8
+ * Qualimétrie (pas encore fait)
+ * Java 8 : fux, lambda-calcul
+ * Interface fonctionnelle : on doit bien pouvoir en placer une
  * Réification des génériques
  * Patrons de conception
  * …

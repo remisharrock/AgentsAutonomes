@@ -12,6 +12,15 @@ import akka.actor.UntypedActor;
 
 import com.avaje.ebean.Ebean;
 
+/**
+ * Model is an abstraction of Actor. Because it takes a class reference, one
+ * could have subtypes of this class. By the way, the best abstraction would be
+ * to link a model to an interface which some actors would implements. It would
+ * allow something like multiple inheritance. As an actor would implements
+ * several interfaces, it could be sent different messages. The main issue with
+ * this idea is an actor only receive message by onReceive() and the message
+ * sending protocol doesn't imply any other method.
+ */
 @Entity
 public class Channel extends Model {
 
@@ -77,6 +86,9 @@ public class Channel extends Model {
 		return clazz;
 	}
 
+	/**
+	 * This allows a recipe to be an abstraction
+	 */
 	public void setName(Class<? extends UntypedActor> clazz) {
 		this.clazz = clazz;
 	}
