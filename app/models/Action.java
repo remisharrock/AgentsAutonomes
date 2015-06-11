@@ -26,13 +26,13 @@ public class Action extends Model {
 	protected Channel channel;
 	@SuppressWarnings("rawtypes")
 	@OneToMany(mappedBy = "action", cascade = CascadeType.ALL)
-	protected List<Field> fields;
+	protected List<Modality> fields;
 
 	@Id
 	protected long id;
 	protected String description;
 
-	public Action(@SuppressWarnings("rawtypes") List<Field> fields, Channel channel, String name, String description) {
+	public Action(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, String name, String description) {
 		this.fields = fields;
 		this.name = name;
 		this.channel = channel;
@@ -85,11 +85,11 @@ public class Action extends Model {
 		return serialVersionUID;
 	}
 
-	public List<Field> getFields() {
+	public List<Modality> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<Field> fields) {
+	public void setFields(List<Modality> fields) {
 		this.fields = fields;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
 import controllers.Controller;
 
@@ -20,17 +19,11 @@ import controllers.Controller;
  * </p>
  */
 public class RandomScheduler /* implements akka.actor.Scheduler */{
-	/**
-	 * TODO Hey, wait! shouldn't we make it final?
-	 */
-	private ActorSystem system = Controller.get().system();
 
-	private ArrayList<CancellableRef> tickingCancellables;
+	private ArrayList<CancellableRef> tickingCancellables = new ArrayList<RandomScheduler.CancellableRef>();;
 
 	/**
-	 * Poor implementation
-	 * 
-	 * @return always true, that's what's poor
+	 * Poor implementation. Hide errors.
 	 */
 	public boolean cancelAll() {
 		tickingCancellables.forEach(CancellableRef::cancel);
@@ -62,13 +55,15 @@ public class RandomScheduler /* implements akka.actor.Scheduler */{
 	public CancellableRef scheduleActionMessage(FiniteDuration init, ActorRef triggerActor, ActorRef actionActor,
 			Function<Void, Object> actionFunction, Function<Void, Number> randomFunction) {
 
-		CancellableRef cancellableRef = new CancellableRef(system.scheduler().scheduleOnce(init, new Runnable() {
-			@Override
-			public void run() {
-				actionActor.tell(actionFunction.apply(null), triggerActor == null ? ActorRef.noSender() : triggerActor);
-				scheduleActionMessage(init, actionActor, actionFunction, randomFunction);
-			}
-		}, system.dispatcher()));
+		CancellableRef cancellableRef = new CancellableRef(((MockUp) Controller.sys()).tem().scheduler()
+				.scheduleOnce(init, new Runnable() {
+					@Override
+					public void run() {
+						actionActor.tell(actionFunction.apply(null), triggerActor == null ? ActorRef.noSender()
+								: triggerActor);
+						scheduleActionMessage(init, actionActor, actionFunction, randomFunction);
+					}
+				}, ((MockUp) Controller.sys()).tem().dispatcher()));
 
 		tickingCancellables.add(cancellableRef);
 		return cancellableRef;

@@ -1,9 +1,10 @@
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 
 import models.Action;
-import models.Actor;
 import models.Channel;
-import models.Field;
+import models.Modality;
 import models.Recipe;
 import models.Trigger;
 import models.User;
@@ -12,16 +13,10 @@ import play.GlobalSettings;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import actors.AllActors;
-import actors.AllActors.Detector;
-import actors.AllActors.Garage;
-import actors.AllActors.Human;
-import actors.AllActors.Lamp;
-import actors.AllActors.LuminosityDetector;
-import actors.AllActors.Manythings;
 import actors.AllMessages;
+import actors.AllMessages.Lamp;
 import actors.AllMessages.Lamp.TurnOn;
 import actors.StdRandom;
-import akka.actor.Props;
 
 import com.avaje.ebean.Ebean;
 
@@ -29,152 +24,32 @@ import controllers.Controller;
 
 public class Global extends GlobalSettings {
 
-	private void generateActorsFromDB() {
-		Ebean.find(Actor.class).findList().parallelStream()
-		/* We create an actor for each actor in the DB */
-		.forEach(actor -> {
-			try {
-				Controller.get().system().actorOf(Props.create(Class.forName(actor.getClazz()), actor.getName()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+	/*
+	 * TODO First a script must populate the database. We faint it here
+	 * programmatically.
+	 */
+	public void beforeStart(Application app) {
+		/*
+		 * La flemme. TODO pour toi lectrice ou lecteur ! Prend ta liberté en
+		 * main et définit selon ton gré les channels qui colleront le mieux aux
+		 * acteurs définis dans AllActors :) !
+		 */
 
-	}
-
-	public void onStart(Application app) {
-
-		// generateActorsFromDB();
-
-		Controller.get().system().actorOf(Props.create(Human.class), "human");
-		Controller.get().system().actorOf(Props.create(Detector.class), "detector");
-		Controller.get().system().actorOf(Props.create(Lamp.class), "lamp");
-		Controller.get().system().actorOf(Props.create(LuminosityDetector.class), "luminosityDetector");
-		Controller.get().system().actorOf(Props.create(Manythings.class), "manythings");
-		Controller.get().system().actorOf(Props.create(Garage.class), "garage");
-
-		// /**
-		// * TODO Example of how to add a new recipe in the back-end side. Maybe
-		// * it should be elsewhere, I don't know. Please put it at the correct
-		// * place and remove this comment
-		// */
-		// Controller.get().registerRecipe(AllActors.detector,
-		// AllMessages.DetectionOn.class,
-		// "TurnOnLampWhenDetectorRecipe",
-		// "This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-		// AllActors.lamp, triggerMessage -> new AllMessages.TurnOnLamp(true));
-		//
-		// /**
-		// * More powerful example.
-		// */
-		// Controller
-		// .get()
-		// .registerRecipe(AllActors.manythings,
-		// AllMessages.Manythings.MotionDetected.class,
-		// "TurnOnLampWhenMovementRecipe",
-		// "This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-		// AllActors.lamp,
-		// triggerMessage -> {
-		//
-		// String colour = null;
-		// Integer intensity = null;
-		// Boolean lowConsumptionMode = null;
-		//
-		// // Don't forget to check for nullity.
-		// if (triggerMessage != null && triggerMessage instanceof
-		// AllMessages.Manythings.MotionDetected) {
-		// AllMessages.Manythings.MotionDetected trigger =
-		// (AllMessages.Manythings.MotionDetected) triggerMessage;
-		// colour = null;
-		// switch (trigger.getDeviceId()) {
-		// case 1:
-		// colour = "Orange";
-		// break;
-		// default:
-		// colour = "Green";
-		// break;
-		// }
-		// intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-		// lowConsumptionMode = true;
-		// }
-		// AllMessages.Lamp.TurnOn message = new TurnOn(colour, intensity,
-		// lowConsumptionMode);
-		// return message;
-		// });
-		//
-		// /**
-		// * Example how to schedule a random action to be performed.
-		// */
-		// Controller
-		// .get()
-		// .getScheduler()
-		// .scheduleActionMessage(Duration.Zero(), AllActors.garage, Void -> new
-		// AllMessages.Garage.Close(1),
-		// Void -> 3 * StdRandom.gaussian(5, 2));
-
-		System.out.println(Ebean.find(Channel.class).findRowCount());
-		// if (Ebean.find(Channel.class).findRowCount() != 0) {
-
-		List<Field> fieldsList = Ebean.find(Field.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Field f : fieldsList) {
-
-			System.out.println("EWWWWWWWWWWW" + f);
-			f.delete();
-		}
-
-		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
-		// triggersList.removeAll(triggersList);
-		for (Trigger t : triggersList) {
-			System.out.println(t.getName());
-			t.delete();
-		}
-
-		List<Action> actionsList = Ebean.find(Action.class).findList();
-		// triggersList.removeAll(actionsList);
-		for (Action a : actionsList) {
-			System.out.println(a.getName());
-			a.delete();
-		}
-
-		List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Channel c : channelsList) {
-			System.out.println(c);
-			c.delete();
-		}
-
-		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Recipe r : recipesList) {
-			System.out.println(r);
-			r.delete();
-		}
-
-		List<User> usersList = Ebean.find(User.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (User u : usersList) {
-			System.out.println(u);
-			u.delete();
-		}
-
-		Logger.info("Init Data");
-
-		// Users
-		User user1 = new User("1", "1", "user", "home1");
-		user1.save();
-
-		User user2 = new User("2", "2", "administrator", "home1");
-		user2.save();
-
+		// Useful sketch from a previous state.
 		// // HUMAN CHANNEL
-		// Channel human;
-		// ArrayList<Action> actions = new ArrayList<>();
-		// ArrayList<Action> actions = new ArrayList<>();
-		// actions.add(new Action(null, human, "", ""));
+		// Channel human = new Channel("Human", "Can enter or exit room",
+		// AllActors.human);
+		// human.save();
 		//
-		// human = new Channel(null, actions, "Human",
-		// "Can enter or exit room");
+		// Action humanEnterRoomAction = new Action("Enter room");
+		// human.getActions().add(humanEnterRoomAction);
+		// humanEnterRoomAction.setChannel(human);
+		// humanEnterRoomAction.save();
+		//
+		// Action humanExitRoomAction = new Action("Exit room");
+		// human.getActions().add(humanExitRoomAction);
+		// humanExitRoomAction.setChannel(human);
+		// humanExitRoomAction.save();
 		//
 		// human.save();
 		//
@@ -290,16 +165,168 @@ public class Global extends GlobalSettings {
 		// lampAction2.save();
 		//
 		// lamp.save();
-		//
-		// // } else {
-		// // List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// // for (Channel c : channelsList) {
-		// // System.out.println(c);
-		// // }
-		// // }
+	}
+
+	public void onStart(Application app) {
+
+		/*
+		 * Basically this is a trade-off. As all Channel are in the DB, we could
+		 * only pick up from it the right one just in time.
+		 */
+		Channel human, detector, lamp, luminosityDetector, manythings, garage;
+		{
+			/*
+			 * TODO This is not the best way to do then we ashamefully hide it
+			 * from the main scope.
+			 */
+			// Ebean.find(Channel.class).where(Expression) would be better
+			List<Channel> channels = Ebean.find(Channel.class).findList();
+			human = channels.stream().filter(x -> x.getClazz() == AllActors.Human.class).findFirst().get();
+			detector = channels.stream().filter(x -> x.getClazz() == AllActors.Detector.class).findFirst().get();
+			lamp = channels.stream().filter(x -> x.getClazz() == AllActors.Lamp.class).findFirst().get();
+			luminosityDetector = channels.stream().filter(x -> x.getClazz() == AllActors.LuminosityDetector.class)
+					.findFirst().get();
+			manythings = channels.stream().filter(x -> x.getClazz() == AllActors.Manythings.class).findFirst().get();
+			garage = channels.stream().filter(x -> x.getClazz() == AllActors.Garage.class).findFirst().get();
+		}
+
+		/*
+		 * How to programmatically instanciate actor for a Channel. Beware of
+		 * the name uniqueness constraint (if not null).
+		 */
+		Controller.sys().createActorOf(human, "Alice");
+		Controller.sys().createActorOf(human, "Bob");
+		Controller.sys().createActorOf(human, "Jean-Kevin");
+
+		/*
+		 * Example how to schedule a random action to be performed.
+		 */
+		Controller.getScheduler().scheduleActionMessage(
+				Duration.Zero(),
+				Controller.sys().getStaticActorFor(lamp),
+				Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true)
+						: new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
+
+		/*
+		 * TODO Example of how to add a new recipe in the back-end side. Maybe
+		 * it should be elsewhere, I don't know. Please put it at the correct
+		 * place and remove this comment
+		 */
+		Controller.recipeOf(Controller.sys().getStaticActorFor(detector), AllMessages.DetectionOn.class,
+				"TurnOnLampWhenDetectorRecipe",
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~", Controller
+						.sys().getStaticActorFor(lamp), triggerMessage -> new AllMessages.TurnOnLamp(true));
+
+		/*
+		 * More powerful example. This might seem weird, example from previous
+		 * commit should be easier (without mapper).
+		 */
+		Controller.recipeOf(Controller.sys().getStaticActorFor(manythings),//
+				AllMessages.Manythings.MotionDetected.class,//
+				"TurnOnLampWhenMovementRecipe",//
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
+				Controller.sys().getStaticActorFor(lamp),//
+				Controller.getMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
+
+		System.out.println(Ebean.find(Channel.class).findRowCount());
+		// if (Ebean.find(Channel.class).findRowCount() != 0) {
+
+		List<Modality> fieldsList = Ebean.find(Modality.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Modality f : fieldsList) {
+
+			System.out.println("EWWWWWWWWWWW" + f);
+			f.delete();
+		}
+
+		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
+		// triggersList.removeAll(triggersList);
+		for (Trigger t : triggersList) {
+			System.out.println(t.getName());
+			t.delete();
+		}
+
+		List<Action> actionsList = Ebean.find(Action.class).findList();
+		// triggersList.removeAll(actionsList);
+		for (Action a : actionsList) {
+			System.out.println(a.getName());
+			a.delete();
+		}
+
+		List<Channel> channelsList = Ebean.find(Channel.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Channel c : channelsList) {
+			System.out.println(c);
+			c.delete();
+		}
+
+		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Recipe r : recipesList) {
+			System.out.println(r);
+			r.delete();
+		}
+
+		List<User> usersList = Ebean.find(User.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (User u : usersList) {
+			System.out.println(u);
+			u.delete();
+		}
+
+		Logger.info("Init Data");
+
+		// Users
+		User user1 = new User("1", "1", "user", "home1");
+		user1.save();
+
+		User user2 = new User("2", "2", "administrator", "home1");
+		user2.save();
+
+		/*
+		 * Example how to schedule a random action to be performed. Here we
+		 * randomly send two actions to the lamp : it will result in a somewhat
+		 * erratic behaviour.
+		 */
+		Controller.getScheduler().scheduleActionMessage(Duration.Zero(), Controller.sys().getStaticActorFor(lamp),
+				new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
+		Controller.getScheduler().scheduleActionMessage(Duration.Zero(), Controller.sys().getStaticActorFor(lamp),
+				new AllMessages.TurnOffLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
+
+		/*
+		 * The example above is poor. It's much nicer to use a function to
+		 * define on-the-fly which message will be sent. Then, we cancel all
+		 * we've done and we start again in a more proper way.
+		 */
+		Controller.getScheduler().cancelAll(); // forget all we've done.
+		Controller.getScheduler().scheduleActionMessage(
+		/* The initialisation delay */
+		Duration.Zero(),
+		/* The actor which will receive messages */
+		Controller.sys().getStaticActorFor(lamp),
+		/*
+		 * This function which will be called to define each message on the fly.
+		 */
+		Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true) : new AllMessages.TurnOnLamp(true),
+		/* As this function takes no argument, we show it with Void. */
+		Void -> 3 * StdRandom.gaussian(5, 2));
+
+		/*
+		 * To make it clear about functions defined on the fly, this is such a
+		 * function that can multiply an integer by two:
+		 */
+		@SuppressWarnings("unused")
+		Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
+		/*
+		 * It's the same but the semantic is more precise to change for an unary
+		 * operator:
+		 */
+		@SuppressWarnings("unused")
+		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
 	}
 
 	public void onStop(Application app) {
 		Logger.info("Application shutdown...");
+
 	}
 }

@@ -25,6 +25,20 @@ Parler des patrons de conception : `Controller` est singleton et contient le seu
 
 Java 8 permet une manipulation intuitive des collections de données grace au λ-calcul (`filter`, `map`, `flatMap`)
 
+### Un défaut conceptuel
+
+Dans toute discussion sur ce sujet, nous commençons toujours par parler des canaux pour en venir ensuite aux acteurs, définis par rapport aux canaux. Notre utilisation de akka est sur ce point erronnée car nous définissons les acteurs dans le code et les canaux dans la base. Il serait séduisant de définir et de charger dynamiquement les classes des acteurs rendues nécessaires par les canaux.
+
+Les premières recherches menées en sens font état d'un niveau de technicité extrême et d'une complexité faramineuse :
+ * http://twit88.com/blog/2007/10/21/compile-and-reload-java-class-dynamically-using-apache-commons-jci/
+ * http://javahowto.blogspot.de/2006/07/javaagent-option.html
+ * http://www.nurkiewicz.com/2009/09/injecting-methods-at-runtime-to-java.html
+ * En fait, il semble même que des projets de recherche soient menés en ce sens : https://github.com/Sable/soot/wiki/Adding-attributes-to-class-files-%28Advanced%29
+
+Tout bien réfléchi, les acteurs ont tout de même une intelligence qui échappe aux canaux et correspondent à des objets physiques qui ne sont pas facilement modifiables. Le paradigme de l'administrateur de ifttt est d'en abstraire un type en créant des canaux qui regroupe des acteurs tandis que celui de l'utilisateur est de redescendre des canaux vers les objets physiques.
+
+En fin de compte, restons comme nous sommes. Les deux doivent être définis en étroite accointance.
+
 ### Utilisation
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…

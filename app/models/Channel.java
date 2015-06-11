@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
+import akka.actor.UntypedActor;
 
 import com.avaje.ebean.Ebean;
 
@@ -23,7 +24,10 @@ public class Channel extends Model {
 
 	@Id
 	private long id;
-	private String name;
+	/**
+	 * Actor class
+	 */
+	private Class<? extends UntypedActor> clazz;
 	private String description;
 
 	public final static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(Long.class, Channel.class);
@@ -34,14 +38,14 @@ public class Channel extends Model {
 
 	@Override
 	public String toString() {
-		return "Channel [id=" + id + ", name=" + name + ", description=" + description + ", triggers=" + triggers
-				+ ", actions=" + actions + "]";
+		return "Channel [id=" + id + ", name=" + clazz.getSimpleName() + ", description=" + description + ", triggers="
+				+ triggers + ", actions=" + actions + "]";
 	}
 
-	public Channel(List<Trigger> triggers, List<Action> actions, String name, String description) {
+	public Channel(List<Trigger> triggers, List<Action> actions, Class<? extends UntypedActor> clazz, String description) {
 		this.triggers = triggers;
 		this.actions = actions;
-		this.name = name;
+		this.clazz = clazz;
 		this.description = description;
 	}
 
@@ -69,12 +73,12 @@ public class Channel extends Model {
 		this.actions = actions;
 	}
 
-	public String getName() {
-		return name;
+	public Class<? extends UntypedActor> getClazz() {
+		return clazz;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(Class<? extends UntypedActor> clazz) {
+		this.clazz = clazz;
 	}
 
 	public String getDescription() {

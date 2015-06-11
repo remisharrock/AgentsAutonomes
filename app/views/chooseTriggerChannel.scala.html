@@ -38,15 +38,13 @@
 			id='trigger_search_channels_field_advice'></p>
 
 		<script>
-  //<![CDATA[
+  // <![CDATA[
     function triggersSearch(){
-/*       if(window.channelsSearch == undefined){
-        window.channelsSearch = {
-          escapeRegExp: function(str){
-            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-          }
-        }
-      } */
+/*
+ * if(window.channelsSearch == undefined){ window.channelsSearch = {
+ * escapeRegExp: function(str){ return
+ * str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"); } } }
+ */
       
       var channelsSearch = {
               escapeRegExp: function(str){
@@ -58,11 +56,11 @@
       channelsSearch["channels_trigger_search_channels_field"] = [
 		@for(channel <- channels) {   
 			@if(channel.getTriggers()!=null && channel.getTriggers().size() > 0){
-				{"value":"@channel.getName()",
-				 "name":"@channel.getName()",
+				{"value":"@channel.getClazz().getSimpleName()",
+				 "name":"@channel.getClazz().getSimpleName()",
 				 "id":@channel.getId(),
 				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
-				 "url":"/@channel.getName()"},
+				 "url":"/@channel.getClazz().getSimpleName()"},
 				}
 			}
 		 ]
@@ -117,8 +115,9 @@
             clearTimeout(transitionTimeout);
           }
           _.each(matched, function(el){
-/*         	  alert(matched.length);
-        	  alert("el id:" + el.id); */
+/*
+ * alert(matched.length); alert("el id:" + el.id);
+ */
             $( "#trigger_search_channels_field" ).parents().eq(2).find("[data-channel_id='" + el.id + "']").removeClass('out_of_search hide');
           });
           _.each(unmatched, function(el){
@@ -169,7 +168,7 @@
      
      triggersSearch();
      
-  //]]>
+  // ]]>
 </script>
 
 		
@@ -180,7 +179,7 @@
 					<a
 						class="mod-index-@counter channel-list_icon"
 						data-channel_id='@channel.getId()'
-						data-channel_module_name='@channel.getName()'
+						data-channel_module_name='@channel.getClazz().getSimpleName()'
 						data-remote
 						data-track-data='{"controller":"statements",
 				   								"action":"new",
@@ -192,11 +191,11 @@
 						id='ind_t_channel_@channel.getId()'
 						ifttt-trigger-channel-button='1' 
 						title="@channel.getDescription()">
-						<img alt="@channel.getName()" 
+						<img alt="@channel.getClazz().getSimpleName()" 
 						class="channel-list_icon_img"
 						id="channel_1172726678"
 						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-						@channel.getName() 
+						@channel.getClazz().getSimpleName()
 						@{counter += 1}
 					</a> 
 					}

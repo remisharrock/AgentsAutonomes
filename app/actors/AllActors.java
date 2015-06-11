@@ -1,35 +1,11 @@
 package actors;
 
-import controllers.Controller;
 import actors.AllMessages.DetectionOff;
 import actors.AllMessages.DetectionOn;
-import actors.AllMessages.EnterRoom;
-import actors.AllMessages.ExitRoom;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
 
 public final class AllActors {
 	private AllActors() {
-	}
-
-	public static ActorSystem system = Controller.get().system();
-
-	public static ActorRef human;
-	public static ActorRef detector;
-	public static ActorRef lamp;
-	public static ActorRef luminosityDetector;
-	public static ActorRef manythings;
-	public static ActorRef garage;
-
-	{
-		human = system.actorOf(Props.create(Human.class), "human");
-		detector = system.actorOf(Props.create(Detector.class), "detector");
-		lamp = system.actorOf(Props.create(Lamp.class), "lamp");
-		luminosityDetector = system.actorOf(Props.create(LuminosityDetector.class), "luminosityDetector");
-		manythings = system.actorOf(Props.create(Manythings.class), "manythings");
-		garage = system.actorOf(Props.create(Garage.class), "garage");
 	}
 
 	public static class Human extends UntypedActor {
@@ -45,24 +21,24 @@ public final class AllActors {
 
 		@Override
 		public void onReceive(Object message) throws Exception {
-			if (message instanceof EnterRoom) {
-				System.out.println("Detector Actor: DETECTION ON");
-				if (((EnterRoom) message).getChangeState())
-					lamp.tell(new DetectionOn(true), getSelf());
-				else
-					lamp.tell(new DetectionOn(false), getSelf());
-
-				state = "Detector: Someone entered the room";
-			} else if (message instanceof ExitRoom) {
-				// Send the current greeting back to the sender
-				System.out.println("Detector Actor: DETECTION OFF");
-				if (((ExitRoom) message).getChangeState())
-					lamp.tell(new DetectionOff(true), getSelf());
-				else
-					lamp.tell(new DetectionOff(false), getSelf());
-				state = "Detector: Someone left the room";
-			} else
-				unhandled(message);
+			// if (message instanceof EnterRoom) {
+			// System.out.println("Detector Actor: DETECTION ON");
+			// if (((EnterRoom) message).getChangeState())
+			// lamp.tell(new DetectionOn(true), getSelf());
+			// else
+			// lamp.tell(new DetectionOn(false), getSelf());
+			//
+			// state = "Detector: Someone entered the room";
+			// } else if (message instanceof ExitRoom) {
+			// // Send the current greeting back to the sender
+			// System.out.println("Detector Actor: DETECTION OFF");
+			// if (((ExitRoom) message).getChangeState())
+			// lamp.tell(new DetectionOff(true), getSelf());
+			// else
+			// lamp.tell(new DetectionOff(false), getSelf());
+			// state = "Detector: Someone left the room";
+			// } else
+			// unhandled(message);
 		}
 	}
 

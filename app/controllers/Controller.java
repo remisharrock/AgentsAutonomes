@@ -1,58 +1,40 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 
-import scala.concurrent.Future;
-import scala.concurrent.duration.Duration;
-import actors.EventBusImpl;
+import actors.Commutator;
+import actors.MessageMap;
+import actors.MockUp;
 import actors.MsgEnvelope;
 import actors.RandomScheduler;
-import akka.actor.ActorPath;
+import actors.SystemProxy;
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 
-/**
- * This is a hook. Same logic would better be implemented with Router, Mailboxes
- * and so on. Moreover, RouterActor only stands for a single JVM.
- */
 @SuppressWarnings("rawtypes")
-public class Controller {
+public abstract class Controller {
 
-	private static Controller controller;
-	private ActorSystem system;
-	/**
-	 * There is one here but you're able to create as much as you want. For
-	 * example, one may use to set one for each device group.
-	 */
-	private RandomScheduler scheduler;
+	private static Commutator commutator = new Commutator();
+	private static HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> causality = new HashMap<>(
+			commutator.mapSize());
+	private static RandomScheduler scheduler = new RandomScheduler();
+	private static MessageMap map = new MessageMap();
+	private static SystemProxy sys = new MockUp();
 
-	public static Controller get() {
-		if (controller == null) {
-			controller = new Controller();
-		}
-		return Controller.controller;
+	private Controller() {
 	}
 
-	public ActorSystem system() {
-		return system;
-	}
-
-	public RandomScheduler getScheduler() {
+	public static RandomScheduler getScheduler() {
 		return scheduler;
 	}
 
-	private Controller() {
-		this.system = ActorSystem.create("helloakka");
-		this.scheduler = new RandomScheduler();
+	public static SystemProxy sys() {
+		return sys;
 	}
 
-	/**
-	 * <TriggerActor, <TriggerMessage, Action to perform>>
-	 */
-	private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> translator = new HashMap<>();
-	private EventBusImpl eventBus = new EventBusImpl();
+	public static MessageMap getMap() {
+		return map;
+	}
 
 	/**
 	 * <p>
@@ -90,31 +72,25 @@ public class Controller {
 	 * @param actionMessageFactory
 	 *            can not be null
 	 */
-	public void registerRecipe(ActorRef triggerActor, Class triggerMessageClass, String name, String description,
+	public static void recipeOf(ActorRef triggerActor, Class<?> triggerMessageClass, String name, String description,
 			ActorRef actionActor, UnaryOperator<Object> actionFunction) {
 
-		/*
-		 * Just allows one. The first part is about actionActor.
-		 */
-		eventBus.subscribe(actionActor, name);
+		actionActor.toString();
+		name.toString();
+		commutator.toString();
 
-		/*
-		 * The second part is about triggerActor.
-		 */
-		// Do not replace, but nicely insert it into the right slot.
-		if (!translator.keySet().contains(triggerActor)) {
-			translator.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
+		// First part: triggerActor.
+
+		if (causality.get(triggerActor) == null) {
+			causality.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
 		}
 		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
 		value.put(triggerMessageClass.getClass(), actionFunction);
-		translator.put(triggerActor, value);
-	}
+		causality.put(triggerActor, value);
 
-	public void registerRecipe(ActorPath triggerActor, Class triggerMessageClass, String name, String description,
-			ActorPath actionActor, UnaryOperator<Object> actionFunction) {
+		// Second part : action actor. This is a one-to-one relation.
 
-		Future<ActorRef> a = system.actorSelection(triggerActor).resolveOne(Duration.apply(2, TimeUnit.SECONDS));
-
+		commutator.subscribe(actionActor, name);
 	}
 
 	/**
@@ -124,8 +100,9 @@ public class Controller {
 	 *            Can be `null` if you don't need it to be tweaked.
 	 * @return
 	 */
-	public Object getActionMessageFromRecipe(ActorRef triggerActor, Class triggerMessageClass, Object triggerMessage) {
-		return translator.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
+	public static Object getActionMessageFromRecipe(ActorRef triggerActor, Class triggerMessageClass,
+			Object triggerMessage) {
+		return causality.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
 	}
 
 	/**
@@ -138,7 +115,7 @@ public class Controller {
 	 * @param name
 	 * @param description
 	 */
-	public void unregisterRecipe(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor,
+	public static void unregisterRecipe(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor,
 			Object actionMessage, String name, String description) {
 		// TODO
 	}
@@ -151,13 +128,7 @@ public class Controller {
 	 * 
 	 * @param event
 	 */
-	public void publish(MsgEnvelope event) {
-		eventBus.publish(event);
-	}
-
-	public void getActionActorsFromCurrentRecipes(Object triggerMessage) {
-	}
-
-	public void getTriggersFromCurrentRecipes(Object actionMessage) {
+	static void publish(MsgEnvelope event) {
+		commutator.publish(event);
 	}
 }

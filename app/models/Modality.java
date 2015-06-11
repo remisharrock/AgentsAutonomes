@@ -13,7 +13,7 @@ import play.db.ebean.Model;
  * @param <T>
  */
 @Entity
-public class Field<T> extends Model {
+public class Modality<T> extends Model {
 	private static final long serialVersionUID = 1L;
 
 	private T value;
@@ -22,12 +22,17 @@ public class Field<T> extends Model {
 	private long id;
 	private String name;
 	private String description;
+	/**
+	 * Entre nous soit dit c'est très dommage qu'on ne puisse pas avoir des
+	 * modalités qui ne dépendent d'aucune sémantique : les modalités
+	 * Température de deux sémantiques sont strictement les mêmes.
+	 */
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Trigger trigger;
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Action action;
 
-	public Field(T value, String name, String description) {
+	public Modality(T value, String name, String description) {
 		this.value = value;
 		this.name = name;
 		this.description = description;
@@ -77,7 +82,7 @@ public class Field<T> extends Model {
 		return trigger;
 	}
 
-	public void setTrigger(Trigger semantic) {
+	public void setTrigger(Trigger trigger) {
 		this.trigger = trigger;
 	}
 

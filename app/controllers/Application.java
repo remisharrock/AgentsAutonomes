@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import models.Action;
 import models.Channel;
-import models.Field;
+import models.Modality;
 import models.Recipe;
 import models.Trigger;
 import models.User;
@@ -131,12 +131,14 @@ public class Application extends Controller {
 		System.out.println("turn off checkbox: " + turnOffCheckbox);
 
 		if (requestData.get("enterRoomButton") != null) {
-			// Tell the detector that a human entered the room
-			if (turnOnCheckbox != null) {
-				AllActors.detector.tell(new AllMessages.EnterRoom(true), AllActors.human);
-			} else {
-				AllActors.detector.tell(new AllMessages.EnterRoom(false), AllActors.human);
-			}
+			// // Tell the detector that a human entered the room
+			// if (turnOnCheckbox != null) {
+			// AllActors.detector.tell(new AllMessages.EnterRoom(true),
+			// AllActors.human);
+			// } else {
+			// AllActors.detector.tell(new AllMessages.EnterRoom(false),
+			// AllActors.human);
+			// }
 
 			try {
 				TimeUnit.MILLISECONDS.sleep(10);
@@ -153,11 +155,13 @@ public class Application extends Controller {
 
 		} else if (requestData.get("exitRoomButton") != null) {
 			// Tell the detector that a human exited the room
-			if (turnOffCheckbox != null) {
-				AllActors.detector.tell(new AllMessages.ExitRoom(true), AllActors.human);
-			} else {
-				AllActors.detector.tell(new AllMessages.ExitRoom(false), AllActors.human);
-			}
+			// if (turnOffCheckbox != null) {
+			// AllActors.detector.tell(new AllMessages.ExitRoom(true),
+			// AllActors.human);
+			// } else {
+			// AllActors.detector.tell(new AllMessages.ExitRoom(false),
+			// AllActors.human);
+			// }
 
 			try {
 				TimeUnit.MILLISECONDS.sleep(10);
@@ -192,15 +196,15 @@ public class Application extends Controller {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		HashMap<Field, String> triggerFields = new HashMap<Field, String>();
-		for (Field f : trigger.getFields()) {
+		HashMap<Modality, String> triggerFields = new HashMap<Modality, String>();
+		for (Modality f : trigger.getFields()) {
 			triggerFields.put(f, requestData.get(f.getName()));
 		}
 
 		/**
 		 * TODO should not be commented but understood.
 		 */
-		//recipe.setTriggersMap(triggerFields);
+		// recipe.setTriggersMap(triggerFields);
 
 		return ok(completeTriggerFields.render(trigger));
 	}
@@ -224,15 +228,15 @@ public class Application extends Controller {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		HashMap<Field, String> actionFields = new HashMap<Field, String>();
-		for (Field f : action.getFields()) {
+		HashMap<Modality, String> actionFields = new HashMap<Modality, String>();
+		for (Modality f : action.getFields()) {
 			actionFields.put(f, requestData.get(f.getName()));
 		}
 
 		/**
 		 * TODO should not be commented but corrected
 		 */
-		//recipe.setActionsMap(actionFields);
+		// recipe.setActionsMap(actionFields);
 
 		return ok(completeActionFields.render(action));
 	}
@@ -270,34 +274,34 @@ public class Application extends Controller {
 
 	public static Result activateTrigger(Long triggerId) {
 
-//		Ebean.find(Recipe.class)
-//				.findList()
-//				.parallelStream()
-//				/* Now we have a stream, we filter on the id of TriggerChannel */
-//				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
-//				/* And now we send a message to each channel */
-//				.forEach(
-//						recipe -> {
-//							/* This actor is the object which will be told */
-//							try {
-//								recipe.getActionChannel()
-//										.getActorRef()
-//										.tell(
-//										/*
-//										 * Message to be told: we send the
-//										 * message of the first trigger found
-//										 */
-//										recipe.getTriggerChannel().getTriggers().stream()
-//												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
-//												.getClass().newInstance(),
-//										/* Sender */
-//										recipe.getTriggerChannel().getActorRef());
-//							} catch (Exception e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//						});
-
+		Ebean.find(Recipe.class)
+				.findList()
+				.parallelStream()
+				/* Now we have a stream, we filter on the id of TriggerChannel */
+				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
+				/* And now we send a message to each channel */
+				.forEach(
+						recipe -> {
+							/* This actor is the object which will be told */
+							try {
+								controllers.Controller
+										.sys()
+										.getStaticActorFor(recipe.getActionChannel())
+										.tell(
+										/*
+										 * Message to be told: we send the
+										 * message of the first trigger found
+										 */
+										recipe.getTriggerChannel().getTriggers().stream()
+												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
+												.getClass().newInstance(),
+										/* Sender */
+										controllers.Controller.sys().getStaticActorFor(recipe.getTriggerChannel()));
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						});
 		return ok();
 	}
 

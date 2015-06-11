@@ -1,15 +1,15 @@
 package actors;
 
+import controllers.Controller;
 import akka.actor.ActorRef;
 import akka.event.japi.LookupEventBus;
-import controllers.Controller;
 
 /**
  * Within the creation of a recipe, actors are made suscribers to this bus with
  * a specific topic. The link between triggering actor and the performer is made
  * by the topic.
  */
-public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> {
+public class Commutator extends LookupEventBus<MsgEnvelope, ActorRef, String> {
 
 	// is used for extracting the classifier from the incoming events
 	@Override
@@ -28,7 +28,7 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 			 * MsgEnvelope but it would be less clean.
 			 */
 			Class<?> clazz = Class.forName(event.payload.getClass().getName());
-			payload = Controller.get().getActionMessageFromRecipe(event.suscribee, clazz, event.payload);
+			payload = Controller.getActionMessageFromRecipe(event.suscribee, clazz, event.payload);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

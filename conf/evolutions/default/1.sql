@@ -6,14 +6,19 @@
 create table action (
   id                        bigint not null,
   name                      varchar(255),
-  description               varchar(255),
   channel_id                bigint,
+  description               varchar(255),
   constraint pk_action primary key (id))
+;
+
+create table actor (
+  clazz                     varchar(255) not null,
+  name                      varchar(255) not null)
 ;
 
 create table channel (
   id                        bigint not null,
-  name                      varchar(255),
+  clazz                     varchar(255),
   description               varchar(255),
   constraint pk_channel primary key (id))
 ;
@@ -29,7 +34,12 @@ create table field (
 
 create table recipe (
   id                        bigint not null,
-  title                     varchar(255),
+  trigger_channel_id        bigint,
+  trigger_id                bigint,
+  action_channel_id         bigint,
+  action_id                 bigint,
+  name                      varchar(255),
+  description               varchar(255),
   active                    boolean,
   user_id                   bigint,
   constraint pk_recipe primary key (id))
@@ -38,8 +48,8 @@ create table recipe (
 create table trigger (
   id                        bigint not null,
   name                      varchar(255),
-  description               varchar(255),
   channel_id                bigint,
+  description               varchar(255),
   constraint pk_trigger primary key (id))
 ;
 
@@ -53,6 +63,8 @@ create table user (
 ;
 
 create sequence action_seq;
+
+create sequence actor_seq;
 
 create sequence channel_seq;
 
@@ -70,10 +82,18 @@ alter table field add constraint fk_field_trigger_2 foreign key (trigger_id) ref
 create index ix_field_trigger_2 on field (trigger_id);
 alter table field add constraint fk_field_action_3 foreign key (action_id) references action (id) on delete restrict on update restrict;
 create index ix_field_action_3 on field (action_id);
-alter table recipe add constraint fk_recipe_user_4 foreign key (user_id) references user (id) on delete restrict on update restrict;
-create index ix_recipe_user_4 on recipe (user_id);
-alter table trigger add constraint fk_trigger_channel_5 foreign key (channel_id) references channel (id) on delete restrict on update restrict;
-create index ix_trigger_channel_5 on trigger (channel_id);
+alter table recipe add constraint fk_recipe_triggerChannel_4 foreign key (trigger_channel_id) references channel (id) on delete restrict on update restrict;
+create index ix_recipe_triggerChannel_4 on recipe (trigger_channel_id);
+alter table recipe add constraint fk_recipe_trigger_5 foreign key (trigger_id) references trigger (id) on delete restrict on update restrict;
+create index ix_recipe_trigger_5 on recipe (trigger_id);
+alter table recipe add constraint fk_recipe_actionChannel_6 foreign key (action_channel_id) references channel (id) on delete restrict on update restrict;
+create index ix_recipe_actionChannel_6 on recipe (action_channel_id);
+alter table recipe add constraint fk_recipe_action_7 foreign key (action_id) references action (id) on delete restrict on update restrict;
+create index ix_recipe_action_7 on recipe (action_id);
+alter table recipe add constraint fk_recipe_user_8 foreign key (user_id) references user (id) on delete restrict on update restrict;
+create index ix_recipe_user_8 on recipe (user_id);
+alter table trigger add constraint fk_trigger_channel_9 foreign key (channel_id) references channel (id) on delete restrict on update restrict;
+create index ix_trigger_channel_9 on trigger (channel_id);
 
 
 
@@ -82,6 +102,8 @@ create index ix_trigger_channel_5 on trigger (channel_id);
 SET REFERENTIAL_INTEGRITY FALSE;
 
 drop table if exists action;
+
+drop table if exists actor;
 
 drop table if exists channel;
 
@@ -96,6 +118,8 @@ drop table if exists user;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists action_seq;
+
+drop sequence if exists actor_seq;
 
 drop sequence if exists channel_seq;
 

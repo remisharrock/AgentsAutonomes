@@ -4,33 +4,44 @@ import java.io.Serializable;
 
 import javax.xml.bind.TypeConstraintException;
 
+import actors.AllMessages.Lamp.TurnOn;
+import controllers.Controller;
+
 public final class AllMessages {
 
+	{
+		// At initialization we define some common mappings
+		Controller
+				.getMap()
+				.setMapper(Manythings.MotionDetected.class,
+						Lamp.TurnOn.class,
+						triggerMessage -> {
+
+							String colour = null;
+							Integer intensity = null;
+							Boolean lowConsumptionMode = null;
+
+							// Don't forget to check for nullity.
+						if (triggerMessage != null && triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
+							AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
+							colour = null;
+							switch (trigger.getDeviceId()) {
+							case 1:
+								colour = "Orange";
+								break;
+							default:
+								colour = "Green";
+								break;
+							}
+							intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
+							lowConsumptionMode = true;
+						}
+						AllMessages.Lamp.TurnOn message = new TurnOn(colour, intensity, lowConsumptionMode);
+						return message;
+					});
+	}
+
 	private AllMessages() {
-	}
-
-	public static class MessageAction1 implements Serializable {
-		private static final long serialVersionUID = 1L;
-	}
-
-	public static class MessageAction2 implements Serializable {
-		private static final long serialVersionUID = 1L;
-	}
-
-	public static class MessageAction3 implements Serializable {
-		private static final long serialVersionUID = 1L;
-	}
-
-	public static class Trigger1 implements Serializable {
-		private static final long serialVersionUID = 1L;
-	}
-
-	public static class Trigger2 implements Serializable {
-		private static final long serialVersionUID = 1L;
-	}
-
-	public static class Trigger3 implements Serializable {
-		private static final long serialVersionUID = 1L;
 	}
 
 	public static class EnterRoom implements Serializable {
