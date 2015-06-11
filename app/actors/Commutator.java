@@ -59,7 +59,7 @@ public class Commutator {
 			causality.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
 		}
 		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
-		value.put(triggerMessageClass.getClass(), actionFunction);
+		value.put(triggerMessageClass, actionFunction);
 		causality.put(triggerActor, value);
 
 		// Second part : action actor. This is a one-to-one relation.

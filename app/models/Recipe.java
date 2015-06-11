@@ -24,6 +24,9 @@ public class Recipe extends Model {
 	private Channel actionChannel;
 	@ManyToOne
 	private Action action;
+	/**
+	 * Very important to be unique
+	 */
 	private String name;
 
 	private String description;

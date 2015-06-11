@@ -34,7 +34,7 @@ public abstract class Semantic extends Model {
 
 	private static final long serialVersionUID = 1L;
 
-	protected String name;
+	protected Class<?> clazz;
 	/**
 	 * Important to be able to get it from this class because it can simplify
 	 * Recipe contructor.
@@ -49,9 +49,10 @@ public abstract class Semantic extends Model {
 	protected long id;
 	protected String description;
 
-	public Semantic(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, String name, String description) {
+	public Semantic(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, Class<?> clazz,
+			String description) {
 		this.fields = fields;
-		this.name = name;
+		this.clazz = clazz;
 		this.channel = channel;
 		this.description = description;
 	}
@@ -70,12 +71,12 @@ public abstract class Semantic extends Model {
 	 * Below, generated methods.
 	 */
 
-	public String getName() {
-		return name;
+	public Class<?> getClazz() {
+		return clazz;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
 	}
 
 	public Channel getChannel() {

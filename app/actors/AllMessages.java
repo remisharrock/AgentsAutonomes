@@ -10,6 +10,10 @@ import actors.AllMessages.Lamp.TurnOn;
 public final class AllMessages {
 
 	{
+		/**
+		 * At least you have to define all the mapper implied by the current
+		 * recipes.
+		 */
 		// At initialization we define some common mappings
 		Application
 				.getMessageMap()

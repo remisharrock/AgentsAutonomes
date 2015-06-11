@@ -14,7 +14,6 @@ import scala.concurrent.duration.Duration;
 import actors.AllActors;
 import actors.AllMessages;
 import actors.AllMessages.Lamp;
-import actors.Commutator;
 import actors.StdRandom;
 
 import com.avaje.ebean.Ebean;
@@ -166,6 +165,23 @@ public class Global extends GlobalSettings {
 		// lamp.save();
 	}
 
+	private void generateStaticCausalityFromRecipes() {
+		Ebean.find(Recipe.class)
+				.findList()
+				.forEach(
+						recipe -> Application.getCommutator().addCausality(
+								Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()),
+								recipe.getTrigger().getClazz(),
+								recipe.getName(),
+								recipe.getDescription(),
+								Application.getSystemProxy().getStaticActorFor(recipe.getActionChannel()),
+								Application.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
+										recipe.getAction().getClazz())));
+	}
+
+	private void generateCausalityFromRecipes() {
+	}
+
 	public void onStart(Application app) {
 
 		/*
@@ -214,7 +230,8 @@ public class Global extends GlobalSettings {
 		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
 				AllMessages.DetectionOn.class, "TurnOnLampWhenDetectorRecipe",
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-				Application.getSystemProxy().getStaticActorFor(lamp), triggerMessage -> new AllMessages.TurnOnLamp(true));
+				Application.getSystemProxy().getStaticActorFor(lamp),
+				triggerMessage -> new AllMessages.TurnOnLamp(true));
 
 		/*
 		 * More powerful example. This might seem weird, example from previous
@@ -241,14 +258,14 @@ public class Global extends GlobalSettings {
 		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
 		// triggersList.removeAll(triggersList);
 		for (Trigger t : triggersList) {
-			System.out.println(t.getName());
+			System.out.println(t.getClazz().getSimpleName());
 			t.delete();
 		}
 
 		List<Action> actionsList = Ebean.find(Action.class).findList();
 		// triggersList.removeAll(actionsList);
 		for (Action a : actionsList) {
-			System.out.println(a.getName());
+			System.out.println(a.getClazz().getSimpleName());
 			a.delete();
 		}
 
@@ -287,10 +304,12 @@ public class Global extends GlobalSettings {
 		 * randomly send two actions to the lamp : it will result in a somewhat
 		 * erratic behaviour.
 		 */
-		Application.getScheduler().scheduleActionMessage(Duration.Zero(), Application.getSystemProxy().getStaticActorFor(lamp),
-				new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
-		Application.getScheduler().scheduleActionMessage(Duration.Zero(), Application.getSystemProxy().getStaticActorFor(lamp),
-				new AllMessages.TurnOffLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
+		Application.getScheduler().scheduleActionMessage(Duration.Zero(),
+				Application.getSystemProxy().getStaticActorFor(lamp), new AllMessages.TurnOnLamp(true),
+				Void -> 3 * StdRandom.gaussian(5, 2));
+		Application.getScheduler().scheduleActionMessage(Duration.Zero(),
+				Application.getSystemProxy().getStaticActorFor(lamp), new AllMessages.TurnOffLamp(true),
+				Void -> 3 * StdRandom.gaussian(5, 2));
 
 		/*
 		 * The example above is poor. It's much nicer to use a function to

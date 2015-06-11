@@ -38,5 +38,6 @@ public interface SystemProxy {
 	 * for instance, what if you have two lamps?
 	 * </p>
 	 */
+	@Deprecated
 	public ActorRef getStaticActorFor(Channel channel);
 }

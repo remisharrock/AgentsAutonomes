@@ -17,7 +17,7 @@ public class Action extends Model {
 
 	public static Model.Finder<Long, Action> find = new Model.Finder<Long, Action>(Long.class, Action.class);
 
-	protected String name;
+	protected Class<?> clazz;
 	/**
 	 * Important to be able to get it from this class because it can simplify
 	 * Recipe contructor.
@@ -32,9 +32,10 @@ public class Action extends Model {
 	protected long id;
 	protected String description;
 
-	public Action(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, String name, String description) {
+	public Action(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, Class<?> clazz,
+			String description) {
 		this.fields = fields;
-		this.name = name;
+		this.clazz = clazz;
 		this.channel = channel;
 		this.description = description;
 	}
@@ -53,12 +54,12 @@ public class Action extends Model {
 	 * Below, generated methods.
 	 */
 
-	public String getName() {
-		return name;
+	public Class<?> getClazz() {
+		return clazz;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setClazz(Class<?> clazz) {
+		this.clazz = clazz;
 	}
 
 	public Channel getChannel() {

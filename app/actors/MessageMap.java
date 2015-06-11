@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
  * </p>
  * <p>
  * Should contains the most used mappings to same time, but it'll always be
- * possible to define some tweaked ones.
+ * possible to define some tweaked ones. We could define and use a functionnal
+ * interface that way: Abcd<>
  * </p>
  * <p>
  * Only written on at startup, then no need for concurrent object.
