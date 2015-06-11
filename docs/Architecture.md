@@ -43,3 +43,11 @@ En fin de compte, restons comme nous sommes. Les deux doivent être définis en 
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…
 
+### Dernière soutenance
+
+Ce qui fait briller les yeux de Mme Vigne :
+ * Qualimétrie
+ * Java 8
+ * Réification des génériques
+ * Patrons de conception
+ * …
