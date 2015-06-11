@@ -3,11 +3,12 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import play.data.DynamicForm;
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 import com.avaje.ebean.Ebean;
@@ -23,25 +24,30 @@ public class User extends Model {
 	@Id
 	private long id;
 	
+	@Required
 	private String username;
 	
+	@Required
 	private String password;
 	
+	@Required
 	private String role;
 	
-	private String category;
+	@Required
+	private String userGroup;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Recipe> recipes;
+	
 	
 	public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(
 			Long.class, User.class);
 	
-	public User(String username, String password, String role, String category) {
+	public User(String username, String password, String role, String userGroup) {
 		this.username = username;
 		this.password = password;
 		this.role = role;
-		this.category = category;
+		this.userGroup = userGroup;
 		this.recipes = new ArrayList<Recipe>();
 	}
 	
@@ -95,14 +101,14 @@ public class User extends Model {
 
 
 
-	public String getCategory() {
-		return category;
+	public String getUserGroup() {
+		return userGroup;
 	}
 
 
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setUserGroup(String userGroup) {
+		this.userGroup = userGroup;
 	}
 
 
@@ -111,20 +117,33 @@ public class User extends Model {
 		this.recipes = recipes;
 	}
 
+	public List<Recipe> getRecipes() {
+		return this.recipes;
+	}
 
+	
+//	public void setRecipesAkka(List<RecipeAkka> recipesAkka) {
+//		this.recipesAkka = recipesAkka;
+//	}
+//
+//	public List<RecipeAkka> getRecipesAkka() {
+//		return this.recipesAkka;
+//	}
+	
 
 	public static List<User> getAllUsers() {
 		return Ebean.find(User.class).findList();
 	}
 	
-	public List<Recipe> getRecipes() {
-		return this.recipes;
+	public static List<User> getAllUsersFromSameGroup(String userGroup) {
+		return Ebean.find(User.class).where().eq("userGroup", userGroup).findList();
 	}
+	
 	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password="
-				+ password + ", role=" + role + ", category=" + category
+				+ password + ", role=" + role + ", userGroup=" + userGroup
 				+ ", recipes=" + recipes + "]";
 	}
 	
@@ -136,16 +155,6 @@ public class User extends Model {
 		
 		return null;
     }
-
-
-
-	public Recipe getRecipesById(long id) {
-		for(Recipe r : recipes){
-			if(r.getId() == id)
-				return r;
-		}
-		return null;
-	}
 	
 	
 

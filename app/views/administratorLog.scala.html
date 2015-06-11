@@ -1,4 +1,3 @@
-@(logs: List[String])
 @main("Administrator Log") {
 <!DOCTYPE html>
 <html>
@@ -8,18 +7,23 @@
 </head>
 <body>
 
-<header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
+<header class="l-header">
+	<div class="l-site-header">
+		<div class="l-site-header-menus is-closed" id="site-header-menus">
+			<div class="l-site-header-menus-inner">
+				<nav class="l-site-header-flexible-nav">
+					<ul class="menu" class="nav nav-site is-authenticated">
+						<li class="nav_item" >
+							<a href="@routes.Application.administratorView()">Main</a>
+						</li>
+						<li class="nav_item" >
+							<a href="@routes.Application.viewAdministratorLog()">View log</a>
+						</li>
+						<li class="nav_item" >
+							<a href="@routes.Application.index()">Log out</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>
@@ -28,20 +32,17 @@
 
 <article class="l-page-content">
 	<div id="statement_create">
-
+		<form class="navbar-form pull-right"
+			action="@routes.Application.chooseView()">
 			
-		<!-- Main hero unit for a primary marketing message or call to action -->
-		<br/>
-		<div class="hero-unit">
-			<h1>Administrator Log</h1>
-		</div>
-		
-		@for(log <- logs){
-			<p class='composer_section_description'>@log</p>
-		}
-		
-		
-
+			<!-- Main hero unit for a primary marketing message or call to action -->
+			<br/>
+			<div class="hero-unit">
+				<h1>Administrator Log</h1>
+			</div>
+			
+			
+		</form>
 	</div>	
 </article>	
 }

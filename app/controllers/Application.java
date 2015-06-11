@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.avaje.ebean.Ebean;
@@ -13,6 +14,7 @@ import models.Action;
 import models.Channel;
 import models.Field;
 import models.Recipe;
+import models.RecipeAkka;
 import models.Trigger;
 import models.User;
 import play.data.DynamicForm;
@@ -29,7 +31,12 @@ public class Application extends Controller {
 	public static String turnOffCheckbox = "";
 
 	private static User userLoggedIn;
-	private static Recipe recipe; //used only for dynamic creation 
+
+	public static User getUserLoggedIn() {
+		return userLoggedIn;
+	}
+	
+	private static Recipe recipe;
 
 	public static Result index() {
 		return ok(index.render());
@@ -59,33 +66,15 @@ public class Application extends Controller {
 
 				return ok(administratorView.render(channelsList, triggersDic));
 			} else {
-                Recipe r = new Recipe();
-				r.setTitle("Default recipe");
-				r.setActive(true);
-				r.getLog().add("Recipe created.");
-				r.getLog().add("Recipe activated on creation.");
-				r.setUser(userLoggedIn);
-				r.save();
-				//userLoggedIn.getRecipes().add(r); // se scommentato ne salva due ! e non salva il log
-				userLoggedIn.save();
-				/*
-				Recipe recipe2 = new Recipe();
-				recipe2.setTitle("Second recipe");
-				recipe2.setId(2);
-				recipe2.setUser(userLoggedIn);
-				recipe2.setActive(true);
-				recipe2.getLog().add("Recipe created.");
-				recipe2.getLog().add("Recipe activated on creation.");
-				recipe2.save();*/
-                 
 				return ok(chooseView.render(userLoggedIn));
+
 			}
 
 		}
 
 	}
-
-	public static Result administratorView() {
+	
+	public static Result administratorView(){
 		List<Channel> channelsList = Channel.getAllChannels();
 		HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 		for (int i = 0; i < channelsList.size(); i++) {
@@ -99,79 +88,80 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		if (requestData.get("viewRecipesButton") != null) {
+			System.out.println("VIEW RECIPES");
+//			List<User> users = User.getAllUsers();
+//			for (User u : users) {
+//				for (Recipe r : u.getRecipes()) {
+//					System.out.println(r);
+//				}
+//			}
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
-			List<Channel> channelsList = Channel.getAllChannels();
 			recipe = new Recipe();
+			recipe.setUser(userLoggedIn);
+			List<Channel> channelsList = Channel.getAllChannels();
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
 
 	}
-
 	
 	public static Result viewAdministratorLog(){
-		ArrayList<String> logs = new ArrayList<String>();
-		logs.add("test0");
-		logs.add("test1");
-		logs.add("test2");
-		return ok(administratorLog.render(logs));
+		return ok(administratorLog.render());
 	}
 
-
-
 	public static Result submitForm() throws IOException {
-		Boolean lampOn = false;
-
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		turnOnCheckbox = requestData.get("turnOnCheckbox");
-		turnOffCheckbox = requestData.get("turnOffCheckbox");
-
-		System.out.println("turn off checkbox: " + turnOffCheckbox);
-
-		if (requestData.get("enterRoomButton") != null) {
-			// Tell the detector that a human entered the room
-			if (turnOnCheckbox != null) {
-				AllActors.detector.tell(new AllMessages.EnterRoom(true), AllActors.human);
-			} else {
-				AllActors.detector.tell(new AllMessages.EnterRoom(false), AllActors.human);
-			}
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(10);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-			}
-
-			if (AllActors.Lamp.state.equals("ON"))
-				lampOn = true;
-			else
-				lampOn = false;
-			System.out.println("Enter room button - LampOn is TRUE");
-
-		} else if (requestData.get("exitRoomButton") != null) {
-			// Tell the detector that a human exited the room
-			if (turnOffCheckbox != null) {
-				AllActors.detector.tell(new AllMessages.ExitRoom(true), AllActors.human);
-			} else {
-				AllActors.detector.tell(new AllMessages.ExitRoom(false), AllActors.human);
-			}
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (AllActors.Lamp.state.equals("OFF"))
-				lampOn = false;
-			else
-				lampOn = true;
-
-			System.out.println("Exit room button - LampOn is FALSE");
-		}
-
+//		Boolean lampOn = false;
+//
+//		DynamicForm requestData = Form.form().bindFromRequest();
+//
+//		turnOnCheckbox = requestData.get("turnOnCheckbox");
+//		turnOffCheckbox = requestData.get("turnOffCheckbox");
+//
+//		System.out.println("turn off checkbox: " + turnOffCheckbox);
+//
+//		if (requestData.get("enterRoomButton") != null) {
+//			// Tell the detector that a human entered the room
+//			if (turnOnCheckbox != null) {
+//				AllActors.detectorActor.tell(new AllMessages.EnterRoom(true), AllActors.humanActor);
+//			} else {
+//				AllActors.detectorActor.tell(new AllMessages.EnterRoom(false), AllActors.humanActor);
+//			}
+//
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(10);
+//			} catch (InterruptedException e) {
+//				
+//				e.printStackTrace();
+//			}
+//
+//			if (AllActors.Lamp.state.equals("ON"))
+//				lampOn = true;
+//			else
+//				lampOn = false;
+//			System.out.println("Enter room button - LampOn is TRUE");
+//
+//		} else if (requestData.get("exitRoomButton") != null) {
+//			// Tell the detector that a human exited the room
+//			if (turnOffCheckbox != null) {
+//				AllActors.detectorActor.tell(new AllMessages.ExitRoom(true), AllActors.humanActor);
+//			} else {
+//				AllActors.detectorActor.tell(new AllMessages.ExitRoom(false), AllActors.humanActor);
+//				
+//			}
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(10);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			if (AllActors.Lamp.state.equals("OFF"))
+//				lampOn = false;
+//			else
+//				lampOn = true;
+//
+//			System.out.println("Exit room button - LampOn is FALSE");
+//		}
+//
 		List<Channel> channelsList = Channel.getAllChannels();
 		return ok(chooseTriggerChannel.render(channelsList));
 	}
@@ -181,6 +171,8 @@ public class Application extends Controller {
 		Channel channel = Channel.find.byId(channelId);
 		
 		recipe.setTriggerChannel(channel);
+		
+		channel.save();
 
 		return ok(chooseTrigger.render(channel));
 	}
@@ -189,15 +181,26 @@ public class Application extends Controller {
 
 		Trigger trigger = Trigger.find.byId(triggerId);
 
+		recipe.setTrigger(trigger);
+		
 		DynamicForm requestData = Form.form().bindFromRequest();
+		
+		System.out.println("My trigger: " + trigger.getName());
 
-		HashMap<Field, String> triggerFields = new HashMap<Field, String>();
-		for (Field f : trigger.getFields()) {
-			triggerFields.put(f, requestData.get(f.getName()));
+//		HashMap<Field, String> triggerFields = new HashMap<Field, String>();
+//		for (Field f : trigger.getFields()) {
+//			triggerFields.put(f, requestData.get(f.getName()));
+//		}
+		
+		String fieldName = trigger.getFieldName();
+		if (fieldName != null && !fieldName.equals("")) {
+			String triggerFieldValue = requestData.get(fieldName);
+			Field f = new Field(fieldName, triggerFieldValue);
+			recipe.setTriggerField(f);
 		}
-
-		recipe.setTriggersMap(triggerFields);
-
+		
+	
+		
 		return ok(completeTriggerFields.render(trigger));
 	}
 
@@ -208,8 +211,8 @@ public class Application extends Controller {
 
 	public static Result chooseAction(Long channelId) {
 		Channel channel = Channel.find.byId(channelId);
-
 		recipe.setActionChannel(channel);
+		channel.save();
 
 		return ok(chooseAction.render(channel));
 	}
@@ -220,12 +223,18 @@ public class Application extends Controller {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		HashMap<Field, String> actionFields = new HashMap<Field, String>();
-		for (Field f : action.getFields()) {
-			actionFields.put(f, requestData.get(f.getName()));
-		}
+		recipe.setAction(action);
+//		HashMap<Field, String> actionFields = new HashMap<Field, String>();
+//		for (Field f : action.getFields()) {
+//			actionFields.put(f, requestData.get(f.getName()));
+//		}
 
-		recipe.setActionsMap(actionFields);
+		String fieldName = action.getFieldName();
+		if (fieldName != null && !fieldName.equals("")) {
+			String actionFieldValue = requestData.get(fieldName);
+			Field f = new Field(fieldName, actionFieldValue);
+			recipe.setActionField(f);
+		}
 
 		return ok(completeActionFields.render(action));
 	}
@@ -237,138 +246,93 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
+		
+		
+//		Channel triggerChannel = recipe.getTriggerChannel(); 
+//		triggerChannel.getTriggerRecipes().add(recipe);
+//		triggerChannel.setTriggerRecipes(triggerChannel.getTriggerRecipes());
+//		triggerChannel.save();
+//		
+//		Channel actionChannel = recipe.getActionChannel(); 
+//		actionChannel.getActionRecipes().add(recipe);
+//		actionChannel.setActionRecipes(actionChannel.getActionRecipes());
+//		actionChannel.save();
+		
 		recipe.setTitle(requestData.get("recipeTitle"));
-		
 		recipe.setActive(true);
-		recipe.getLog().add("Recipe created.");
-		recipe.getLog().add("Recipe activated on creation.");
-		
-		// List<Recipe> list = userLoggedIn.getRecipes();
-		// list.add(recipe);
-
-		// System.out.println("RECIPEEEEES:" + list.size());
-		// userLoggedIn.setRecipes(list)
-		//(userLoggedIn.getRecipes().add(recipe);
-		recipe.setUser(userLoggedIn);
 		recipe.save();
-		//userLoggedIn.getRecipes().add(recipe); //se scommentato ne aggiunge 2
+		
+		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
+		
+		for (RecipeAkka rec: RecipeAkka.recipesMap.values()) {
+			System.out.println(rec);
+		}
+		
+//		System.out.println("Recipe created: " + recipe);
+		
+		
+//		Channel trigger = recipe.getTriggerChannel();
+//		List<Recipe> recipesTrigger = trigger.getRecipes();
+//		recipesTrigger.add(recipe);
+//		trigger.save();
+//		
+//		Channel action = recipe.getActionChannel();
+//		List<Recipe> recipesAction = action.getRecipes();
+//		recipesAction.add(recipe);
+//		action.save();
+//		
+//		System.out.println("Showing trigger channel: " + recipe.getTriggerChannel());
+//		Channel c = recipe.getTriggerChannel();
+//		for (Recipe r : c.getRecipes()) {
+//			System.out.println("recipe title: " + r.getTitle());
+//		}
+//		
+//		
+//		List<Recipe> list = userLoggedIn.getRecipes();
+////		for (Recipe r : list) {
+////			System.out.println("Showing trigger channel: " + recipe.getTriggerChannel().getName());
+////		}
+//		System.out.println("Saving recipe: " + list);
+////		list.add(recipe);
+////		
+////		userLoggedIn.setRecipes(list);
+//		userLoggedIn.save();
 
-		userLoggedIn.save();
+		
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result viewRecipes() {
-		if (userLoggedIn != null)
-			return ok(viewRecipes.render(userLoggedIn));
-		else
-			return ok(index.render());
-	}
-
-	public static Result activateTrigger(Long triggerId) {
-
-		Ebean.find(Recipe.class)
-				.findList()
-				.parallelStream()
-				/* Now we have a stream, we filter on the id of TriggerChannel */
-				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
-				/* And now we send a message to each channel */
-				.forEach(
-						recipe -> {
-							/* This actor is the object which will be told */
-							try {
-								recipe.getActionChannel()
-										.getActorRef()
-										.tell(
-										/*
-										 * Message to be told: we send the
-										 * message of the first trigger found
-										 */
-										recipe.getTriggerChannel().getTriggers().stream()
-												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
-												.getClass().newInstance(),
-										/* Sender */
-										recipe.getTriggerChannel().getActorRef());
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						});
-
-		return ok();
-	}
-
-	
-	public static Result chooseActivationType(){
-		
-		DynamicForm requestData = Form.form().bindFromRequest();
-	
-		
-		Long triggerId = Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
-
-		if (requestData.get("activateTriggerManuallyButton") != null) {
-			return ok(administratorActivateManually.render(triggerId));
-		} 
-		else if (requestData.get("activateTriggerPeriodicallyButton") != null) {			
-			return ok(administratorActivatePeriodically.render(triggerId));
-		}
-		else return ok(administratorActivateRandomly.render(triggerId));
-	}
-
-	public static Result viewRecipeLog() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-		if (userLoggedIn != null && requestData.get("viewRecipesLog") != null){
-				long recipeId = Long.parseLong( requestData.get("viewRecipesLog") );
-				Recipe r = userLoggedIn.getRecipesById(recipeId);
-				return ok(viewRecipeLog.render(userLoggedIn, r));
-		}
-		else
-			return ok(index.render());
-	}
-
-	public static Result activateRecipe() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-		if (userLoggedIn != null){
-			if (requestData.get("RecipeOff") != null) {	
-				long recipeId = Long.parseLong( requestData.get("RecipeOff") );
-				Recipe r = userLoggedIn.getRecipesById(recipeId);
-				if(r.getActive()){
-					r.setActive(false);
-					r.getLog().add("Recipe turned off.");
-					r.save();
-				}
-			}else if (requestData.get("RecipeOn") != null) {	
-				long recipeId = Long.parseLong( requestData.get("RecipeOn") );
-				Recipe r = userLoggedIn.getRecipesById(recipeId);
-				if(r.getActive()==false){
-					r.setActive(true);
-					r.getLog().add("Recipe turned on.");
-					r.save();
-				}
-			}
-			userLoggedIn.save();
-		}
+		//NOT BEING USED
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
-	public static Result userLogOut() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-		if (requestData.get("LogOutButton") != null) {
-			userLoggedIn = null;
-			recipe = null;
-			return index();
+	public static Result activateTrigger(Long triggerId) {
+		List<Recipe>  recipesList = Ebean.find(Recipe.class).findList();
+		
+		for (int i=0; i<recipesList.size(); i++){
+			if (recipesList.get(i).getTriggerChannel().getId() == triggerId){
+				Trigger trigger = null;
+				for (int j=0; j<recipesList.get(i).getTriggerChannel().getTriggers().size(); j++){
+					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId){
+						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
+					}
+				}
+//				@SuppressWarnings("rawtypes")
+//				Class classe = trigger.getClass();
+//				try {
+//					recipesList.get(i).getActionChannel().getActorRef().tell(classe.newInstance(), recipesList.get(i).getTriggerChannel().getActorRef());
+//				} catch (InstantiationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IllegalAccessException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+			}
 		}
-		if (requestData.get("HomeButton") != null) {
-			recipe = null;
-			if (userLoggedIn.getRole() == "administrator")
-				return administratorView();
-			else
-				return ok(chooseView.render(userLoggedIn));
-		} 
-		if(requestData.get("AdminLog") != null){
-			return viewAdministratorLog();
-		}	
-		else
-			return index();
+		
+		return ok();
 	}
 
 }

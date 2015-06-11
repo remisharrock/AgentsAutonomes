@@ -1,15 +1,17 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-import actors.AllActors;
-import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
 
@@ -21,25 +23,38 @@ public class Channel extends Model {
 	@Id
 	private long id;
 	
+	@Required
 	private String name;
 	
 	private String description;
 	
-	private final ActorRef actorRef;
-	
-	@OneToMany(mappedBy="channel", cascade=CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Trigger> triggers;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Action> actions;
+	
+	//RECIPES WHERE THE CHANNEL IS A TRIGGER
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Recipe> triggerRecipes;
+	
+	//RECIPES WHERE THE CHANNEL IS AN ACTION
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Recipe> actionRecipes;
 	
 	public static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(
 			Long.class, Channel.class);
 	
-	@OneToMany
-	private List<Action> actions;
-	
-	public Channel(String name, String description, ActorRef actorRef) {
+	public Channel(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.actorRef = actorRef;
+		triggerRecipes = new ArrayList<Recipe>();
+		actionRecipes = new ArrayList<Recipe>();
+	}
+	
+	public Channel() {
+		triggerRecipes = new ArrayList<Recipe>();
+		actionRecipes = new ArrayList<Recipe>();
 	}
 	
 	public static List<Channel> getAllChannels() {
@@ -83,8 +98,24 @@ public class Channel extends Model {
 		this.actions = actions;
 	}
 	
-	public ActorRef getActorRef(){
-		return actorRef;
+	public List<Recipe> getTriggerRecipes() {
+		return triggerRecipes;
+	}
+
+	public void setTriggerRecipes(List<Recipe> triggerRecipes) {
+		this.triggerRecipes = triggerRecipes;
+	}
+
+	public List<Recipe> getActionRecipes() {
+		return actionRecipes;
+	}
+
+	public void setActionRecipes(List<Recipe> actionRecipes) {
+		this.actionRecipes = actionRecipes;
+	}
+
+	public Channel getChannelFromId(long id){
+		return Ebean.find(Channel.class, id);
 	}
 
 	@Override
