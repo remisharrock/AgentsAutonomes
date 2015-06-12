@@ -249,9 +249,9 @@ public class Application extends Controller {
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
-		for (RecipeAkka rec : RecipeAkka.recipesMap.values()) {
-			System.out.println(rec);
-		}
+//		for (RecipeAkka rec : RecipeAkka.recipesMap.values()) {
+//			System.out.println(rec);
+//		}
 
 		// System.out.println("Recipe created: " + recipe);
 
