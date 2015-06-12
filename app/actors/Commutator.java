@@ -1,6 +1,7 @@
 package actors;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import akka.actor.ActorRef;
@@ -50,8 +51,8 @@ public class Commutator {
 	 * @param actionMessageFactory
 	 *            can not be null
 	 */
-	public void addCausality(ActorRef triggerActor, Class<?> triggerMessageClass, String name, String description,
-			ActorRef actionActor, UnaryOperator<Object> actionFunction) {
+	public void addCausality(ActorRef triggerActor, Class<?> triggerMessageClass, String description,
+			ActorRef actionActor, UnaryOperator<Object> mapper) {
 
 		// First part: triggerActor.
 
@@ -59,23 +60,17 @@ public class Commutator {
 			causality.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
 		}
 		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
-		value.put(triggerMessageClass, actionFunction);
+		value.put(triggerMessageClass, mapper);
 		causality.put(triggerActor, value);
 
-		// Second part : action actor. This is a one-to-one relation.
+		// Second part : action actor.
 
-		eventBus.subscribe(actionActor, name);
-	}
-
-	/**
-	 * @param triggerActor
-	 * @param triggerMessageClass
-	 * @param triggerMessage
-	 *            Can be `null` if you don't need it to be tweaked.
-	 * @return
-	 */
-	public Object getActionMessageFromRecipe(ActorRef triggerActor, Class triggerMessageClass, Object triggerMessage) {
-		return causality.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
+		/*
+		 * This is a one-to-one commutated relation. Each message is unique (see
+		 * publish(MsgEnvelope event, ActorRef subscriber) of EventBusImpl to
+		 * convince yourself).
+		 */
+		eventBus.subscribe(actionActor, triggerActor.path().toString() + triggerMessageClass.getName());
 	}
 
 	/**
@@ -88,9 +83,28 @@ public class Commutator {
 	 * @param name
 	 * @param description
 	 */
-	public void removeCausality(ActorRef triggerActor, Object triggerMessage, ActorRef actionActor,
-			Object actionMessage, String name, String description) {
-		// TODO
+	public void removeCausality(ActorRef triggerActor, Class<?> triggerMessageClass, ActorRef actionActor) {
+
+		// First part: triggerActor.
+
+		causality.get(triggerActor).remove(triggerMessageClass);
+		// We leave empty maps, it can't hurt that much.
+
+		// Second part : action actor. This is a one-to-one relation.
+
+		eventBus.unsubscribe(actionActor, triggerActor.path().toString() + triggerMessageClass.getName());
+
+	}
+
+	/**
+	 * @param triggerActor
+	 * @param triggerMessageClass
+	 * @param triggerMessage
+	 *            Can be `null` if you don't need it to be tweaked.
+	 * @return
+	 */
+	public Object getMappedActionMessage(ActorRef triggerActor, Class triggerMessageClass, Object triggerMessage) {
+		return causality.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
 	}
 
 	/**
@@ -99,9 +113,12 @@ public class Commutator {
 	 * latter specifically invoke actor.tell while this one is general. Event
 	 * passed to this one will be internally filtered.
 	 * 
+	 * TODO remove the triggerClass for something more witty.
+	 * 
 	 * @param event
 	 */
-	void publish(MsgEnvelope event) {
-		eventBus.publish(event);
+	public void publish(ActorRef triggerActor, Class<?> triggerClass, Supplier<Object> triggerFunction) {
+		eventBus.publish(new MsgEnvelope(triggerActor.path().toString() + triggerClass.getName(),
+				triggerFunction.get(), triggerActor));
 	}
 }

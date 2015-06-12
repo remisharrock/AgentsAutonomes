@@ -14,7 +14,7 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 	// is used for extracting the classifier from the incoming events
 	@Override
 	public String classify(MsgEnvelope event) {
-		return event.topic;
+		return event.messageSource;
 	}
 
 	// will be invoked for each event for all subscribers which registered
@@ -28,7 +28,7 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 			 * MsgEnvelope but it would be less clean.
 			 */
 			Class<?> clazz = Class.forName(event.payload.getClass().getName());
-			payload = Application.getCommutator().getActionMessageFromRecipe(event.suscribee, clazz, event.payload);
+			payload = Application.getCommutator().getMappedActionMessage(event.suscribee, clazz, event.payload);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

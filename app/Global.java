@@ -14,17 +14,22 @@ import scala.concurrent.duration.Duration;
 import actors.AllActors;
 import actors.AllMessages;
 import actors.AllMessages.Lamp;
+import actors.RandomScheduler.StopCriteria;
 import actors.StdRandom;
 
 import com.avaje.ebean.Ebean;
 
 import controllers.Application;
 
+/**
+ * To understand how an instance of this class works, better to first give a
+ * look to onStart().
+ */
 public class Global extends GlobalSettings {
 
 	/*
 	 * TODO First a script must populate the database. We faint it here
-	 * programmatically.
+	 * programmatically but it should be performed directly on the DB.
 	 */
 	public void beforeStart(Application app) {
 		/*
@@ -32,6 +37,203 @@ public class Global extends GlobalSettings {
 		 * main et définit selon ton gré les channels qui colleront le mieux aux
 		 * acteurs définis dans AllActors :) !
 		 */
+
+		Logger.info("Init Data");
+		DBerase();
+		DBpopulate();
+
+	}
+
+	private void generateStaticCausalityFromRecipes() {
+		Ebean.find(Recipe.class)
+				.findList()
+				.forEach(
+						recipe -> Application.getCommutator().addCausality(
+								Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()),
+								recipe.getTrigger().getClazz(),
+								recipe.getDescription(),
+								Application.getSystemProxy().getStaticActorFor(recipe.getActionChannel()),
+								Application.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
+										recipe.getAction().getClazz())));
+	}
+
+	private void generateCausalityFromRecipes() {
+	}
+
+	public void onStart(Application app) {
+
+		/*
+		 * First, to make it clear about functions defined on the fly, this is
+		 * such a function that can multiply an integer by two:
+		 */
+		@SuppressWarnings("unused")
+		Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
+		/*
+		 * It's the same but the semantic is more precise to change for an unary
+		 * operator:
+		 */
+		@SuppressWarnings("unused")
+		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
+
+		generateStaticCausalityFromRecipes();
+		generateCausalityFromRecipes();
+
+		/*
+		 * Basically this is a trade-off. As all Channel are in the DB, we could
+		 * only pick up from it the right one just in time.
+		 */
+		Channel human, detector, lamp, luminosityDetector, manythings, garage;
+		{
+			/*
+			 * TODO This is not the best way to do then we ashamefully hide it
+			 * from the main scope.
+			 */
+			// Ebean.find(Channel.class).where(Expression) would be better
+			List<Channel> channels = Ebean.find(Channel.class).findList();
+			human = channels.stream().filter(x -> x.getClazz() == AllActors.Human.class).findFirst().get();
+			detector = channels.stream().filter(x -> x.getClazz() == AllActors.Detector.class).findFirst().get();
+			lamp = channels.stream().filter(x -> x.getClazz() == AllActors.Lamp.class).findFirst().get();
+			luminosityDetector = channels.stream().filter(x -> x.getClazz() == AllActors.LuminosityDetector.class)
+					.findFirst().get();
+			manythings = channels.stream().filter(x -> x.getClazz() == AllActors.Manythings.class).findFirst().get();
+			garage = channels.stream().filter(x -> x.getClazz() == AllActors.Garage.class).findFirst().get();
+		}
+
+		/*
+		 * How to programmatically instanciate actor for a Channel. Beware of
+		 * the name uniqueness constraint (if not null).
+		 */
+		Application.getSystemProxy().createActorOf(human, "Alice");
+		Application.getSystemProxy().createActorOf(human, "Bob");
+		Application.getSystemProxy().createActorOf(human, "Jean-Kevin");
+
+		/*
+		 * Example how to schedule a random action to be performed. This example
+		 * doesn't represent reality well because the detector is saying
+		 * explicitly to the lamp to turn itself on. Moreover, this signal could
+		 * be the trigger of several other causality. In the real world, when a
+		 * signal is raised, all causality are triggered.
+		 * 
+		 * However, this syntax may be useful for some cases.
+		 */
+		Application.getScheduler().addCancellableRef(
+				Duration.Zero(),
+				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
+				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
+				() -> {
+					Application
+							.getSystemProxy()
+							.getStaticActorFor(lamp)
+							.tell(new AllMessages.TurnOnLamp(true),
+									Application.getSystemProxy().getStaticActorFor(detector));
+				});
+		/*
+		 * Example how to schedule a random action to be performed. This example
+		 * is closer to the reality and use the `Commutator` object. This
+		 * embraces rhe general case.
+		 */
+		Application.getScheduler().addCancellableRef(
+				Duration.Zero(),
+				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
+				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
+				() -> {
+					Application.getCommutator().publish(Application.getSystemProxy().getStaticActorFor(detector),
+							AllMessages.Lamp.TurnOn.class, () -> {
+								String colour = "AAEFAA";
+								int intensity = 10 * (int) StdRandom.gaussian(5, 2);
+								boolean lowConsumptionMode = true;
+								return new AllMessages.Lamp.TurnOn(colour, intensity, lowConsumptionMode);
+							});
+				});
+
+		/*
+		 * TODO Example of how to add a new recipe in the back-end side. Maybe
+		 * it should be elsewhere, I don't know. Please put it at the correct
+		 * place and remove this comment
+		 */
+		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
+				AllMessages.DetectionOn.class,
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
+				Application.getSystemProxy().getStaticActorFor(lamp),
+				triggerMessage -> new AllMessages.TurnOnLamp(true));
+
+		/*
+		 * More powerful example. As this might seem weird, example from
+		 * previous commit should be easier (without mapper).
+		 */
+		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(manythings),//
+				AllMessages.Manythings.MotionDetected.class,//
+				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
+				Application.getSystemProxy().getStaticActorFor(lamp),//
+				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
+
+		System.out.println(Ebean.find(Channel.class).findRowCount());
+		// if (Ebean.find(Channel.class).findRowCount() != 0) {
+	}
+
+	public void onStop(Application app) {
+		Logger.info("Application shutdown...");
+	}
+
+	/**
+	 * Shouldn't it be avoid?
+	 */
+	@Deprecated
+	private void DBerase() {
+		List<Modality> fieldsList = Ebean.find(Modality.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Modality f : fieldsList) {
+
+			System.out.println("EWWWWWWWWWWW" + f);
+			f.delete();
+		}
+
+		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
+		// triggersList.removeAll(triggersList);
+		for (Trigger t : triggersList) {
+			System.out.println(t.getClazz().getSimpleName());
+			t.delete();
+		}
+
+		List<Action> actionsList = Ebean.find(Action.class).findList();
+		// triggersList.removeAll(actionsList);
+		for (Action a : actionsList) {
+			System.out.println(a.getClazz().getSimpleName());
+			a.delete();
+		}
+
+		List<Channel> channelsList = Ebean.find(Channel.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Channel c : channelsList) {
+			System.out.println(c);
+			c.delete();
+		}
+
+		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Recipe r : recipesList) {
+			System.out.println(r);
+			r.delete();
+		}
+
+		List<User> usersList = Ebean.find(User.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (User u : usersList) {
+			System.out.println(u);
+			u.delete();
+		}
+	}
+
+	/**
+	 * Shouldn't it be performed by a script once for all?
+	 */
+	@Deprecated
+	private void DBpopulate() {// Users
+		User user1 = new User("1", "1", "user", "home1");
+		user1.save();
+
+		User user2 = new User("2", "2", "administrator", "home1");
+		user2.save();
 
 		// Useful sketch from a previous state.
 		// // HUMAN CHANNEL
@@ -163,188 +365,5 @@ public class Global extends GlobalSettings {
 		// lampAction2.save();
 		//
 		// lamp.save();
-	}
-
-	private void generateStaticCausalityFromRecipes() {
-		Ebean.find(Recipe.class)
-				.findList()
-				.forEach(
-						recipe -> Application.getCommutator().addCausality(
-								Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()),
-								recipe.getTrigger().getClazz(),
-								recipe.getName(),
-								recipe.getDescription(),
-								Application.getSystemProxy().getStaticActorFor(recipe.getActionChannel()),
-								Application.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
-										recipe.getAction().getClazz())));
-	}
-
-	private void generateCausalityFromRecipes() {
-	}
-
-	public void onStart(Application app) {
-
-		/*
-		 * Basically this is a trade-off. As all Channel are in the DB, we could
-		 * only pick up from it the right one just in time.
-		 */
-		Channel human, detector, lamp, luminosityDetector, manythings, garage;
-		{
-			/*
-			 * TODO This is not the best way to do then we ashamefully hide it
-			 * from the main scope.
-			 */
-			// Ebean.find(Channel.class).where(Expression) would be better
-			List<Channel> channels = Ebean.find(Channel.class).findList();
-			human = channels.stream().filter(x -> x.getClazz() == AllActors.Human.class).findFirst().get();
-			detector = channels.stream().filter(x -> x.getClazz() == AllActors.Detector.class).findFirst().get();
-			lamp = channels.stream().filter(x -> x.getClazz() == AllActors.Lamp.class).findFirst().get();
-			luminosityDetector = channels.stream().filter(x -> x.getClazz() == AllActors.LuminosityDetector.class)
-					.findFirst().get();
-			manythings = channels.stream().filter(x -> x.getClazz() == AllActors.Manythings.class).findFirst().get();
-			garage = channels.stream().filter(x -> x.getClazz() == AllActors.Garage.class).findFirst().get();
-		}
-
-		/*
-		 * How to programmatically instanciate actor for a Channel. Beware of
-		 * the name uniqueness constraint (if not null).
-		 */
-		Application.getSystemProxy().createActorOf(human, "Alice");
-		Application.getSystemProxy().createActorOf(human, "Bob");
-		Application.getSystemProxy().createActorOf(human, "Jean-Kevin");
-
-		/*
-		 * Example how to schedule a random action to be performed.
-		 */
-		Application.getScheduler().scheduleActionMessage(
-				Duration.Zero(),
-				Application.getSystemProxy().getStaticActorFor(lamp),
-				Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true)
-						: new AllMessages.TurnOnLamp(true), Void -> 3 * StdRandom.gaussian(5, 2));
-
-		/*
-		 * TODO Example of how to add a new recipe in the back-end side. Maybe
-		 * it should be elsewhere, I don't know. Please put it at the correct
-		 * place and remove this comment
-		 */
-		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
-				AllMessages.DetectionOn.class, "TurnOnLampWhenDetectorRecipe",
-				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-				Application.getSystemProxy().getStaticActorFor(lamp),
-				triggerMessage -> new AllMessages.TurnOnLamp(true));
-
-		/*
-		 * More powerful example. This might seem weird, example from previous
-		 * commit should be easier (without mapper).
-		 */
-		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(manythings),//
-				AllMessages.Manythings.MotionDetected.class,//
-				"TurnOnLampWhenMovementRecipe",//
-				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
-				Application.getSystemProxy().getStaticActorFor(lamp),//
-				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
-
-		System.out.println(Ebean.find(Channel.class).findRowCount());
-		// if (Ebean.find(Channel.class).findRowCount() != 0) {
-
-		List<Modality> fieldsList = Ebean.find(Modality.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Modality f : fieldsList) {
-
-			System.out.println("EWWWWWWWWWWW" + f);
-			f.delete();
-		}
-
-		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
-		// triggersList.removeAll(triggersList);
-		for (Trigger t : triggersList) {
-			System.out.println(t.getClazz().getSimpleName());
-			t.delete();
-		}
-
-		List<Action> actionsList = Ebean.find(Action.class).findList();
-		// triggersList.removeAll(actionsList);
-		for (Action a : actionsList) {
-			System.out.println(a.getClazz().getSimpleName());
-			a.delete();
-		}
-
-		List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Channel c : channelsList) {
-			System.out.println(c);
-			c.delete();
-		}
-
-		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Recipe r : recipesList) {
-			System.out.println(r);
-			r.delete();
-		}
-
-		List<User> usersList = Ebean.find(User.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (User u : usersList) {
-			System.out.println(u);
-			u.delete();
-		}
-
-		Logger.info("Init Data");
-
-		// Users
-		User user1 = new User("1", "1", "user", "home1");
-		user1.save();
-
-		User user2 = new User("2", "2", "administrator", "home1");
-		user2.save();
-
-		/*
-		 * Example how to schedule a random action to be performed. Here we
-		 * randomly send two actions to the lamp : it will result in a somewhat
-		 * erratic behaviour.
-		 */
-		Application.getScheduler().scheduleActionMessage(Duration.Zero(),
-				Application.getSystemProxy().getStaticActorFor(lamp), new AllMessages.TurnOnLamp(true),
-				Void -> 3 * StdRandom.gaussian(5, 2));
-		Application.getScheduler().scheduleActionMessage(Duration.Zero(),
-				Application.getSystemProxy().getStaticActorFor(lamp), new AllMessages.TurnOffLamp(true),
-				Void -> 3 * StdRandom.gaussian(5, 2));
-
-		/*
-		 * The example above is poor. It's much nicer to use a function to
-		 * define on-the-fly which message will be sent. Then, we cancel all
-		 * we've done and we start again in a more proper way.
-		 */
-		Application.getScheduler().cancelAll(); // forget all we've done.
-		Application.getScheduler().scheduleActionMessage(
-		/* The initialisation delay */
-		Duration.Zero(),
-		/* The actor which will receive messages */
-		Application.getSystemProxy().getStaticActorFor(lamp),
-		/*
-		 * This function which will be called to define each message on the fly.
-		 */
-		Void -> (AllActors.Lamp.state == "OFF") ? new AllMessages.TurnOffLamp(true) : new AllMessages.TurnOnLamp(true),
-		/* As this function takes no argument, we show it with Void. */
-		Void -> 3 * StdRandom.gaussian(5, 2));
-
-		/*
-		 * To make it clear about functions defined on the fly, this is such a
-		 * function that can multiply an integer by two:
-		 */
-		@SuppressWarnings("unused")
-		Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
-		/*
-		 * It's the same but the semantic is more precise to change for an unary
-		 * operator:
-		 */
-		@SuppressWarnings("unused")
-		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
-	}
-
-	public void onStop(Application app) {
-		Logger.info("Application shutdown...");
-
 	}
 }

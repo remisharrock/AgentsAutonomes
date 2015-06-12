@@ -43,6 +43,17 @@ En fin de compte, restons comme nous sommes. Les deux doivent être définis en 
 
 Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
 
+### Définir un envoi de message automatique
+
+En faisant un parallèle avec la vie réelle, il y a principalement trois manières d'initier un message automatique :
+ * La manière la plus simple est de commander une action, donc d'envoyer un message d'action à un acteur ;
+ * On peut aussi simuler l'émission d'un signal par un acteur ;
+ * Enfin, si un objet est suffisament évolué, il peut envoyer des messages tout seul et on peut le faire agir en ce sens.
+
+La classe `RandomScheduler` propose les deux premières façons de faire. La troisième est laissée au soin du lecteur.
+
+Cet envoi automatique peut être interrompu par l'utilisateur qui peut également donner un nombre ou un temps limite d'envoi.
+
 ### Utilisation
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…
