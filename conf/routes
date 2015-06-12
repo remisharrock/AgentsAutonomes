@@ -18,6 +18,10 @@ GET		/viewRecipes					controllers.Application.viewRecipes()
 GET		/viewRecipesAfterCreate			controllers.Application.viewRecipesAfterCreate()
 GET		/viewAdministratorLog			controllers.Application.viewAdministratorLog()
 GET		/administratorView				controllers.Application.administratorView()
+GET		/chooseActivationType			controllers.Application.chooseActivationType()
+GET		/viewRecipeLog					controllers.Application.viewRecipeLog()
+GET		/activateRecipe					controllers.Application.activateRecipe()
+GET		/userLogOut						controllers.Application.userLogOut()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

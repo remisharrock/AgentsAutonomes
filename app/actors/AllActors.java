@@ -17,11 +17,6 @@ public class AllActors {
 //    public final static ActorRef detectorActor = system.actorOf(Props.create(DetectorActor.class), "detector");
 //    public final static ActorRef lampActor = system.actorOf(Props.create(LampActor.class), "lamp");
 //    public final static ActorRef luminosityDetectorActor = system.actorOf(Props.create(LuminosityDetectorActor.class), "luminosityDetector");
-	
-
-	
-
-	
 
 	
 	public class HumanActor extends UntypedActor {
@@ -146,17 +141,6 @@ public class AllActors {
 		mapClassNameActor.put("LampActor", LampActor.class);
 		mapClassNameActor.put("LuminosityDetectorActor", LuminosityDetectorActor.class);
     }
-	
-	
-//	private static final HashMap<String, String> mapClassNameActor;
-//	static
-//    {
-//		mapClassNameActor = new HashMap<String, String>();
-//		mapClassNameActor.put("HumanActor", "HumanActor");
-//		mapClassNameActor.put("DetectorActor", "HumanActor");
-//		mapClassNameActor.put("LampActor", "HumanActor");
-//		mapClassNameActor.put("LuminosityDetectorActor", "HumanActor");
-//    }
 	
 	public static HashMap<String, Class<?>> getMapClassNameActor(){
 		return mapClassNameActor;

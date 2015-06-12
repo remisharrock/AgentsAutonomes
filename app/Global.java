@@ -258,6 +258,7 @@ public class Global extends GlobalSettings {
 
 			// courses.find.where().eq("student_id", student_id).findList();
 
+//test
 		}
 
 	}

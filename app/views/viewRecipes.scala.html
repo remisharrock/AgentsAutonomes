@@ -1,39 +1,52 @@
 @(user: User)
-@import java.math.BigInteger; var counter=0;
 @main("Agents autonomes") {
+
 
 
 <!DOCTYPE html>
 <html class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js' debug='true' lang='en'>
 <body>
 
-
-
 <header class='l-header'>
+	<div class='l-site-header'>
+		<div class='l-site-header-menus is-closed' id='site-header-menus'>
+			<div class='l-site-header-menus-inner'>
+				<nav class='l-site-header-flexible-nav'>
+				<ul class='nav nav-site is-authenticated'>
+					<form class="navbar-form pull-right"
+						action="@routes.Application.userLogOut()"> 
+						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
+						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
+					</form> <br>
+				</ul></nav>
+			</div>
+		</div>
+	</div>
+
 	<div class='l-page-header'>
 		<div class='l-page-header-inner'>
 			<div class='is-alone l-page-title-unit'>
-				<h1 class='l-page-title'>My Recipes</h1>
+				<div class="hero-unit">
+				<h1>Your Recipes</h1>
+				<p>Hello @user.getUsername()</p>
+			</div>
 			</div>
 		</div>
 	</div>
 </header>
 
-
-
-
-
+<br>
 <article class='l-page-content'>
-
+<div id='statements'>
 
 @if(user.getRecipes()!=null && user.getRecipes().size() > 0){
 	@for(recipe <- user.getRecipes()) { 
 	
-<br>
-<br>
-<div class='build_size' id='start'>
-	<div class='is-dimmable'>
-		<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
+
+	<div class='page-item'><div class='personal-recipe-manage' id='statement_24079820'>
+		<div class='build_size' id='start'>
+			<div class='is-dimmable'>
+				<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
 						data-channel_id='ID'
 						data-channel_module_name='NAME'
 						data-remote
@@ -68,38 +81,34 @@
 						class="channel-list_icon_img"
 						id="channel_1172726678"
 						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-					</a></span>
-					
-	</div>
-</div>
-<br>
-<span><a class='personal-recipe-manage_description' >@recipe.getTitle()</a></span>
-<br>
-<div class='personal-recipe-manage_meta'>
-	<div class='personal-recipe-manage_buttons'>
-		<span class='activation_link animc control_link' id='activation_23874676'>
-			<input id="statement_23874676_enabled" name="statement_23874676_enabled" type="hidden" value="true" />
-			<a href="/" 
-				class="btn-square-icon" 
-				data-method="put" 
-				data-remote="true" 
-				data-statement_id="23874676" 
-				ifttt-task-activation-button="1" 
-				title="Turn Recipe off">
-			<span class='icon icon-power'>Turn off Recipe</span></a>
-		</span>
+					</a></span>		
+			</div>
+		</div>
+		<br>
+		<span><a class='personal-recipe-manage_description' > @recipe.getTitle() </a></span>
 		
-		<span class='control_link'>
-			<a href="/myrecipes/personal/23874676/logs" class=" btn-square-icon" title="View Recipe logs"><span class='icon icon-activity'>Log</span></a>
-		</span>
-	</div>
-</div>
-
-
-
+		<div class='personal-recipe-manage_meta'>
+			<div class='personal-recipe-manage_buttons'>
+				<span><div id="statement_create">
+					@if(recipe.getActive()){
+						<a class='personal-recipe-activation_ON' > Recipe ACTIVE </a>
+						<br>
+						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+							<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> 
+					}else{
+						<a class='personal-recipe-activation_OFF' > Recipe NOT ACTIVE </a>
+						<br>
+						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
+							<button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button>
+					}
+					</form>
+					<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
+					<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form>
+					
+				</span>
+		</div></div>
+	</div></div>
 <br>
-<br>
-
 	
 	}			
 } else{
@@ -107,10 +116,11 @@ You don't have any recipe
 }
 
 
-
+</div>
 </article>
 </body>
+
+
 </html>
 
 }
-

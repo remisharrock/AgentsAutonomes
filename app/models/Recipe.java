@@ -1,7 +1,10 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -18,6 +21,7 @@ import messages.AllMessages;
 import org.apache.commons.lang3.text.WordUtils;
 
 import play.db.ebean.Model;
+import scala.Array;
 import actors.AllActors;
 import akka.actor.ActorRef;
 import akka.actor.Props;
@@ -62,9 +66,13 @@ public class Recipe extends Model {
 	private User user;
 
 	private RecipeAkka recipeAkka;
+	
+	
+	private List<String> log;
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
+		log = new ArrayList<String>();
 		recipeAkka = new RecipeAkka();
 	}
 
@@ -448,6 +456,22 @@ public class Recipe extends Model {
 				+ ", triggerChannel=" + triggerChannel + ", triggerField="
 				+ triggerField + ", actionChannel=" + actionChannel
 				+ ", actionField=" + actionField + ", user=" + user + "]";
+	}
+
+	public List<String> getLog() {
+		return log;
+	}
+
+	public void setLog(List<String> log) {
+		this.log = log;
+	}
+	
+	public List<String> getLogReverseOrder() {
+		List<String> logReverse = new LinkedList<String>();
+		ListIterator<String> i = log.listIterator(log.size());
+		while(i.hasPrevious())
+			logReverse.add(i.previous());
+		return logReverse;
 	}
 
 }

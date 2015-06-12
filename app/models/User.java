@@ -156,6 +156,13 @@ public class User extends Model {
 		return null;
     }
 	
+	public Recipe getRecipesById(long id) {
+		for(Recipe r : recipes){
+			if(r.getId() == id)
+				return r;
+		}
+		return null;
+	}
 	
 
 }
