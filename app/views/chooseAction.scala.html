@@ -37,7 +37,7 @@
 						data-action_id="@action.getId()"
 						href="@routes.Application.completeActionFields(channel.getId())"
 						id="action_@action.getId()">
-						<h3 class="action-list_item_name">@action.getName()</h3>
+						<h3 class="action-list_item_name">@action.getClazz().getSimpleName()</h3>
 						<p class="action-list_item_desc">@action.getDescription()</p>
 					</a> }
 				</div>

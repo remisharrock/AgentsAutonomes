@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.UnaryOperator;
 
 import models.Action;
 import models.Channel;
@@ -28,7 +29,6 @@ import views.html.createRecipe;
 import views.html.index;
 import views.html.viewRecipeLog;
 import views.html.viewRecipes;
-import actors.AllActors;
 import actors.Commutator;
 import actors.MessageMap;
 import actors.MockUp;
@@ -40,8 +40,8 @@ import com.avaje.ebean.Ebean;
 public class Application extends Controller {
 
 	private static RandomScheduler randomScheduler = new RandomScheduler();
-	private static MessageMap messageMap = new MessageMap();
 	private static SystemProxy systemProxy = new MockUp();
+	private static MessageMap<UnaryOperator<Object>> messageMap = new MessageMap<>();
 	private static Commutator commutator = new Commutator();
 
 	public static RandomScheduler getScheduler() {
@@ -52,7 +52,7 @@ public class Application extends Controller {
 		return systemProxy;
 	}
 
-	public static MessageMap getMessageMap() {
+	public static MessageMap<UnaryOperator<Object>> getMessageMap() {
 		return messageMap;
 	}
 
@@ -67,6 +67,7 @@ public class Application extends Controller {
 	private static Recipe recipe; // used only for dynamic creation
 
 	public static Result index() {
+		play.Logger.info("Init Data");
 		return ok(index.render());
 	}
 
@@ -172,10 +173,10 @@ public class Application extends Controller {
 				e.printStackTrace();
 			}
 
-			if (AllActors.Lamp.state.equals("ON"))
-				lampOn = true;
-			else
-				lampOn = false;
+			// if (AllActors.Lamp.state.equals("ON"))
+			// lampOn = true;
+			// else
+			// lampOn = false;
 			System.out.println("Enter room button - LampOn is TRUE");
 
 		} else if (requestData.get("exitRoomButton") != null) {
@@ -194,10 +195,10 @@ public class Application extends Controller {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (AllActors.Lamp.state.equals("OFF"))
-				lampOn = false;
-			else
-				lampOn = true;
+			// if (AllActors.Lamp.state.equals("OFF"))
+			// lampOn = false;
+			// else
+			// lampOn = true;
 
 			System.out.println("Exit room button - LampOn is FALSE");
 		}

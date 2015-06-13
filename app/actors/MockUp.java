@@ -17,7 +17,7 @@ import akka.actor.UntypedActor;
  * access actors. It oversteps our temporary weak comprehension of the akka
  * framework by avoiding using ActorPath. Thus it comes with severe limitations:
  * we can't scale it on multiple JVMs and it may include some drawbacks.
- * However, the single JVM flaw has widely spread through this project: we never
+ * However, the single JVM flaw had widely spread through this project: we never
  * use ActorPath.
  * </p>
  * 
@@ -29,8 +29,14 @@ import akka.actor.UntypedActor;
  * </p>
  * 
  * <p>
+ * Despite of all these flaws, it's quite convenient as it provides a handy,
+ * short way to access the system. Moreover, as it's believed to be used often,
+ * we use concurrent data structure.
+ * </p>
+ * 
+ * <p>
  * When you get yourself free from this class, don't forget to search for use or
- * track Deprecated warnings.
+ * track @Deprecated warnings.
  * </p>
  */
 @Deprecated
@@ -41,6 +47,9 @@ public class MockUp implements SystemProxy {
 	 * declared here.
 	 */
 	private ActorSystem system = ActorSystem.create();
+	/**
+	 * Something too easy that it's cheating. It helps to get all actors for a given class.
+	 */
 	private ConcurrentHashMap<Class<? extends UntypedActor>, CopyOnWriteArrayList<ActorRef>> cheat;
 
 	/**
@@ -53,6 +62,12 @@ public class MockUp implements SystemProxy {
 		return this.system;
 	}
 
+	/**
+	 * Be careful it hides name errors.
+	 * 
+	 * In case the name is null (or has be given already) we use a canonical
+	 * name based on classname: lamp0, lamp1, lamp2…
+	 */
 	public ActorRef createActorOf(Channel channel, String name) {
 		ActorRef actorRef = null;
 		int inc = 0;
@@ -64,6 +79,8 @@ public class MockUp implements SystemProxy {
 			try {
 				actorRef = system.actorOf(Props.create(channel.getClazz()), givenName);
 			} catch (InvalidActorNameException e) {
+				// If the name is incorrect, we try as long as needed with a
+				// different name.
 				givenName = name + inc++;
 			}
 		} while (actorRef == null);

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
@@ -62,6 +64,9 @@ public class Global extends GlobalSettings {
 
 	public void onStart(Application app) {
 
+		Logger.info("Init Data");
+		System.out.println("Data Init");
+
 		/*
 		 * First, to make it clear about functions defined on the fly, this is
 		 * such a function that can multiply an integer by two:
@@ -75,6 +80,11 @@ public class Global extends GlobalSettings {
 		@SuppressWarnings("unused")
 		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
 
+		int thisWillBeFour = multiplyByTwo0.apply(2);
+		List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		int result = list.stream().filter(x -> x > 7).map(multiplyByTwo0).reduce(Integer::sum).get();
+		boolean thisWillBeTrue = (result == 2 * (8 + 9));
+
 		generateStaticCausalityFromRecipes();
 		generateCausalityFromRecipes();
 
@@ -82,7 +92,7 @@ public class Global extends GlobalSettings {
 		 * Basically this is a trade-off. As all Channel are in the DB, we could
 		 * only pick up from it the right one just in time.
 		 */
-		Channel human, detector, lamp, luminosityDetector, manythings, garage;
+		Channel detector, lamp, luminosityDetector, manythings, garage;
 		{
 			/*
 			 * TODO This is not the best way to do then we ashamefully hide it
@@ -90,8 +100,8 @@ public class Global extends GlobalSettings {
 			 */
 			// Ebean.find(Channel.class).where(Expression) would be better
 			List<Channel> channels = Ebean.find(Channel.class).findList();
-			human = channels.stream().filter(x -> x.getClazz() == AllActors.Human.class).findFirst().get();
-			detector = channels.stream().filter(x -> x.getClazz() == AllActors.Detector.class).findFirst().get();
+			detector = channels.stream().filter(x -> x.getClazz() == AllActors.BasicPresenceDetector.class).findFirst()
+					.get();
 			lamp = channels.stream().filter(x -> x.getClazz() == AllActors.Lamp.class).findFirst().get();
 			luminosityDetector = channels.stream().filter(x -> x.getClazz() == AllActors.LuminosityDetector.class)
 					.findFirst().get();
@@ -101,11 +111,12 @@ public class Global extends GlobalSettings {
 
 		/*
 		 * How to programmatically instanciate actor for a Channel. Beware of
-		 * the name uniqueness constraint (if not null).
+		 * the name uniqueness constraint (if not null) as defined by akka. The
+		 * first actor created will be referenced as static actor.
 		 */
-		Application.getSystemProxy().createActorOf(human, "Alice");
-		Application.getSystemProxy().createActorOf(human, "Bob");
-		Application.getSystemProxy().createActorOf(human, "Jean-Kevin");
+		// Application.getSystemProxy().createActorOf(new Channel(), "Alice").;
+		// Application.getSystemProxy().createActorOf(human, "Bob");
+		// Application.getSystemProxy().createActorOf(human, "Jean-Kevin");
 
 		/*
 		 * Example how to schedule a random action to be performed. This example
@@ -124,7 +135,7 @@ public class Global extends GlobalSettings {
 					Application
 							.getSystemProxy()
 							.getStaticActorFor(lamp)
-							.tell(new AllMessages.TurnOnLamp(true),
+							.tell(new AllMessages.Lamp.TurnOn("turquoise", 4, false),
 									Application.getSystemProxy().getStaticActorFor(detector));
 				});
 		/*
@@ -152,10 +163,10 @@ public class Global extends GlobalSettings {
 		 * place and remove this comment
 		 */
 		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
-				AllMessages.DetectionOn.class,
+				AllMessages.Lamp.TurnOn.class,
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
 				Application.getSystemProxy().getStaticActorFor(lamp),
-				triggerMessage -> new AllMessages.TurnOnLamp(true));
+				triggerMessage -> new AllMessages.Lamp.TurnOn("turquoise", 4, false));
 
 		/*
 		 * More powerful example. As this might seem weird, example from
@@ -235,24 +246,22 @@ public class Global extends GlobalSettings {
 		User user2 = new User("2", "2", "administrator", "home1");
 		user2.save();
 
-		// Useful sketch from a previous state.
-		// // HUMAN CHANNEL
-		// Channel human = new Channel("Human", "Can enter or exit room",
-		// AllActors.human);
-		// human.save();
-		//
-		// Action humanEnterRoomAction = new Action("Enter room");
-		// human.getActions().add(humanEnterRoomAction);
-		// humanEnterRoomAction.setChannel(human);
-		// humanEnterRoomAction.save();
-		//
-		// Action humanExitRoomAction = new Action("Exit room");
-		// human.getActions().add(humanExitRoomAction);
-		// humanExitRoomAction.setChannel(human);
-		// humanExitRoomAction.save();
-		//
-		// human.save();
-		//
+		// We can't have human channel : it's not a channel as define as object
+		// from IoT.
+
+		Channel manythings, garage;
+
+		/*
+		 * Triggers and Actions are needed only for the interface. If we keep
+		 * programmatically working on causality, we don't need them.
+		 */
+		List<Trigger> triggers = new ArrayList<Trigger>();
+		List<Action> actions = new ArrayList<Action>();
+
+		(new Channel(triggers, actions, AllActors.Manythings.class, "Manythings")).save();
+		(new Channel(triggers, actions, AllActors.Lamp.class, "Manythings")).save();
+		(new Channel(triggers, actions, AllActors.PresenceDetector.class, "Manythings")).save();
+
 		// // PRESENCE DETECTOR CHANNEL
 		// Channel detector = new Channel("Detector", "Detects humans",
 		// AllActors.detector);

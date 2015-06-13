@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,9 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
+import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
 import com.avaje.ebean.Ebean;
+
+import controllers.Application;
 
 /**
  * Model is an abstraction of Actor. Because it takes a class reference, one
@@ -56,6 +60,15 @@ public class Channel extends Model {
 		this.actions = actions;
 		this.clazz = clazz;
 		this.description = description;
+	}
+
+	/**
+	 * Syntactic sugar. Or perhaps we could put this in the DB.
+	 * 
+	 * @return
+	 */
+	public CopyOnWriteArraySet<ActorRef> getActors() {
+		return Application.getSystemProxy().getActorsFor(this);
 	}
 
 	@SuppressWarnings("unused")

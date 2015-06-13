@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.xml.bind.TypeConstraintException;
 
-import controllers.Application;
 import actors.AllMessages.Lamp.TurnOn;
+import controllers.Application;
 
 public final class AllMessages {
 
@@ -75,56 +75,42 @@ public final class AllMessages {
 		}
 	}
 
-	public static class DetectionOn implements Serializable {
-		private static final long serialVersionUID = 1L;
-		private Boolean changeState;
+	public static class PresenceDetector {
+		public static class TurnState implements Serializable {
+			private static final long serialVersionUID = 1L;
+			private boolean state;
 
-		public DetectionOn(Boolean changeState) {
-			this.changeState = changeState;
+			public TurnState(boolean state) {
+				this.state = state;
+			}
+
+			public Boolean getChangeState() {
+				return state;
+			}
 		}
 
-		public Boolean getChangeState() {
-			return changeState;
-		}
+		public static class MotionDetected implements Serializable {
+			private static final long serialVersionUID = 1L;
+			private Integer deviceId = null;
 
-	}
+			private Double quantitéDeMouvement = null;
 
-	public static class DetectionOff implements Serializable {
-		private static final long serialVersionUID = 1L;
-		private Boolean changeState;
+			public MotionDetected(Double quantitéDeMouvement) {
+				this.quantitéDeMouvement = quantitéDeMouvement;
+			}
 
-		public DetectionOff(Boolean changeState) {
-			this.changeState = changeState;
-		}
+			public MotionDetected(Integer deviceId, Double quantitéDeMouvement) {
+				this.deviceId = deviceId;
+				this.quantitéDeMouvement = quantitéDeMouvement;
+			}
 
-		public Boolean getChangeState() {
-			return changeState;
-		}
-	}
+			public Integer getDeviceId() {
+				return deviceId;
+			}
 
-	public static class TurnOnLamp implements Serializable {
-		private static final long serialVersionUID = 1L;
-		private Boolean changeState;
-
-		public TurnOnLamp(Boolean changeState) {
-			this.changeState = changeState;
-		}
-
-		public Boolean getChangeState() {
-			return changeState;
-		}
-	}
-
-	public static class TurnOffLamp implements Serializable {
-		private static final long serialVersionUID = 1L;
-		private Boolean changeState;
-
-		public TurnOffLamp(Boolean changeState) {
-			this.changeState = changeState;
-		}
-
-		public Boolean getChangeState() {
-			return changeState;
+			public Double getQuantitéDeMouvement() {
+				return this.quantitéDeMouvement;
+			}
 		}
 	}
 
@@ -152,6 +138,10 @@ public final class AllMessages {
 			public Boolean getLowConsumptionMode() {
 				return lowConsumptionMode;
 			}
+		}
+
+		public static class TurnOff implements Serializable {
+			private static final long serialVersionUID = 1L;
 		}
 	}
 

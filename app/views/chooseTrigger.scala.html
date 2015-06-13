@@ -37,7 +37,7 @@
 						data-trigger_id="@trigger.getId()"
 						href="@routes.Application.completeTriggerFields(channel.getId())"
 						id="trigger_@trigger.getId()">
-						<h3 class="trigger-list_item_name">@trigger.getName()</h3>
+						<h3 class="trigger-list_item_name">@trigger.getClazz().getSimpleName()</h3>
 						<p class="trigger-list_item_desc">@trigger.getDescription()</p>
 					</a> }
 				</div>

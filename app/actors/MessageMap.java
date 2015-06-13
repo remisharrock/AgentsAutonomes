@@ -23,24 +23,29 @@ import java.util.stream.Collectors;
  * TODO We still have to think about visibilty. Is it really mandatory to make
  * these methods public?
  * </p>
+ * 
+ * @param <T>
+ *            most of type it'll be an object but one may be willing to create
+ *            special message type.
  */
-public class MessageMap {
+public class MessageMap<T> {
+
+	// T = UnaryOperator<Object>
 
 	/**
 	 * Some hint: HashMap<String, UnaryOperator<Object>> is nice enough cuz it
 	 * allows the null key. This value is the default between two classes.
 	 */
-	private HashMap<Class<? extends Object>, HashMap<Class<? extends Object>, HashMap<String, UnaryOperator<Object>>>> container;
+	private HashMap<Class<? extends Object>, HashMap<Class<? extends Object>, HashMap<String, T>>> container;
 
 	public MessageMap() {
-		this.container = new HashMap<Class<? extends Object>, HashMap<Class<? extends Object>, HashMap<String, UnaryOperator<Object>>>>();
+		this.container = new HashMap<Class<? extends Object>, HashMap<Class<? extends Object>, HashMap<String, T>>>();
 	}
 
 	/**
 	 * Sets the default
 	 */
-	public void setMapper(Class<? extends Object> triggerClass, Class<? extends Object> actionClass,
-			UnaryOperator<Object> mappingFunction) {
+	public void setMapper(Class<? extends Object> triggerClass, Class<? extends Object> actionClass, T mappingFunction) {
 		setMapper(null, triggerClass, actionClass, mappingFunction);
 	}
 
@@ -48,12 +53,12 @@ public class MessageMap {
 	 * Sets the default is unset
 	 */
 	public void setMapper(String name, Class<? extends Object> triggerClass, Class<? extends Object> actionClass,
-			UnaryOperator<Object> mappingFunction) {
+			T mappingFunction) {
 		if (!container.containsKey(triggerClass)) {
-			container.put(triggerClass, new HashMap<Class<? extends Object>, HashMap<String, UnaryOperator<Object>>>());
+			container.put(triggerClass, new HashMap<Class<? extends Object>, HashMap<String, T>>());
 		}
 		if (!container.get(triggerClass).containsKey(actionClass)) {
-			container.get(triggerClass).put(actionClass, new HashMap<String, UnaryOperator<Object>>());
+			container.get(triggerClass).put(actionClass, new HashMap<String, T>());
 		}
 		if (name != null && !container.get(triggerClass).get(actionClass).containsKey(null)) {
 			container.get(triggerClass).get(actionClass).put(null, mappingFunction);
@@ -86,7 +91,7 @@ public class MessageMap {
 	 * Bon appétit. One might find interesting to know I broke Eclipse syntax
 	 * hightlighter and code formatter when writing this piece.
 	 */
-	public List<UnaryOperator<Object>> getMappersByName(String name) {
+	public List<T> getMappersByName(String name) {
 		return container.entrySet().parallelStream().flatMap(e -> e.getValue().values().parallelStream())
 				.map(HashMap::entrySet).flatMap(Set::parallelStream).filter(e -> e.getKey() == name)
 				.map(Map.Entry::getValue).collect(Collectors.toList());

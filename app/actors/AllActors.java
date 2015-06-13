@@ -1,74 +1,71 @@
 package actors;
 
-import actors.AllMessages.DetectionOff;
-import actors.AllMessages.DetectionOn;
+import java.time.Duration;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
+
+import actors.RandomScheduler.StopCriteria;
 import akka.actor.UntypedActor;
 
 public final class AllActors {
 	private AllActors() {
 	}
 
-	public static class Human extends UntypedActor {
-		String state = "";
-
-		public void onReceive(Object message) {
-		}
-	}
-
-	public static class Detector extends UntypedActor {
-
-		String state = "";
+	public static class BasicPresenceDetector extends UntypedActor {
 
 		@Override
 		public void onReceive(Object message) throws Exception {
-			// if (message instanceof EnterRoom) {
-			// System.out.println("Detector Actor: DETECTION ON");
-			// if (((EnterRoom) message).getChangeState())
-			// lamp.tell(new DetectionOn(true), getSelf());
-			// else
-			// lamp.tell(new DetectionOn(false), getSelf());
-			//
-			// state = "Detector: Someone entered the room";
-			// } else if (message instanceof ExitRoom) {
-			// // Send the current greeting back to the sender
-			// System.out.println("Detector Actor: DETECTION OFF");
-			// if (((ExitRoom) message).getChangeState())
-			// lamp.tell(new DetectionOff(true), getSelf());
-			// else
-			// lamp.tell(new DetectionOff(false), getSelf());
-			// state = "Detector: Someone left the room";
-			// } else
-			// unhandled(message);
+			/*
+			 * This is just a basic detector, it can't handle message.
+			 */
+			unhandled(message);
+		}
+	}
+
+	public static class PresenceDetector extends UntypedActor {
+
+		/**
+		 * Basic history. Better to have an HashMap.
+		 */
+		private CopyOnWriteArrayList<Object> history;
+		private RandomScheduler innerRandomScheduler;
+
+		public PresenceDetector() {
+			history = new CopyOnWriteArrayList<>();
+			innerRandomScheduler = new RandomScheduler();
+		}
+
+		@Override
+		public void onReceive(Object message) throws Exception {
+			history.add(message);
+			/*
+			 * Nothing for now.
+			 */
+			unhandled(message);
+		}
+
+		/**
+		 * This is a clever actor so it can understand how to simulate fake
+		 * triggers.
+		 */
+		public CancellableRef scheduleTrigger(Duration init, Supplier<Duration> randomFunction,
+				StopCriteria stopCriteria, Runnable eventFunction) {
+			return innerRandomScheduler.addCancellableRef(init, randomFunction, stopCriteria, eventFunction);
 		}
 	}
 
 	public static class Lamp extends UntypedActor {
-		public static String state = "OFF";
+		public static boolean state = false;
 
 		public void onReceive(Object message) {
-			if (message instanceof DetectionOn) {
-				if (((DetectionOn) message).getChangeState()) {
-					System.out.println("Lamp Actor: LAMP ON");
-					state = "ON";
-				} else {
-					System.out.println("Detection ok But LAMP state didn't change");
-				}
-			}
+			if (message instanceof AllMessages.Lamp.TurnOff) {
+				state = false;
 
-			if (message instanceof AllMessages.Lamp.TurnOn) {
+			} else if (message instanceof AllMessages.Lamp.TurnOn) {
 				AllMessages.Lamp.TurnOn mess = (AllMessages.Lamp.TurnOn) message;
 				// Access messages fields.
 				mess.getColour();
-			}
-
-			else if (message instanceof DetectionOff) {
-				// Send the current greeting back to the sender
-				if (((DetectionOff) message).getChangeState()) {
-					System.out.println("Lamp Actor: LAMP OFF");
-					state = "OFF";
-				} else {
-					System.out.println("Detection ok But LAMP state didn't change");
-				}
+				state = true;
 			} else
 				unhandled(message);
 		}

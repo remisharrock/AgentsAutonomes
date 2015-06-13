@@ -5,15 +5,10 @@
 
 create table action (
   id                        bigint not null,
-  name                      varchar(255),
+  clazz                     varchar(255),
   channel_id                bigint,
   description               varchar(255),
   constraint pk_action primary key (id))
-;
-
-create table actor (
-  clazz                     varchar(255) not null,
-  name                      varchar(255) not null)
 ;
 
 create table channel (
@@ -47,7 +42,7 @@ create table recipe (
 
 create table trigger (
   id                        bigint not null,
-  name                      varchar(255),
+  clazz                     varchar(255),
   channel_id                bigint,
   description               varchar(255),
   constraint pk_trigger primary key (id))
@@ -63,8 +58,6 @@ create table user (
 ;
 
 create sequence action_seq;
-
-create sequence actor_seq;
 
 create sequence channel_seq;
 
@@ -103,8 +96,6 @@ SET REFERENTIAL_INTEGRITY FALSE;
 
 drop table if exists action;
 
-drop table if exists actor;
-
 drop table if exists channel;
 
 drop table if exists modality;
@@ -118,8 +109,6 @@ drop table if exists user;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists action_seq;
-
-drop sequence if exists actor_seq;
 
 drop sequence if exists channel_seq;
 

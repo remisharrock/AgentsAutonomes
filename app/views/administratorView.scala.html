@@ -267,7 +267,7 @@
 							data-channel_id="@trigger.getChannel().getId()"
 							data-trigger_id="@trigger.getId()" href="#" id="trigger_607940575"
 							href="@routes.Application.activateTrigger(trigger.getId())">
-								<h3 class="trigger-list_item_name">@trigger.getName()</h3>
+								<h3 class="trigger-list_item_name">@trigger.getClazz().getSimpleName()</h3>
 								<p class="trigger-list_item_desc">@trigger.getDescription()</p>
 							</a>
 						}
