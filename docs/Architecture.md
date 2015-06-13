@@ -21,7 +21,7 @@ Nous voulons faire une simulation de ifttt. Pour cela, nous utilisons deux nivea
 
 ### Relation de génération entre les deux niveaux
 
-Nous définissons plus haut les acteurs par rapport aux canaux. Cette démarche est cependant erronnée à cause de akka qui nous force en quelque sorte à définir programmatiquement les acteurs : leur définition n'est donc pas chargée en base mais codée « en dur » et iceux ne sont donc pas déduit des canaux comme le présentaient les explications précédentes.
+Nous définissons plus haut les acteurs par rapport aux canaux. Cette démarche est cependant erronnée à cause de akka qui nous force en quelque sorte à définir programmatiquement les acteurs : leur définition n'est donc pas chargée en base mais codée « en dur » et iceux ne sont donc pas déduits des canaux comme le présentaient les explications précédentes.
 
 Loin de poser problème, il suffit de considérer que les acteurs ont tout de même une intelligence qui échappe aux canaux et correspondent à des objets physiques qui ne sont pas facilement modifiables. Le paradigme d'ifttt est d'en abstraire des catégories en créant un canal qui regroupe des acteurs tandis que celui de l'utilisateur est de redescendre du canal vers son objet physique. La dichotomie de ces deux mouvements de pensée (induction d'ifttt et déduction de l'utilisateur) renvoie à un phénomène déjà existant dans ifttt : il est donc naturel que nous le rencontrions également.
 
@@ -31,29 +31,44 @@ En conclusion, les éléments des deux niveaux doivent être définis en étroit
 
 ### Conception générale
 
-Parler des patrons de conception : `Controller` est singleton et contient le seul `ActorSystem`, les autres objets ayant des références vers ce derniers. Pour générer à la volée les messages d'action en fonction des messages signaux reçus, `Controller` utilise le patron de conception de la fabrique. D'abord explicite, il est maintenant sous-jacents des λ-expressions.
+Pour générer à la volée les messages d'action en fonction des messages signaux reçus, `Controller` utilise le patron de conception de la fabrique. D'abord explicite, il est maintenant sous-jacents des λ-expressions.
 
 Java 8 permet une manipulation intuitive des collections de données grace au λ-calcul (`filter`, `map`, `flatMap`)
 
-### `SystemProxy`
+### Manipuler facilement le système d'acteurs avec `SystemProxy`
 
-### `MessageMap`
+A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
 
-### `Commutator`
+### Construire à la volée un message d'action en fonction d'un message émis avec `MessageMap`
 
-### `RandomScheduler`
+Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment ça se passe à l'intérieur n'est pas important, on veut juste savoir comment ça marche.
+
+### Tirer à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
+
+A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
+
+### Définir un envoi de message automatique avec `RandomScheduler`
+
+En faisant un parallèle avec la vie réelle, il y a principalement trois manières d'initier un message automatique :
+ * La manière la plus simple est de commander une action, donc d'envoyer un message d'action à un acteur ;
+ * On peut aussi simuler l'émission d'un signal par un acteur ;
+ * Enfin, si un objet est suffisament évolué, il peut envoyer des messages tout seul et on peut le faire agir en ce sens.
+
+La classe `RandomScheduler` propose les deux premières façons de faire. La troisième est laissée au soin du lecteur.
+
+Cet envoi automatique peut être interrompu par l'utilisateur qui peut également donner un nombre ou un temps limite d'envoi.
 
 ### Vers un système d'acteurs auto-organisé ?
 
 Le pseudo-acteur défini plus haut n'est pas un acteur, d'où sa dénommination : c'est un objet. Quelles sont les possibilités de se passer d'un tel objet pour un système d'acteurs qui s'organiserait de lui-même ?
- 1. Des acteurs plus intelligents. Il est possible rendre chaque acteur conscient des relations de causalité qui le lient aux autres. Cette architecture présente des avantages indéniables, puisqu'elle rend le système réellement distribué. Le projet est actuellement réparti en deux branches pour étudier la facilité d'implémentation de chacune. Conceptuellement attirante, elle poserait cependant des questions techniques hardues puisqu'il faudrait définir des « tranches » de pseudo-acteur.
+ 1. Des acteurs plus intelligents. Il est possible rendre chaque acteur conscient des relations de causalité qui le lient aux autres. Cette architecture présente des avantages indéniables, puisqu'elle rend le système réellement distribué. Le projet est actuellement réparti en deux branches pour étudier la facilité d'implémentation de chacune. Conceptuellement attirante, elle poserait cependant des questions techniques hardues puisqu'il faudrait définir des « tranches » de pseudo-acteur. Elle s'éloigne en outre un peu plus du monde réel puisque les acteurs recouverts la tranche de pseudo-acteur ne représente plus un objet du monde réel.
  2. Toujours plus d'acteurs. D'aucun pourrait souhaiter que les classes d'objet définies soient des acteurs (c'est-à-dire réalisent l'interface `UntypedActor`) : cela serait tout à fait possible, aurait l'élégance de montrer qu'ifttt accepte une décomposition kiss et serait enfin plus proche du monde réel. Nous objections que cela ne serait cependant pas sans poser de vrais problèmes conceptuels :
 	* On attend tout d'abord dans ce projet qu'un acteur puisse être lié par des relations de causalité : serait-il acceptable qu'une relation de causalité lie les acteurs `MessageMap` ou `Commutator`, qui sont utilisés pour caractériser justement ces relations ?
 	* Si `Commutator` était un acteur alors il perdrait son rôle de commutateur (donc de médium de communication) pour devenir un routeur. En effet, un objet commutateur n'envoie pas de message en son nom propre mais ne fait qu'ouvrir une ligne téléphonique directe entre deux acteurs qui se parlent par l'intermédiaire d'une fonction de traduction. Un acteur devrait plutôt parler en son nom plutôt qu'utiliser la méthode `forward(Object message, ActorContext context)`.
 	* La classe `RandomScheduler` pourrait effectivement devenir un acteur. Au lieu d'un objet condamné à un certain immobilisme, on pourrait alors considérer l'acteur `RandomScheduler` résultant comme une espèce de Zorro masqué, qui reste discret mais se place derrière un acteur pour lui soufler quoi faire.
  3. Mise en abyme : l'exemple type de la fausse bonne idée. Les acteurs tels que définit par akka peuvent contenir d'autres acteurs. On peut pousser la proposition précédente encore plus loin en intégrant les acteurs qui réalisent des canaux dans des meta-acteurs. On s'éloigne alors du monde réel tout en générant des problèmes techniques. Il n'y a donc à cela aucun intérêt.
 
-Nous avons choisi dans cette branche de développer l'idée 2 qui a le mérite de coller le plus au monde réel et de s'inspirer de la « philosophie de développement » kiss : keep it simple stupid. Le nom de la branche vient de là.
+Nous avons choisi dans cette branche de nous inspirer de la « philosophie de développement » kiss : keep it simple stupid. Le nom de la branche vient de là.
 
 ### Un défaut conceptuel : le serpent qui se mord la queue
 
@@ -67,20 +82,9 @@ Les premières recherches menées en sens font état d'un niveau de technicité 
 
 Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
 
-### What « Model is an abstraction of Actor » and how we could implement it
+### What « Model is an abstraction of Actor » is and how we could implement it
 
 Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
-
-### Définir un envoi de message automatique
-
-En faisant un parallèle avec la vie réelle, il y a principalement trois manières d'initier un message automatique :
- * La manière la plus simple est de commander une action, donc d'envoyer un message d'action à un acteur ;
- * On peut aussi simuler l'émission d'un signal par un acteur ;
- * Enfin, si un objet est suffisament évolué, il peut envoyer des messages tout seul et on peut le faire agir en ce sens.
-
-La classe `RandomScheduler` propose les deux premières façons de faire. La troisième est laissée au soin du lecteur.
-
-Cet envoi automatique peut être interrompu par l'utilisateur qui peut également donner un nombre ou un temps limite d'envoi.
 
 ### Qualification des recettes
 
