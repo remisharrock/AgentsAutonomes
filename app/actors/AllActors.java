@@ -1,9 +1,12 @@
 package actors;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.time.Duration;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
+import play.Logger;
 import actors.RandomScheduler.StopCriteria;
 import akka.actor.UntypedActor;
 
@@ -36,8 +39,15 @@ public final class AllActors {
 		}
 
 		@Override
-		public void onReceive(Object message) throws Exception {
+		public void onReceive(Object message) {
 			history.add(message);
+			try {
+				Logger.info("PresenceDetector " + URLDecoder.decode(getSelf().path().name(), "UTF-8")
+						+ " received message " + message.toString());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			/*
 			 * Nothing for now.
 			 */
@@ -50,24 +60,61 @@ public final class AllActors {
 		 */
 		public CancellableRef scheduleTrigger(Duration init, Supplier<Duration> randomFunction,
 				StopCriteria stopCriteria, Runnable eventFunction) {
-			return innerRandomScheduler.addCancellableRef(init, randomFunction, stopCriteria, eventFunction);
+			return innerRandomScheduler.addRandomIssue(init, randomFunction, stopCriteria, eventFunction);
 		}
 	}
 
 	public static class Lamp extends UntypedActor {
-		public static boolean state = false;
+		private Boolean state = null;
+		private String colour = null;
+		private Integer intensity = null;
+		private Boolean lowConsumptionMode = null;
 
 		public void onReceive(Object message) {
-			if (message instanceof AllMessages.Lamp.TurnOff) {
-				state = false;
-
-			} else if (message instanceof AllMessages.Lamp.TurnOn) {
-				AllMessages.Lamp.TurnOn mess = (AllMessages.Lamp.TurnOn) message;
-				// Access messages fields.
-				mess.getColour();
-				state = true;
+			try {
+				Logger.info("Lamp " + URLDecoder.decode(getSelf().path().name(), "UTF-8") + " received message "
+						+ message.toString());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (message instanceof AllMessages.Lamp.ChangeState) {
+				AllMessages.Lamp.ChangeState action = (AllMessages.Lamp.ChangeState) message;
+				this.colour = (action.getColour() == null) ? this.colour : action.getColour();
+				this.intensity = (action.getIntensity() == null) ? this.intensity : action.getIntensity();
+				this.lowConsumptionMode = (action.getLowConsumptionMode() == null) ? this.lowConsumptionMode : action
+						.getLowConsumptionMode();
+				this.state = (action.getState() == null) ? this.state : action.getState();
+				try {
+					Logger.info("Lamp " + URLDecoder.decode(getSelf().path().name(), "UTF-8")
+							+ " state is now: {colour=" + this.colour + ", intensity=" + this.intensity + ", low="
+							+ this.lowConsumptionMode + ", state=" + this.state);
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else
 				unhandled(message);
+		}
+
+		public Boolean getState() {
+			return state;
+		}
+
+		public String getColour() {
+			return colour;
+		}
+
+		public Integer getIntensity() {
+			return intensity;
+		}
+
+		public Boolean getLowConsumptionMode() {
+			return lowConsumptionMode;
+		}
+
+		public void setLowConsumptionMode(Boolean lowConsumptionMode) {
+			this.lowConsumptionMode = lowConsumptionMode;
 		}
 	}
 

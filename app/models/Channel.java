@@ -45,10 +45,6 @@ public class Channel extends Model {
 
 	public final static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(Long.class, Channel.class);
 
-	public static List<Channel> getAllChannels() {
-		return Ebean.find(Channel.class).findList();
-	}
-
 	@Override
 	public String toString() {
 		return "Channel [id=" + id + ", name=" + clazz.getSimpleName() + ", description=" + description + ", triggers="
@@ -112,10 +108,6 @@ public class Channel extends Model {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public static Model.Finder<Long, Channel> getFind() {
-		return find;
 	}
 
 	public static long getSerialversionuid() {

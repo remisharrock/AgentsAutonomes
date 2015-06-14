@@ -1,9 +1,11 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import models.Action;
@@ -12,10 +14,12 @@ import models.Modality;
 import models.Recipe;
 import models.Trigger;
 import models.User;
+import play.Logger;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.concurrent.duration.Duration;
 import views.html.administratorLog;
 import views.html.administratorView;
 import views.html.chooseAction;
@@ -29,11 +33,18 @@ import views.html.createRecipe;
 import views.html.index;
 import views.html.viewRecipeLog;
 import views.html.viewRecipes;
+import actors.AllActors;
+import actors.AllActors.PresenceDetector;
+import actors.AllMessages;
+import actors.AllMessages.Lamp;
+import actors.RandomScheduler.StopCriteria;
 import actors.Commutator;
 import actors.MessageMap;
 import actors.MockUp;
 import actors.RandomScheduler;
+import actors.StdRandom;
 import actors.SystemProxy;
+import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
 
@@ -67,7 +78,66 @@ public class Application extends Controller {
 	private static Recipe recipe; // used only for dynamic creation
 
 	public static Result index() {
-		play.Logger.info("Init Data");
+		Logger.info("\n\n\nHear me from Application");
+		Channel channel;
+		List<Trigger> triggers = new ArrayList<Trigger>();
+		List<Action> actions = new ArrayList<Action>();
+
+		channel = new Channel(triggers, actions, PresenceDetector.class, "Presence Detector");
+		Application.getSystemProxy().createActorOf(channel);
+		Application.getSystemProxy().createActorOf(channel, "Garden");
+		Application.getSystemProxy().createActorOf(channel, null);
+		ActorRef actor1 = Application.getSystemProxy().createActorOf(channel, "Hall_Detector");
+		Application.getSystemProxy().createActorOf(channel, "Jenny's room detector");
+		/* The name should raise exception but this error will be hidden. */
+		ActorRef actor2 = Application.getSystemProxy().createActorOf(channel, "Jenny's room detector");
+
+		channel = new Channel(triggers, actions, AllActors.Lamp.class, "Basic lamp");
+		/* Under these circumstances, this will be the static actor. */
+		Application.getSystemProxy().createActorOf(channel);
+		ActorRef actor3 = Application.getSystemProxy().createActorOf(channel);
+
+		/**
+		 * Now let's define some causal relations. Here is how to read the
+		 * 4-uplets: (emitter, trigger, receiver, actionFunction).
+		 * <ul>
+		 * <li>(actor1, motionDetected, actor3, TurnState(true)</li>
+		 * <li></li>
+		 * <li></li>
+		 * <li></li>
+		 * </ul>
+		 */
+		UnaryOperator<Object> operator = o -> {
+			AllMessages.PresenceDetector.MotionDetected m = (AllMessages.PresenceDetector.MotionDetected) o;
+			String colour = null;
+			Integer intensity = (m.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
+			Boolean lowConsumptionMode = null;
+			Boolean state = true;
+			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
+		};
+		Application.getCommutator().addCausalRelation(actor1, AllMessages.PresenceDetector.MotionDetected.class,
+				"Première recette", actor3, operator);
+
+		/*
+		 * 
+		 */
+		Supplier<Object> supplier = () -> new AllMessages.PresenceDetector.MotionDetected(new Double(2));
+		Application.getCommutator().emitTriggerMessage(actor1, AllMessages.PresenceDetector.MotionDetected.class,
+				supplier);
+
+		/*
+		 * 
+		 */
+		Application.getScheduler().addRandomIssue(Duration.Zero(),
+				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(5))),
+				StopCriteria.set(StopCriteria.OCCURENCE, 15),//
+				() -> {
+					Application.getCommutator().emitTriggerMessage(//
+							actor1,//
+							AllMessages.PresenceDetector.MotionDetected.class,//
+							supplier);
+				});
+
 		return ok(index.render());
 	}
 
@@ -87,7 +157,7 @@ public class Application extends Controller {
 			userLoggedIn = user;
 			if (userLoggedIn.getRole() == "administrator") {
 
-				List<Channel> channelsList = Channel.getAllChannels();
+				List<Channel> channelsList = Channel.find.all();
 				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 				for (int i = 0; i < channelsList.size(); i++) {
 					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
@@ -120,7 +190,7 @@ public class Application extends Controller {
 	}
 
 	public static Result administratorView() {
-		List<Channel> channelsList = Channel.getAllChannels();
+		List<Channel> channelsList = Channel.find.all();
 		HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
 		for (int i = 0; i < channelsList.size(); i++) {
 			triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
@@ -135,7 +205,7 @@ public class Application extends Controller {
 		if (requestData.get("viewRecipesButton") != null) {
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
-			List<Channel> channelsList = Channel.getAllChannels();
+			List<Channel> channelsList = Channel.find.all();
 			recipe = new Recipe(null, null, null, null, null);
 			return ok(chooseTriggerChannel.render(channelsList));
 		}
@@ -203,7 +273,7 @@ public class Application extends Controller {
 			System.out.println("Exit room button - LampOn is FALSE");
 		}
 
-		List<Channel> channelsList = Channel.getAllChannels();
+		List<Channel> channelsList = Channel.find.all();
 		return ok(chooseTriggerChannel.render(channelsList));
 	}
 
@@ -236,7 +306,7 @@ public class Application extends Controller {
 	}
 
 	public static Result chooseActionChannel() {
-		List<Channel> channelsList = Channel.getAllChannels();
+		List<Channel> channelsList = Channel.find.all();
 		return ok(chooseActionChannel.render(channelsList));
 	}
 

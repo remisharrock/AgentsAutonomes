@@ -47,6 +47,8 @@ Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment
 
 A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
 
+(to be expanded) Les attributs des messages doivent être objets et non des types primitifs pour pouvoir être nul. Si nul, l'attribut correspondant de l'acteur n'est pas changé.
+
 ### Définir un envoi de message automatique avec `RandomScheduler`
 
 En faisant un parallèle avec la vie réelle, il y a principalement trois manières d'initier un message automatique :

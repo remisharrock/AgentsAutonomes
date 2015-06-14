@@ -12,6 +12,7 @@ import models.Trigger;
 import models.User;
 import play.GlobalSettings;
 import play.Logger;
+import play.db.ebean.Model;
 import scala.concurrent.duration.Duration;
 import actors.AllActors;
 import actors.AllMessages;
@@ -29,6 +30,10 @@ import controllers.Application;
  */
 public class Global extends GlobalSettings {
 
+	{
+		Logger.info("\n\n\nHear me from static Global");
+	}
+
 	/*
 	 * TODO First a script must populate the database. We faint it here
 	 * programmatically but it should be performed directly on the DB.
@@ -40,9 +45,9 @@ public class Global extends GlobalSettings {
 		 * acteurs définis dans AllActors :) !
 		 */
 
-		Logger.info("Init Data");
-		DBerase();
-		DBpopulate();
+		Logger.info("\n\n\nHear me from Global");
+		// DBerase();
+		// DBpopulate();
 
 	}
 
@@ -50,7 +55,7 @@ public class Global extends GlobalSettings {
 		Ebean.find(Recipe.class)
 				.findList()
 				.forEach(
-						recipe -> Application.getCommutator().addCausality(
+						recipe -> Application.getCommutator().addCausalRelation(
 								Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()),
 								recipe.getTrigger().getClazz(),
 								recipe.getDescription(),
@@ -64,8 +69,7 @@ public class Global extends GlobalSettings {
 
 	public void onStart(Application app) {
 
-		Logger.info("Init Data");
-		System.out.println("Data Init");
+		Logger.info("\n\n\nHear me from Global");
 
 		/*
 		 * First, to make it clear about functions defined on the fly, this is
@@ -127,7 +131,7 @@ public class Global extends GlobalSettings {
 		 * 
 		 * However, this syntax may be useful for some cases.
 		 */
-		Application.getScheduler().addCancellableRef(
+		Application.getScheduler().addRandomIssue(
 				Duration.Zero(),
 				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
@@ -135,7 +139,7 @@ public class Global extends GlobalSettings {
 					Application
 							.getSystemProxy()
 							.getStaticActorFor(lamp)
-							.tell(new AllMessages.Lamp.TurnOn("turquoise", 4, false),
+							.tell(new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false),
 									Application.getSystemProxy().getStaticActorFor(detector));
 				});
 		/*
@@ -143,17 +147,18 @@ public class Global extends GlobalSettings {
 		 * is closer to the reality and use the `Commutator` object. This
 		 * embraces rhe general case.
 		 */
-		Application.getScheduler().addCancellableRef(
+		Application.getScheduler().addRandomIssue(
 				Duration.Zero(),
 				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
 				() -> {
-					Application.getCommutator().publish(Application.getSystemProxy().getStaticActorFor(detector),
-							AllMessages.Lamp.TurnOn.class, () -> {
+					Application.getCommutator().emitTriggerMessage(
+							Application.getSystemProxy().getStaticActorFor(detector),
+							AllMessages.Lamp.ChangeState.class, () -> {
 								String colour = "AAEFAA";
 								int intensity = 10 * (int) StdRandom.gaussian(5, 2);
 								boolean lowConsumptionMode = true;
-								return new AllMessages.Lamp.TurnOn(colour, intensity, lowConsumptionMode);
+								return new AllMessages.Lamp.ChangeState(true, colour, intensity, lowConsumptionMode);
 							});
 				});
 
@@ -162,21 +167,23 @@ public class Global extends GlobalSettings {
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
 		 */
-		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(detector),
-				AllMessages.Lamp.TurnOn.class,
+		Application.getCommutator().addCausalRelation(Application.getSystemProxy().getStaticActorFor(detector),
+				AllMessages.Lamp.ChangeState.class,
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
 				Application.getSystemProxy().getStaticActorFor(lamp),
-				triggerMessage -> new AllMessages.Lamp.TurnOn("turquoise", 4, false));
+				triggerMessage -> new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false));
 
 		/*
 		 * More powerful example. As this might seem weird, example from
 		 * previous commit should be easier (without mapper).
 		 */
-		Application.getCommutator().addCausality(Application.getSystemProxy().getStaticActorFor(manythings),//
+		Application.getCommutator().addCausalRelation(
+				Application.getSystemProxy().getStaticActorFor(manythings),//
 				AllMessages.Manythings.MotionDetected.class,//
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
 				Application.getSystemProxy().getStaticActorFor(lamp),//
-				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class, Lamp.TurnOn.class));
+				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class,
+						Lamp.ChangeState.class));
 
 		System.out.println(Ebean.find(Channel.class).findRowCount());
 		// if (Ebean.find(Channel.class).findRowCount() != 0) {
@@ -191,48 +198,8 @@ public class Global extends GlobalSettings {
 	 */
 	@Deprecated
 	private void DBerase() {
-		List<Modality> fieldsList = Ebean.find(Modality.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Modality f : fieldsList) {
-
-			System.out.println("EWWWWWWWWWWW" + f);
-			f.delete();
-		}
-
-		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
-		// triggersList.removeAll(triggersList);
-		for (Trigger t : triggersList) {
-			System.out.println(t.getClazz().getSimpleName());
-			t.delete();
-		}
-
-		List<Action> actionsList = Ebean.find(Action.class).findList();
-		// triggersList.removeAll(actionsList);
-		for (Action a : actionsList) {
-			System.out.println(a.getClazz().getSimpleName());
-			a.delete();
-		}
-
-		List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Channel c : channelsList) {
-			System.out.println(c);
-			c.delete();
-		}
-
-		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Recipe r : recipesList) {
-			System.out.println(r);
-			r.delete();
-		}
-
-		List<User> usersList = Ebean.find(User.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (User u : usersList) {
-			System.out.println(u);
-			u.delete();
-		}
+		List<Class> classes = Arrays.asList(Modality.class, Trigger.class, Action.class);
+		classes.forEach(y -> Ebean.find(y).findList().forEach(x -> ((Model) x).delete()));
 	}
 
 	/**

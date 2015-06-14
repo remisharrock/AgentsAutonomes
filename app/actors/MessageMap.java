@@ -7,6 +7,10 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import actors.AllMessages.Lamp;
+import actors.AllMessages.Manythings;
+import controllers.Application;
+
 /**
  * <p>
  * Used to provide few standard ways to map a message to another.
@@ -104,4 +108,39 @@ public class MessageMap<T> {
 	public Object mapWith(String name, Object triggerMessage, Class<? extends Object> actionClass) {
 		return null;
 	}
+
+//	// Static initializer
+//	{
+//		// At initialization we define some common mappings
+//		Application
+//				.getMessageMap()
+//				.setMapper(Manythings.MotionDetected.class,
+//						Lamp.ChangeState.class,
+//						triggerMessage -> {
+//
+//							String colour = null;
+//							Integer intensity = null;
+//							Boolean lowConsumptionMode = null;
+//							Boolean state = null;
+//
+//							// Don't forget to check for nullity.
+//						if (triggerMessage != null && triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
+//							AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
+//							colour = null;
+//							switch (trigger.getDeviceId()) {
+//							case 1:
+//								colour = "Orange";
+//								break;
+//							default:
+//								colour = "Green";
+//								break;
+//							}
+//							intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
+//							lowConsumptionMode = true;
+//						}
+//						AllMessages.Lamp.ChangeState message = new AllMessages.Lamp.ChangeState(state, colour,
+//								intensity, lowConsumptionMode);
+//						return message;
+//					});
+//	}
 }

@@ -25,4 +25,10 @@ public class Interpretor implements SystemProxy {
 		return null;
 	}
 
+	@Override
+	public ActorRef createActorOf(Channel channel) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

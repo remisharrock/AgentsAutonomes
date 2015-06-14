@@ -10,13 +10,13 @@ import play.db.ebean.Model;
 /**
  * Can be used in multiple Trigger or Action
  * 
- * @param <T>
+ * @param <T> BUG you should
  */
 @Entity
-public class Modality<T> extends Model {
+public class Modality extends Model {
 	private static final long serialVersionUID = 1L;
 
-	private T value;
+	private String value;
 
 	@Id
 	private long id;
@@ -32,7 +32,7 @@ public class Modality<T> extends Model {
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Action action;
 
-	public Modality(T value, String name, String description) {
+	public Modality(String value, String name, String description) {
 		this.value = value;
 		this.name = name;
 		this.description = description;
@@ -46,11 +46,11 @@ public class Modality<T> extends Model {
 	 * From here, generated methods.
 	 */
 
-	public T getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(T value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

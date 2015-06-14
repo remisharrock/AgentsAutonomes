@@ -9,7 +9,7 @@ import scala.concurrent.duration.FiniteDuration;
 
 public class RandomScheduler {
 
-	private ArrayList<CancellableRef> tickingCancellables = new ArrayList<CancellableRef>();;
+	private ArrayList<CancellableRef> tickingCancellables = new ArrayList<CancellableRef>();
 
 	public ArrayList<CancellableRef> getTickingCancellables() {
 		return this.tickingCancellables;
@@ -26,20 +26,21 @@ public class RandomScheduler {
 	 * @param init
 	 * @param randomFunction
 	 * @param stopCriteria
-	 * @param eventFunction
+	 * @param eventRunnable
+	 *            What to do when the event happen.
 	 * @return
 	 */
-	public CancellableRef addCancellableRef(Duration init, Supplier<Duration> randomFunction,
-			StopCriteria stopCriteria, Runnable eventFunction) {
-		CancellableRef cr = new CancellableRef(init, randomFunction, stopCriteria, eventFunction);
+	public CancellableRef addRandomIssue(Duration init, Supplier<Duration> randomFunction, StopCriteria stopCriteria,
+			Runnable eventRunnable) {
+		CancellableRef cr = new CancellableRef(init, randomFunction, stopCriteria, eventRunnable);
 		this.tickingCancellables.add(cr);
 		return cr;
 	}
 
-	public CancellableRef addCancellableRef(FiniteDuration init, Supplier<Duration> randomFunction,
-			StopCriteria stopCriteria, Runnable eventFunction) {
-		CancellableRef cr = new CancellableRef(Duration.ofMillis(init.toMillis()), randomFunction, stopCriteria,
-				eventFunction);
+	public CancellableRef addRandomIssue(FiniteDuration init, Supplier<Duration> randomSupplier,
+			StopCriteria stopCriteria, Runnable eventRunnable) {
+		CancellableRef cr = new CancellableRef(Duration.ofMillis(init.toMillis()), randomSupplier, stopCriteria,
+				eventRunnable);
 		this.tickingCancellables.add(cr);
 		return cr;
 	}

@@ -4,46 +4,13 @@ import java.io.Serializable;
 
 import javax.xml.bind.TypeConstraintException;
 
-import actors.AllMessages.Lamp.TurnOn;
-import controllers.Application;
-
+/**
+ * At least you have to define all the mapper implied by the current recipes. If
+ * you don't do so, a static message will be sent. Then, it means you also HAVE
+ * TO override the default constructor for each message to define a default
+ * state for each.
+ */
 public final class AllMessages {
-
-	{
-		/**
-		 * At least you have to define all the mapper implied by the current
-		 * recipes.
-		 */
-		// At initialization we define some common mappings
-		Application
-				.getMessageMap()
-				.setMapper(Manythings.MotionDetected.class,
-						Lamp.TurnOn.class,
-						triggerMessage -> {
-
-							String colour = null;
-							Integer intensity = null;
-							Boolean lowConsumptionMode = null;
-
-							// Don't forget to check for nullity.
-						if (triggerMessage != null && triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
-							AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
-							colour = null;
-							switch (trigger.getDeviceId()) {
-							case 1:
-								colour = "Orange";
-								break;
-							default:
-								colour = "Green";
-								break;
-							}
-							intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-							lowConsumptionMode = true;
-						}
-						AllMessages.Lamp.TurnOn message = new TurnOn(colour, intensity, lowConsumptionMode);
-						return message;
-					});
-	}
 
 	private AllMessages() {
 	}
@@ -115,16 +82,21 @@ public final class AllMessages {
 	}
 
 	public static class Lamp {
-		public static class TurnOn implements Serializable {
+		public static class ChangeState implements Serializable {
 			private static final long serialVersionUID = 1L;
+			private Boolean state = null;
 			private String colour = null;
 			private Integer intensity = null;
 			private Boolean lowConsumptionMode = null;
 
-			public TurnOn(String colour, Integer intensity, Boolean lowConsumptionMode) {
+			public ChangeState(Boolean state, String colour, Integer intensity, Boolean lowConsumptionMode) {
 				this.colour = colour;
 				this.intensity = intensity;
 				this.lowConsumptionMode = lowConsumptionMode;
+			}
+
+			public Boolean getState() {
+				return this.state;
 			}
 
 			public String getColour() {

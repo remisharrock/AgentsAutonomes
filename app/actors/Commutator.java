@@ -10,7 +10,7 @@ import akka.actor.ActorRef;
 public class Commutator {
 
 	private EventBusImpl eventBus = new EventBusImpl();
-	private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> causality = new HashMap<>(eventBus.mapSize());
+	private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> causalRelations = new HashMap<>(eventBus.mapSize());
 
 	public Commutator() {
 	}
@@ -46,22 +46,22 @@ public class Commutator {
 	 * @param description
 	 *            Whatever you want to make this recipe easy to get. Anyway, not
 	 *            that sure about whether it's useful here in the back-and or
-	 *            not.
+	 *            not. Actually you still have TODO implement an use of it.
 	 * @param actionActor
 	 * @param actionMessageFactory
 	 *            can not be null
 	 */
-	public void addCausality(ActorRef triggerActor, Class<?> triggerMessageClass, String description,
+	public void addCausalRelation(ActorRef triggerActor, Class<?> triggerMessageClass, String description,
 			ActorRef actionActor, UnaryOperator<Object> mapper) {
 
 		// First part: triggerActor.
 
-		if (causality.get(triggerActor) == null) {
-			causality.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
+		if (causalRelations.get(triggerActor) == null) {
+			causalRelations.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
 		}
 		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
 		value.put(triggerMessageClass, mapper);
-		causality.put(triggerActor, value);
+		causalRelations.put(triggerActor, value);
 
 		// Second part : action actor.
 
@@ -83,11 +83,11 @@ public class Commutator {
 	 * @param name
 	 * @param description
 	 */
-	public void removeCausality(ActorRef triggerActor, Class<?> triggerMessageClass, ActorRef actionActor) {
+	public void removeCausalRelation(ActorRef triggerActor, Class<?> triggerMessageClass, ActorRef actionActor) {
 
 		// First part: triggerActor.
 
-		causality.get(triggerActor).remove(triggerMessageClass);
+		causalRelations.get(triggerActor).remove(triggerMessageClass);
 		// We leave empty maps, it can't hurt that much.
 
 		// Second part : action actor. This is a one-to-one relation.
@@ -104,7 +104,7 @@ public class Commutator {
 	 * @return
 	 */
 	public Object getMappedActionMessage(ActorRef triggerActor, Class triggerMessageClass, Object triggerMessage) {
-		return causality.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
+		return causalRelations.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class Commutator {
 	 * 
 	 * @param event
 	 */
-	public void publish(ActorRef triggerActor, Class<?> triggerClass, Supplier<Object> triggerFunction) {
+	public void emitTriggerMessage(ActorRef triggerActor, Class<?> triggerClass, Supplier<Object> triggerFunction) {
 		eventBus.publish(new MsgEnvelope(triggerActor.path().toString() + triggerClass.getName(),
 				triggerFunction.get(), triggerActor));
 	}

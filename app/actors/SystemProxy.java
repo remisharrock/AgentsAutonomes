@@ -22,6 +22,8 @@ public interface SystemProxy {
 	 */
 	public ActorRef createActorOf(Channel channel, String name);
 
+	public ActorRef createActorOf(Channel channel);
+
 	/**
 	 * Returns a set to emphasize that similar system ActorSelection are not
 	 * ordered.

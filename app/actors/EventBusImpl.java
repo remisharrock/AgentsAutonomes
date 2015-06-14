@@ -1,5 +1,6 @@
 package actors;
 
+import play.Logger;
 import akka.actor.ActorRef;
 import akka.event.japi.LookupEventBus;
 import controllers.Application;
@@ -21,6 +22,8 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 	// themselves for the event's classifier
 	@Override
 	public void publish(MsgEnvelope event, ActorRef subscriber) {
+		Logger.info("Message " + event.payload.toString() + " commutated from " + event.suscribee.path().name()
+				+ " to " + subscriber.path().name());
 		Object payload = null;
 		try {
 			/**

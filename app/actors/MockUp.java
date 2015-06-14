@@ -1,10 +1,14 @@
 package actors;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import models.Channel;
+import play.Logger;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.InvalidActorNameException;
@@ -46,9 +50,10 @@ public class MockUp implements SystemProxy {
 	 * In the current implementation, the global object `ActorSystem system` is
 	 * declared here.
 	 */
-	private ActorSystem system = ActorSystem.create();
+	private ActorSystem system;
 	/**
-	 * Something too easy that it's cheating. It helps to get all actors for a given class.
+	 * Something too easy that it's cheating. It helps to get all actors for a
+	 * given class.
 	 */
 	private ConcurrentHashMap<Class<? extends UntypedActor>, CopyOnWriteArrayList<ActorRef>> cheat;
 
@@ -62,19 +67,34 @@ public class MockUp implements SystemProxy {
 		return this.system;
 	}
 
+	public MockUp() {
+		this.cheat = new ConcurrentHashMap<>();
+		this.system = ActorSystem.create();
+	}
+
 	/**
 	 * Be careful it hides name errors.
 	 * 
 	 * In case the name is null (or has be given already) we use a canonical
 	 * name based on classname: lamp0, lamp1, lamp2…
 	 */
-	public ActorRef createActorOf(Channel channel, String name) {
+	public ActorRef createActorOf(Channel channel, String name) throws InvalidActorNameException {
+		// This will be instanciated then returned.
 		ActorRef actorRef = null;
-		int inc = 0;
 		if (name == null) {
 			name = channel.getClazz().getSimpleName().toLowerCase();
+		} else if (name.startsWith("$"))
+			throw new InvalidActorNameException("Spaces are not allowed and name can't start with $. "
+					+ "However it can contains escaped characters like %20 for blank space.");
+		try {
+			name = URLEncoder.encode(name, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			Logger.info("Actor name" + name + "threw exception, switching to default name.");
+			createActorOf(channel, null);
 		}
 		String givenName = name;
+		// This will be postponed to the name if needed to get unique name.
+		int inc = 0;
 		do {
 			try {
 				actorRef = system.actorOf(Props.create(channel.getClazz()), givenName);
@@ -84,10 +104,26 @@ public class MockUp implements SystemProxy {
 				givenName = name + inc++;
 			}
 		} while (actorRef == null);
-		if (channel.getClazz() == null) {
+		if (cheat.get(channel.getClazz()) == null) {
 			cheat.put(channel.getClazz(), new CopyOnWriteArrayList<>());
 		}
 		cheat.get(channel.getClazz()).add(actorRef);
+		try {
+			Logger.info("Actor created " + URLDecoder.decode(actorRef.path().name(), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			Logger.info("Actor created " + actorRef.path().name() + "but a problem occured when decoding the name.");
+		}
+		return actorRef;
+	}
+
+	public ActorRef createActorOf(Channel channel) {
+		ActorRef actorRef = system.actorOf(Props.create(channel.getClazz()));
+
+		if (cheat.get(channel.getClazz()) == null) {
+			cheat.put(channel.getClazz(), new CopyOnWriteArrayList<>());
+		}
+		cheat.get(channel.getClazz()).add(actorRef);
+		Logger.info("Actor created " + actorRef.path().name());
 		return actorRef;
 	}
 

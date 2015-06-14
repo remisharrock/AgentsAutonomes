@@ -20,6 +20,7 @@ create table channel (
 
 create table modality (
   id                        bigint not null,
+  value                     varchar(255),
   name                      varchar(255),
   description               varchar(255),
   trigger_id                bigint,

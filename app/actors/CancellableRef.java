@@ -23,6 +23,9 @@ public class CancellableRef implements Cancellable, Runnable {
 		this.randomFunction = randomFunction;
 		this.stopCriteria = stopCriteria;
 		this.eventFunction = eventFunction;
+		Thread thread = new Thread(this);
+		thread.setName("CancellableRef");
+		thread.start();
 	}
 
 	@Override
