@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import messages.AllMessages.MessageEnvelope;
 import play.db.ebean.Model;
 import akka.actor.ActorRef;
 
@@ -27,11 +28,11 @@ public class RecipeAkka {
 	
 	private ActorRef triggerChannelActor; // will be of type ActorRef
 	
-	private Object triggerMessage; // is the message
+	private MessageEnvelope triggerMessage; // is the message
 	
 	private ActorRef actionChannelActor;
 	
-	private Object actionMessage;
+	private MessageEnvelope actionMessage;
 	
 	private User user;
 	
@@ -66,11 +67,11 @@ public class RecipeAkka {
 		this.triggerChannelActor = triggerChannelActor;
 	}
 
-	public Object getTriggerMessage() {
+	public MessageEnvelope getTriggerMessage() {
 		return triggerMessage;
 	}
 
-	public void setTriggerMessage(Object triggerMessage) {
+	public void setTriggerMessage(MessageEnvelope triggerMessage) {
 		this.triggerMessage = triggerMessage;
 	}
 
@@ -82,11 +83,11 @@ public class RecipeAkka {
 		this.actionChannelActor = actionChannelActor;
 	}
 
-	public Object getActionMessage() {
+	public MessageEnvelope getActionMessage() {
 		return actionMessage;
 	}
 
-	public void setActionMessage(Object actionMessage) {
+	public void setActionMessage(MessageEnvelope actionMessage) {
 		this.actionMessage = actionMessage;
 	}
 

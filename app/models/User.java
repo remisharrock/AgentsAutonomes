@@ -164,5 +164,15 @@ public class User extends Model {
 		return null;
 	}
 	
+	public static ArrayList<String> getAllUserGroups() {
+		ArrayList<String> groupsList = new ArrayList<String>();
+		for(User u: getAllUsers()) {
+			if (!groupsList.contains(u.getUserGroup())) {
+				groupsList.add(u.getUserGroup());
+			}
+		}
+		return groupsList;
+	}
+	
 
 }

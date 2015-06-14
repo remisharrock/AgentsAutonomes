@@ -1,6 +1,8 @@
 package actors;
 import java.util.HashMap;
 
+import messages.AllMessages;
+import messages.AllMessages.MessageEnvelope;
 import models.RecipeAkka;
 import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;
@@ -18,6 +20,31 @@ public class AllActors {
 //    public final static ActorRef lampActor = system.actorOf(Props.create(LampActor.class), "lamp");
 //    public final static ActorRef luminosityDetectorActor = system.actorOf(Props.create(LuminosityDetectorActor.class), "luminosityDetector");
 
+	
+	public class ActorRouter extends UntypedActor {
+		String userGroup = "";
+		
+		public ActorRouter(String userGroup) {
+			this.userGroup = userGroup;
+		}
+		
+		public void setUserGroup(String userGroup) {
+			this.userGroup = userGroup;
+		}
+		
+		public ActorRouter() {
+		}
+			
+		@Override
+		public void onReceive(Object message) throws Exception {
+			System.out.println(AllMessages.getMapClassNameMessage().containsValue(message));
+			System.out.println("class: " + message);
+			MessageEnvelope me = (MessageEnvelope)message;
+			RecipeAkka ra = me.getRecipeAkka();
+			ra.getActionChannelActor().tell(ra.getActionMessage(), getSelf());
+		}
+		
+	}
 	
 	public class HumanActor extends UntypedActor {
         String state = "";
@@ -74,25 +101,26 @@ public class AllActors {
 	public class LampActor extends UntypedActor {
         public String state = "OFF";
         
-        String id;
-        
-        public LampActor(String id) {
-        	id = this.id;
-        }
+
         
         //This constructor is necessary
         public LampActor() {
 		}
 
         public void onReceive(Object message) {
-//            if (message instanceof DetectionOn) {
-//            	if (((DetectionOn) message).getChangeState()) {
-//                		System.out.println("Lamp Actor: LAMP ON");
-//                        state = "ON";
-//                } else {
-//            		System.out.println("Detection ok But LAMP state didn't change");
-//            	}  
-//            }
+            if (message instanceof AllMessages.TurnOffLampMessage) {
+            	state = "OFF";
+            } else if (message instanceof AllMessages.TurnOnLampMessage) {
+            	AllMessages.TurnOnLampMessage lampMessage = (AllMessages.TurnOnLampMessage)message;
+            	if (lampMessage.getField() != null) {
+            		state = "ON with" + lampMessage.getField().getName() 
+            				+ " is " + lampMessage.getField().getValue();
+            	} else {
+            		state = "ON";
+            	}
+            }
+            
+            System.out.println("Lamp is now of state: " + state);
 //
 //            else if (message instanceof DetectionOff) {
 //                // Send the current greeting back to the sender

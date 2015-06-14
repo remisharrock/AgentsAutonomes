@@ -32,10 +32,8 @@ create table recipe (
   active                    boolean,
   trigger_channel_id        bigint,
   trigger_id                bigint,
-  trigger_field_id          bigint,
   action_channel_id         bigint,
   action_id                 bigint,
-  action_field_id           bigint,
   user_id                   bigint,
   constraint pk_recipe primary key (id))
 ;
@@ -76,18 +74,14 @@ alter table recipe add constraint fk_recipe_triggerChannel_2 foreign key (trigge
 create index ix_recipe_triggerChannel_2 on recipe (trigger_channel_id);
 alter table recipe add constraint fk_recipe_trigger_3 foreign key (trigger_id) references trigger (id) on delete restrict on update restrict;
 create index ix_recipe_trigger_3 on recipe (trigger_id);
-alter table recipe add constraint fk_recipe_triggerField_4 foreign key (trigger_field_id) references field (id) on delete restrict on update restrict;
-create index ix_recipe_triggerField_4 on recipe (trigger_field_id);
-alter table recipe add constraint fk_recipe_actionChannel_5 foreign key (action_channel_id) references channel (id) on delete restrict on update restrict;
-create index ix_recipe_actionChannel_5 on recipe (action_channel_id);
-alter table recipe add constraint fk_recipe_action_6 foreign key (action_id) references action (id) on delete restrict on update restrict;
-create index ix_recipe_action_6 on recipe (action_id);
-alter table recipe add constraint fk_recipe_actionField_7 foreign key (action_field_id) references field (id) on delete restrict on update restrict;
-create index ix_recipe_actionField_7 on recipe (action_field_id);
-alter table recipe add constraint fk_recipe_user_8 foreign key (user_id) references user (id) on delete restrict on update restrict;
-create index ix_recipe_user_8 on recipe (user_id);
-alter table trigger add constraint fk_trigger_channel_9 foreign key (channel_id) references channel (id) on delete restrict on update restrict;
-create index ix_trigger_channel_9 on trigger (channel_id);
+alter table recipe add constraint fk_recipe_actionChannel_4 foreign key (action_channel_id) references channel (id) on delete restrict on update restrict;
+create index ix_recipe_actionChannel_4 on recipe (action_channel_id);
+alter table recipe add constraint fk_recipe_action_5 foreign key (action_id) references action (id) on delete restrict on update restrict;
+create index ix_recipe_action_5 on recipe (action_id);
+alter table recipe add constraint fk_recipe_user_6 foreign key (user_id) references user (id) on delete restrict on update restrict;
+create index ix_recipe_user_6 on recipe (user_id);
+alter table trigger add constraint fk_trigger_channel_7 foreign key (channel_id) references channel (id) on delete restrict on update restrict;
+create index ix_trigger_channel_7 on trigger (channel_id);
 
 
 
