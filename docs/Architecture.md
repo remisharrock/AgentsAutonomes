@@ -1,7 +1,7 @@
 Architecture du projet
 ======================
 
-Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique. Nous abordons enfin de manière plus spécifique quelques questions, dont le sujet de thèse de Robin (Sujet de thèse de Robin : prévenir les situations aberrantes)
+Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique. Nous abordons enfin de manière plus spécifique quelques questions, dont le sujet de thèse de Robin (prévenir les situations aberrantes)
 
 Sommaire (mis à jour à la main, vérifier)
 
