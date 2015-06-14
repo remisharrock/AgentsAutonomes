@@ -14,8 +14,8 @@ Nous voulons faire une simulation de ifttt. Pour cela, nous utilisons deux nivea
 	* Sémantiquement, les actions contiennent un verbe, un objet et si besoin des modalités complémentaires. Le sujet de l'action est toujours le canal récepteur. Par exemple, une action simple est : « allume la lumière » et une action plus élaborée « allume la lampe en jaune, en mode économie d'énergie et à moyenne intensité ». Une recette lie de manière statique un unique élément pour chacun de ses quatre membres principaux : la sémantique est donc figée. En revanche, les modalités de l'action peuvent être définies en fonction de celles du signal émis. Si l'on considère la recette actuelle comme une bijection, on propose une évolution possible de ce modèle pour avoir une surjection, une injection ou encore autre chose.
  2. Le niveau des acteurs est en quelque sorte une représentation concrète du monde. Il contient des acteurs qui évoluent indépendamment et communiquent par message. La communication entre ces acteurs suit le formalisme indiqué plus haut.
  	* Le mode d'action d'un acteur est définit par un canal. Un acteur peut donc être vu comme une instance d'un canal.
- 	* Les messages échangés par des acteurs ont la sémantique soit d'un signal, soit d'une action. De la même manière qu'une lettre à la Poste, ils peuvent être envoyés anonymement mais ont forcément un destinataire. Les acteurs ne communiquent que par message.
- 	* A ce niveau concret, une recette est définie comme relation de causalité entre deux acteurs et « if this then that » devient : quand un acteur envoit un message qui contient un signal, alors un autre acteur reçoit un message qui lui dit d'accomplir telle action. Dans le monde physique, un capteur ne sait faire qu'une chose : lever des signaux. Pour respecter la simplicité des objets physiques, un pseudo-acteur est définit (`actors.Controller` dans le code) pour permettrent aux acteurs de lever des signaux simplement en envoyant un message à ce pseudo-acteur. Les recettes sont « diluées » dans ce pseudo-acteur : à réception d'un message signal d'un acteur, le pseudo-acteur regarde si une relation de causalité existe. Le cas échéant, il envoit anonyment un message d'action à l'acteur définit.
+ 	* Les messages échangés par des acteurs ont la sémantique soit d'un signal, soit d'une action. De la même manière qu'une lettre à la Poste, ils peuvent être envoyés anonymement mais ont forcément un destinataire. Les acteurs ne communiquent que par message. Les messages peuvent contenir des modalités qui précisent le changement décrit par le signal ou l'action à effectuer.
+ 	* A ce niveau concret, une recette est définie comme relation de causalité entre deux acteurs et « if this then that » devient : quand un acteur envoit un message qui contient un signal, alors un autre acteur reçoit un message qui lui dit d'accomplir telle action. Dans le monde physique, un capteur ne sait faire qu'une chose : lever des signaux. Pour respecter la simplicité des objets physiques, un pseudo-acteur est définit (`actors.Commutator` dans le code) pour permettrent aux acteurs de lever des signaux simplement en envoyant un message à ce pseudo-acteur. C'est formellement un objet, pas un acteur. Les recettes sont « diluées » dans ce pseudo-acteur : à réception d'un message signal d'un acteur, le pseudo-acteur regarde si une relation de causalité existe. Le cas échéant, il envoit anonymement un message d'action à l'acteur définit.
  	* Ce pseudo-acteur est utile pour envoyer des messages signaux et simuler des changements. La période caractérisant l'envoi de ces messages est définit par une loi de probabilité qui peut être fixe (toutes les trente secondes) ou plus évoluée : lois de Bernouilli, Gauss, Poisson…
  	* Pour plus de détail sur les alternatives à cette architecture, voir plus bas le paragraphe « Vers un système d'acteurs auto-organisé ? ».
 
@@ -31,7 +31,7 @@ En conclusion, les éléments des deux niveaux doivent être définis en étroit
 
 ### Conception générale
 
-Pour générer à la volée les messages d'action en fonction des messages signaux reçus, `Controller` utilise le patron de conception de la fabrique. D'abord explicite, il est maintenant sous-jacents des λ-expressions.
+Pour générer des objets à la volée, ce code utilise le patron de conception de la fabrique. D'abord explicite, il est maintenant sous-jacents des λ-expressions qui ont l'avantage d'être bien plus lisibles. On peut définir à la volée un comportement à adopter, un message, une période : tout cela peut donc changer à chaque fois. 
 
 Java 8 permet une manipulation intuitive des collections de données grace au λ-calcul (`filter`, `map`, `flatMap`)
 
@@ -41,11 +41,13 @@ A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça 
 
 ### Construire à la volée un message d'action en fonction d'un message émis avec `MessageMap`
 
-Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment ça se passe à l'intérieur n'est pas important, on veut juste savoir comment ça marche.
+Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment ça se passe à l'intérieur n'est pas important, on veut juste savoir à quoi ça sert.
 
 ### Tirer à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
 
 A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
+
+Tordons le cou à une fausse idée : `Commutator` utilise une réalisation de l'interface `LookUpEventBus`. Cette interface fonctionne avec un patron éditeur / lecteur (« publisher / subscriber » en anglais). En revanche, le commutateur porte bien son nom puisse qu'il a pour effet d'établir comme une ligne téléphonique entre deux acteurs. De la même manière que dans la boucle locale, il n'y a pas $n!$ lignes pour relier n utilisateurs du téléléphone mais que la commutation par circuit donne cette illusion, l'objet `Commutator` donne cette illusion : dans le cas d'une relation de causalité strictement bijective, il ne peut y avoir qu'un destinateur et un destinataire. En revanche, le patron éditeur / lecteur est effectif si plusieurs relations de causalité prennent pour source la même classe de message et le même acteur.
 
 (to be expanded) Les attributs des messages doivent être objets et non des types primitifs pour pouvoir être nul. Si nul, l'attribut correspondant de l'acteur n'est pas changé.
 
@@ -84,17 +86,54 @@ Les premières recherches menées en sens font état d'un niveau de technicité 
 
 Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
 
-### What « Model is an abstraction of Actor » is and how we could implement it
+### What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
 
 Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
 
-### Qualification des recettes
+### Formalisation des recettes : vers une généralisation ?
 
-Bijectif mais on peut faire injectif ou surjectif. L'injectivité peut donner lieu à définir un délai d'attente des conditions et nécessite l'ajout d'un acteur intermédiaire dans le commutateur. La surjectivité peut se réaliser
+Nous commençons par faire quelques rappels mathématiques puis nous définissons ce qu'est une recette et une relation de causalité. Une fois cela fait, nous voyons comment les deux notions peuvent être liées.
+
+#### Rappels mathématiques
+
+On rappelle qu'une application est une relation mathématique entre deux ensembles pour laquelle chaque élément du premier est relié à un unique élément du second. On rappelle qu'une relation dans un ensemble $E$ est caractérisée par un sous-ensemble du produit cartésien $E × E$, soit une collection de doublet d'éléments de $E$.
+
+#### Définitions
+
+Soit $S$ et $C$ respectivement les ensembles des signaux et des canaux. L'ensemble $S$ se décompose en deux parties exclusives $S_E$ et $S_R$ car un signal est soit émis (le premier) soit reçu (le second). Un canal peut avoir plusieurs signaux. Un canal sans signal est comme une soupe sans sel : c'est moins bon puisqu'il ne peut pas communiquer.
+
+Une recette de rang $(m, n)$ est une relation de $\left(S×C\right)^m$ dans $\left(S×C\right)^m$ qui lie m doublets à n autre doublets. Une recette dont le rang n'est pas récisé est une recette de rang $(1, 1)$. Une recette est dite réalisable si et seulement si :
+ * Pour tout doublet (s, c) de $\left(S×C\right)^m$, $s$ est élément de $E$ (c'est un signal émis) ;
+ * Pour tout doublet (s, c) de $\left(S×C\right)^n$, $s$ est élément de $R$ (c'est un signal reçu) ;
+Pour définir clairement les choses, une recette (de rang $(1, 1)$) est une application dans $S×C$ qui lie un doublet $d_1 = (e, c_1)$ à un autre doublet $d_2 = (r, c_2)$. Une telle recette est dite réalisable si et seulement si $e$ appartient à $E et $r$ à $R$.
+On notera incidemment que les canaux impliqués dans une recette ne sont, suivant cette définition, pas forcément, tous différents.
+
+D'autre part, soit $M$ et $A$ respectivement l'ensemble des espaces de messages et l'ensemble des espaces acteurs. Tout élément de $A$ est un acteur, qui peut envoyer et recevoir des messages. Tout élément de l'ensemble $M$ des espaces des message appartient exclusivement à l'un des deux sous-ensembles $M_E$ et $M_A$ car un message contient une sémantique particulière : il est envoyé par un acteur après un évènement ou reçu par un acteur pour accomplir une action.
+
+Précisons tout de suite cette formulation d' « ensemble d'espace » qui peut sembler lourde et inutile. Par la suite nous parlerons pour alléger les phrases d'ensemble de classes de messages. Si nous détaillons pour les messages, une explication du même acabit vaut aussi pour les acteurs. Peut-être pourrions-nous pour les messages parler d'ensemble de classes : tout message a une sémantique particulière : il est d'une classe particulière (par exemple : la classe des messages qui disent que quelqu'un est entré dans la pièce, ou qui ordonnent à une lampe de s'allumer) mais chaque message possède ses propres modalités (la quantité de mouvement détectée, la couleur dont allumer la lampe, la valeur du potentiomètre). Chaque espace regroupe les messages qui ont la même sémantique. Chacun de ces espaces est de dimension le nombre de modalités des message de cette sémantique.
+
+Une relation de causalité de rang (m, n) est définie sur $\left(M×A\right)^m$ dans $\left(M×A\right)^m$ et lie m doublets « d'émission » à n doublets « de réception ». Une relation de causalité dont le rang n'est pas précisé est de rang (1, 1). Par un abus de langage bien pratique, on définit les types de rang suivants :
+ * Une relation de causalité de rang $(m, n), m > n$ est une injection dite stricte quand $n = 1$ ;
+ * Une relation de causalité de rang $(m, n), n > m$ est une surjection dite stricte quand $m = 1$ ;
+ * Une relation de causalité de rang $(m, n), m = n$ est une bijection dite stricte quand $m = n = 1$.
+
+Puisque les acteurs envoient et recoivent des messages et non des classes de message, il faut également munir la relation de causalité d'une fonction reçoit les messages émis et envoient des messages d'action. Je ne sais pas comment définir proprement les ensembles de départ et d'arrivée de cette fonction mais ce qui est sûr, c'est que ces arguments sont m messages de classes éléments de $M$ et produit comme résultat au plus n messages sur l'ensemble d'arrivée. Cela veut dire que la fonction reçoit un message de chaque acteur de départ liés par la relation de causalité mais, en fonction de ses entrées, n'envoit pas forcément un message à tous les acteurs d'arrivée de la relation.
+
+Ceci peut sembler attirant sur le papier mais une facette importante des relations de causalité reste à traîter : notre mimétisme du réel nous impose d'ajouter à une relation de causalité un délai de traitement : ce délai court à partir du premier message sur $m$ émis par un acteur et les $m - 1$ messages suivants doivent être reçus au plus tard strictement avant l'expiration de ce délai pour déclencher une causalité.
+
+Notre code se borne pour l'instant à proposer des relations de causalité de rang (1, 1) qui sont dont des bijections strictes. Le délai de traitement n'est donc pas utile et n'est pas considéré.
+
+#### Lien entre une recette et une relation de causalité
+
+Nous pouvons relier ces deux notions.
+
+Euh en fait ça se fait à l'instinct dans le code puisque le niveau 1 n'est utilisé que par l'interface et que pour l'instant il n'y a pas d'interface. Les exemples du code n'utilisent que des événements de niveau 2. Mais c'est une vraie question qu'il faut traiter.
 
 ### Utilisation
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…
+
+Bah euh la javadoc et les exemples du code peuvent suffire (temporairement) à ce point.
 
 ### Dernière soutenance
 
