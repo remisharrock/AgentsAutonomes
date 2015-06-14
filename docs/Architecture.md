@@ -1,6 +1,29 @@
 Architecture du projet
 ======================
 
+Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous détaillons notre proposition technique.
+
+Sommaire (mis à jour à la main, vérifier)
+
+* Présentation générale
+ * Niveaux d'abstraction
+ * Relation de génération entre les deux niveaux
+* Présentation technique
+ * Conception générale
+ * Manipuler facilement le système d'acteurs avec `SystemProxy`
+ * Construire à la volée un message d'action en fonction d'un message émis avec `MessageMap`
+ * Tirer à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
+ * Définir un envoi de message automatique avec `RandomScheduler`
+* Vers un système d'acteurs auto-organisé ?
+* Un défaut conceptuel : le serpent qui se mord la queue
+* What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
+* Formalisation des recettes : vers une généralisation ?
+ * Rappels mathématiques
+ * Définitions
+ * Lien entre une recette et une relation de causalité
+* Utilisation
+* Dernière soutenance
+
 ## Présentation générale
 
 ### Niveaux d'abstraction
@@ -62,7 +85,7 @@ La classe `RandomScheduler` propose les deux premières façons de faire. La tro
 
 Cet envoi automatique peut être interrompu par l'utilisateur qui peut également donner un nombre ou un temps limite d'envoi.
 
-### Vers un système d'acteurs auto-organisé ?
+## Vers un système d'acteurs auto-organisé ?
 
 Le pseudo-acteur défini plus haut n'est pas un acteur, d'où sa dénommination : c'est un objet. Quelles sont les possibilités de se passer d'un tel objet pour un système d'acteurs qui s'organiserait de lui-même ?
  1. Des acteurs plus intelligents. Il est possible rendre chaque acteur conscient des relations de causalité qui le lient aux autres. Cette architecture présente des avantages indéniables, puisqu'elle rend le système réellement distribué. Le projet est actuellement réparti en deux branches pour étudier la facilité d'implémentation de chacune. Conceptuellement attirante, elle poserait cependant des questions techniques hardues puisqu'il faudrait définir des « tranches » de pseudo-acteur. Elle s'éloigne en outre un peu plus du monde réel puisque les acteurs recouverts la tranche de pseudo-acteur ne représente plus un objet du monde réel.
@@ -74,7 +97,7 @@ Le pseudo-acteur défini plus haut n'est pas un acteur, d'où sa dénommination 
 
 Nous avons choisi dans cette branche de nous inspirer de la « philosophie de développement » kiss : keep it simple stupid. Le nom de la branche vient de là.
 
-### Un défaut conceptuel : le serpent qui se mord la queue
+## Un défaut conceptuel : le serpent qui se mord la queue
 
 Dans toute discussion sur ce sujet, nous commençons toujours par parler des canaux pour en venir ensuite aux acteurs, définis par rapport aux canaux. Or en réalité nous définissons les acteurs dans le code et les canaux dans la base : pourrions-nous définir et charger dynamiquement les classes des acteurs rendues nécessaires par les canaux ?
 
@@ -86,19 +109,19 @@ Les premières recherches menées en sens font état d'un niveau de technicité 
 
 Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
 
-### What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
+## What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
 
 Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
 
-### Formalisation des recettes : vers une généralisation ?
+## Formalisation des recettes : vers une généralisation ?
 
 Nous commençons par faire quelques rappels mathématiques puis nous définissons ce qu'est une recette et une relation de causalité. Une fois cela fait, nous voyons comment les deux notions peuvent être liées.
 
-#### Rappels mathématiques
+### Rappels mathématiques
 
 On rappelle qu'une application est une relation mathématique entre deux ensembles pour laquelle chaque élément du premier est relié à un unique élément du second. On rappelle qu'une relation dans un ensemble $E$ est caractérisée par un sous-ensemble du produit cartésien $E × E$, soit une collection de doublet d'éléments de $E$.
 
-#### Définitions
+### Définitions
 
 Soit $S$ et $C$ respectivement les ensembles des signaux et des canaux. L'ensemble $S$ se décompose en deux parties exclusives $S_E$ et $S_R$ car un signal est soit émis (le premier) soit reçu (le second). Un canal peut avoir plusieurs signaux. Un canal sans signal est comme une soupe sans sel : c'est moins bon puisqu'il ne peut pas communiquer.
 
@@ -123,19 +146,19 @@ Ceci peut sembler attirant sur le papier mais une facette importante des relatio
 
 Notre code se borne pour l'instant à proposer des relations de causalité de rang (1, 1) qui sont dont des bijections strictes. Le délai de traitement n'est donc pas utile et n'est pas considéré.
 
-#### Lien entre une recette et une relation de causalité
+### Lien entre une recette et une relation de causalité
 
 Nous pouvons relier ces deux notions.
 
 Euh en fait ça se fait à l'instinct dans le code puisque le niveau 1 n'est utilisé que par l'interface et que pour l'instant il n'y a pas d'interface. Les exemples du code n'utilisent que des événements de niveau 2. Mais c'est une vraie question qu'il faut traiter.
 
-### Utilisation
+# Utilisation
 
 Parler des classes et des manières « pratiques » de les utiliser avec des exemples de code and so on…
 
 Bah euh la javadoc et les exemples du code peuvent suffire (temporairement) à ce point.
 
-### Dernière soutenance
+# Dernière soutenance
 
 Ce qui fait briller les yeux de Mme Vigne :
  * Qualimétrie (pas encore fait)
