@@ -1,13 +1,17 @@
 Architecture du projet
 ======================
 
-Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous détaillons notre proposition technique.
+Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique.
 
 Sommaire (mis à jour à la main, vérifier)
 
 * Présentation générale
  * Niveaux d'abstraction
  * Relation de génération entre les deux niveaux
+* Formalisation des recettes : vers une généralisation ?
+ * Rappels mathématiques
+ * Définitions
+ * Lien entre une recette et une relation de causalité
 * Présentation technique
  * Conception générale
  * Manipuler facilement le système d'acteurs avec `SystemProxy`
@@ -17,10 +21,6 @@ Sommaire (mis à jour à la main, vérifier)
 * Vers un système d'acteurs auto-organisé ?
 * Un défaut conceptuel : le serpent qui se mord la queue
 * What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
-* Formalisation des recettes : vers une généralisation ?
- * Rappels mathématiques
- * Définitions
- * Lien entre une recette et une relation de causalité
 * Utilisation
 * Dernière soutenance
 
@@ -85,34 +85,6 @@ La classe `RandomScheduler` propose les deux premières façons de faire. La tro
 
 Cet envoi automatique peut être interrompu par l'utilisateur qui peut également donner un nombre ou un temps limite d'envoi.
 
-## Vers un système d'acteurs auto-organisé ?
-
-Le pseudo-acteur défini plus haut n'est pas un acteur, d'où sa dénommination : c'est un objet. Quelles sont les possibilités de se passer d'un tel objet pour un système d'acteurs qui s'organiserait de lui-même ?
- 1. Des acteurs plus intelligents. Il est possible rendre chaque acteur conscient des relations de causalité qui le lient aux autres. Cette architecture présente des avantages indéniables, puisqu'elle rend le système réellement distribué. Le projet est actuellement réparti en deux branches pour étudier la facilité d'implémentation de chacune. Conceptuellement attirante, elle poserait cependant des questions techniques hardues puisqu'il faudrait définir des « tranches » de pseudo-acteur. Elle s'éloigne en outre un peu plus du monde réel puisque les acteurs recouverts la tranche de pseudo-acteur ne représente plus un objet du monde réel.
- 2. Toujours plus d'acteurs. D'aucun pourrait souhaiter que les classes d'objet définies soient des acteurs (c'est-à-dire réalisent l'interface `UntypedActor`) : cela serait tout à fait possible, aurait l'élégance de montrer qu'ifttt accepte une décomposition kiss et serait enfin plus proche du monde réel. Nous objections que cela ne serait cependant pas sans poser de vrais problèmes conceptuels :
-	* On attend tout d'abord dans ce projet qu'un acteur puisse être lié par des relations de causalité : serait-il acceptable qu'une relation de causalité lie les acteurs `MessageMap` ou `Commutator`, qui sont utilisés pour caractériser justement ces relations ?
-	* Si `Commutator` était un acteur alors il perdrait son rôle de commutateur (donc de médium de communication) pour devenir un routeur. En effet, un objet commutateur n'envoie pas de message en son nom propre mais ne fait qu'ouvrir une ligne téléphonique directe entre deux acteurs qui se parlent par l'intermédiaire d'une fonction de traduction. Un acteur devrait plutôt parler en son nom plutôt qu'utiliser la méthode `forward(Object message, ActorContext context)`.
-	* La classe `RandomScheduler` pourrait effectivement devenir un acteur. Au lieu d'un objet condamné à un certain immobilisme, on pourrait alors considérer l'acteur `RandomScheduler` résultant comme une espèce de Zorro masqué, qui reste discret mais se place derrière un acteur pour lui soufler quoi faire.
- 3. Mise en abyme : l'exemple type de la fausse bonne idée. Les acteurs tels que définit par akka peuvent contenir d'autres acteurs. On peut pousser la proposition précédente encore plus loin en intégrant les acteurs qui réalisent des canaux dans des meta-acteurs. On s'éloigne alors du monde réel tout en générant des problèmes techniques. Il n'y a donc à cela aucun intérêt.
-
-Nous avons choisi dans cette branche de nous inspirer de la « philosophie de développement » kiss : keep it simple stupid. Le nom de la branche vient de là.
-
-## Un défaut conceptuel : le serpent qui se mord la queue
-
-Dans toute discussion sur ce sujet, nous commençons toujours par parler des canaux pour en venir ensuite aux acteurs, définis par rapport aux canaux. Or en réalité nous définissons les acteurs dans le code et les canaux dans la base : pourrions-nous définir et charger dynamiquement les classes des acteurs rendues nécessaires par les canaux ?
-
-Les premières recherches menées en sens font état d'un niveau de technicité extrême et d'une complexité faramineuse :
- * http://twit88.com/blog/2007/10/21/compile-and-reload-java-class-dynamically-using-apache-commons-jci/
- * http://javahowto.blogspot.de/2006/07/javaagent-option.html
- * http://www.nurkiewicz.com/2009/09/injecting-methods-at-runtime-to-java.html
- * En fait, il semble même que des projets de recherche soient menés en ce sens : https://github.com/Sable/soot/wiki/Adding-attributes-to-class-files-%28Advanced%29
-
-Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
-
-## What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
-
-Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
-
 ## Formalisation des recettes : vers une généralisation ?
 
 Nous commençons par faire quelques rappels mathématiques puis nous définissons ce qu'est une recette et une relation de causalité. Une fois cela fait, nous voyons comment les deux notions peuvent être liées.
@@ -145,6 +117,34 @@ Puisque les acteurs envoient et recoivent des messages et non des classes de mes
 Ceci peut sembler attirant sur le papier mais une facette importante des relations de causalité reste à traîter : notre mimétisme du réel nous impose d'ajouter à une relation de causalité un délai de traitement : ce délai court à partir du premier message sur $m$ émis par un acteur et les $m - 1$ messages suivants doivent être reçus au plus tard strictement avant l'expiration de ce délai pour déclencher une causalité.
 
 Notre code se borne pour l'instant à proposer des relations de causalité de rang (1, 1) qui sont dont des bijections strictes. Le délai de traitement n'est donc pas utile et n'est pas considéré.
+
+## Vers un système d'acteurs auto-organisé ?
+
+Le pseudo-acteur défini plus haut n'est pas un acteur, d'où sa dénommination : c'est un objet. Quelles sont les possibilités de se passer d'un tel objet pour un système d'acteurs qui s'organiserait de lui-même ?
+ 1. Des acteurs plus intelligents. Il est possible rendre chaque acteur conscient des relations de causalité qui le lient aux autres. Cette architecture présente des avantages indéniables, puisqu'elle rend le système réellement distribué. Le projet est actuellement réparti en deux branches pour étudier la facilité d'implémentation de chacune. Conceptuellement attirante, elle poserait cependant des questions techniques hardues puisqu'il faudrait définir des « tranches » de pseudo-acteur. Elle s'éloigne en outre un peu plus du monde réel puisque les acteurs recouverts la tranche de pseudo-acteur ne représente plus un objet du monde réel.
+ 2. Toujours plus d'acteurs. D'aucun pourrait souhaiter que les classes d'objet définies soient des acteurs (c'est-à-dire réalisent l'interface `UntypedActor`) : cela serait tout à fait possible, aurait l'élégance de montrer qu'ifttt accepte une décomposition kiss et serait enfin plus proche du monde réel. Nous objections que cela ne serait cependant pas sans poser de vrais problèmes conceptuels :
+	* On attend tout d'abord dans ce projet qu'un acteur puisse être lié par des relations de causalité : serait-il acceptable qu'une relation de causalité lie les acteurs `MessageMap` ou `Commutator`, qui sont utilisés pour caractériser justement ces relations ?
+	* Si `Commutator` était un acteur alors il perdrait son rôle de commutateur (donc de médium de communication) pour devenir un routeur. En effet, un objet commutateur n'envoie pas de message en son nom propre mais ne fait qu'ouvrir une ligne téléphonique directe entre deux acteurs qui se parlent par l'intermédiaire d'une fonction de traduction. Un acteur devrait plutôt parler en son nom plutôt qu'utiliser la méthode `forward(Object message, ActorContext context)`.
+	* La classe `RandomScheduler` pourrait effectivement devenir un acteur. Au lieu d'un objet condamné à un certain immobilisme, on pourrait alors considérer l'acteur `RandomScheduler` résultant comme une espèce de Zorro masqué, qui reste discret mais se place derrière un acteur pour lui soufler quoi faire.
+ 3. Mise en abyme : l'exemple type de la fausse bonne idée. Les acteurs tels que définit par akka peuvent contenir d'autres acteurs. On peut pousser la proposition précédente encore plus loin en intégrant les acteurs qui réalisent des canaux dans des meta-acteurs. On s'éloigne alors du monde réel tout en générant des problèmes techniques. Il n'y a donc à cela aucun intérêt.
+
+Nous avons choisi dans cette branche de nous inspirer de la « philosophie de développement » kiss : keep it simple stupid. Le nom de la branche vient de là.
+
+## Un défaut conceptuel : le serpent qui se mord la queue
+
+Dans toute discussion sur ce sujet, nous commençons toujours par parler des canaux pour en venir ensuite aux acteurs, définis par rapport aux canaux. Or en réalité nous définissons les acteurs dans le code et les canaux dans la base : pourrions-nous définir et charger dynamiquement les classes des acteurs rendues nécessaires par les canaux ?
+
+Les premières recherches menées en sens font état d'un niveau de technicité extrême et d'une complexité faramineuse :
+ * http://twit88.com/blog/2007/10/21/compile-and-reload-java-class-dynamically-using-apache-commons-jci/
+ * http://javahowto.blogspot.de/2006/07/javaagent-option.html
+ * http://www.nurkiewicz.com/2009/09/injecting-methods-at-runtime-to-java.html
+ * En fait, il semble même que des projets de recherche soient menés en ce sens : https://github.com/Sable/soot/wiki/Adding-attributes-to-class-files-%28Advanced%29
+
+Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
+
+## What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
+
+Model is an abstraction of Actor. Because it takes a class reference, one could have subtypes of this class. By the way, the best abstraction would be to link a model to an interface which some actors would implements. It would allow something like multiple inheritance. As an actor would implements several interfaces, it could be sent different messages. The main issue with this idea is an actor only receive message by onReceive() and the message sending protocol doesn't imply any other method.
 
 ### Lien entre une recette et une relation de causalité
 
