@@ -1,123 +1,124 @@
-@(user: User)
-@main("Agents autonomes") {
+@(user: User) @main("Agents autonomes") {
 
 
 
 <!DOCTYPE html>
-<html class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js' debug='true' lang='en'>
+<html
+	class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js'
+	debug='true' lang='en'>
 <body>
 
-<header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
+	<header class='l-header'>
+		<div class='l-site-header'>
+			<div class='l-site-header-menus is-closed' id='site-header-menus'>
+				<div class='l-site-header-menus-inner'>
+					<nav class='l-site-header-flexible-nav'>
+						<ul class='nav nav-site is-authenticated'>
+							<form class="navbar-form pull-right"
+								action="@routes.Application.userLogOut()">
+								<button type="submit" class="btn" name="HomeButton" class="btn">
+									Home</button>
+								<button type="submit" class="btn" name="LogOutButton">
+									Log out</button>
+							</form>
+							<br>
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class='l-page-header'>
-		<div class='l-page-header-inner'>
-			<div class='is-alone l-page-title-unit'>
-				<div class="hero-unit">
-				<h1>Your Recipes</h1>
-				<p>Hello @user.getUsername()</p>
-			</div>
-			</div>
-		</div>
-	</div>
-</header>
-
-<br>
-<article class='l-page-content'>
-<div id='statements'>
-
-@if(user.getRecipes()!=null && user.getRecipes().size() > 0){
-	@for(recipe <- user.getRecipes()) { 
-	
-
-	<div class='page-item'><div class='personal-recipe-manage' id='statement_24079820'>
-		<div class='build_size' id='start'>
-			<div class='is-dimmable'>
-				<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
-						data-channel_id='ID'
-						data-channel_module_name='NAME'
-						data-remote
-						data-track-data='{"controller":"statements",
-				   								"action":"new",
-				   								"channel_id":ID,
-				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
-				   								"channel_type":"trigger"}'
-						data-track-event='scr_choose_channel'
-						href='choose_trigger?channel_id=ID'
-						id='ind_t_channel_ID'
-						ifttt-trigger-channel-button='1' 
-						title="DESCRIPTION">
-						<img alt="NAME" 
-						class="channel-list_icon_img"
-						id="channel_1172726678"
-						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" /></a> <span style="display: none"> </span> </span></span><span class='create_recipe_inline_text_block'>then</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
-						data-channel_id='ID'
-						data-channel_module_name='NAME'
-						data-remote
-						data-track-data='{"controller":"statements",
-				   								"action":"new",
-				   								"channel_id":ID,
-				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
-				   								"channel_type":"trigger"}'
-						data-track-event='scr_choose_channel'
-						href='choose_trigger?channel_id=ID'
-						id='ind_t_channel_ID'
-						ifttt-trigger-channel-button='1' 
-						title="DESCRIPTION">
-						<img alt="NAME" 
-						class="channel-list_icon_img"
-						id="channel_1172726678"
-						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-					</a></span>		
+		<div class='l-page-header'>
+			<div class='l-page-header-inner'>
+				<div class='is-alone l-page-title-unit'>
+					<div class="hero-unit">
+						<h1>Your Recipes</h1>
+						<p>Hello @user.getUsername()</p>
+					</div>
+				</div>
 			</div>
 		</div>
-		<br>
-		<span><a class='personal-recipe-manage_description' > @recipe.getTitle() </a></span>
-		
-		<div class='personal-recipe-manage_meta'>
-			<div class='personal-recipe-manage_buttons'>
-				<span><div id="statement_create">
-					@if(recipe.getActive()){
-						<a class='personal-recipe-activation_ON' > Recipe ACTIVE </a>
-						<br>
-						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
-							<button type="submit" class="btn" name="RecipeOff" value=@recipe.getId() > Set Recipe Off</button> 
-					}else{
-						<a class='personal-recipe-activation_OFF' > Recipe NOT ACTIVE </a>
-						<br>
-						<form class="navbar-form pull-right" action="@routes.Application.activateRecipe()"> 
-							<button type="submit" class="btn" name="RecipeOn" value=@recipe.getId() > Set Recipe On</button>
-					}
-					</form>
-					<form class="navbar-form pull-right" action="@routes.Application.viewRecipeLog()">
-					<button type="submit" class="btn" name="viewRecipesLog" value=@recipe.getId() >View Recipe Log</button></form>
-					
-				</span>
-		</div></div>
-	</div></div>
-<br>
-	
-	}			
-} else{
-You don't have any recipe
-}
+	</header>
+
+	<br>
+	<article class='l-page-content'>
+		<div id='statements'>
+
+			@if(user.getRecipes()!=null && user.getRecipes().size() > 0){
+			@for(recipe <- user.getRecipes()) {
 
 
-</div>
-</article>
+			<div class='page-item'>
+				<div class='personal-recipe-manage' id='statement_@recipe.getId()'>
+					<div class="personal-recipe-manage_visual_and_desc">
+						<div class="personal_recipe_manage_visual">
+							<div class='build_size' id='start'>
+								<div class='is-dimmable'>
+									<span class='create_recipe_inline_text_block' style="font-size:120px">if</span> <span
+										style="display: none"> </span> <span
+										class='create_recipe_inline_text_block'> <a
+										href='# id='ind_t_channel_ID'
+										ifttt-trigger-channel-button='1' title="@recipe.getTriggerChannel().getName()"> <img
+											alt="NAME" class="channel-list_icon_img"
+											id="channel_1172726678"
+											src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" /></a>
+										<span style="display: none"> </span>
+									</span> </span> <span class='create_recipe_inline_text_block' style="font-size:120px">then</span> 
+									<span
+										style="display: none"> </span> 
+										<span class='create_recipe_inline_text_block'> 
+										<a href='#' id='ind_t_channel_ID'  title="@recipe.getActionChannel().getName()"> 
+										<img
+											alt="NAME" class="channel-list_icon_img"
+											id="channel_1172726678"
+											src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
+										</a>
+									</span>
+								</div>
+							</div>
+						</div>
+						<a
+						class='personal-recipe-manage_description'>
+							@recipe.getTitle() </a>
+					</div>
+					<br> 
+
+					<div class='personal-recipe-manage_meta'>
+						<div class='personal-recipe-manage_buttons'>
+							<span><div id="statement_create">
+									@if(recipe.getActive()){ <a
+										class='personal-recipe-activation_ON'> Recipe ACTIVE </a> <span
+										style="display: block; width: 70px; height: 70px; background-image: url('http://icons.iconarchive.com/icons/custom-icon-design/mono-general-4/512/power-icon.png'); background-size: cover; display: block;"></span>
+									<br>
+									<form class="navbar-form pull-right"
+										action="@routes.Application.activateRecipe()">
+
+										<button type="submit" class="btn" name="RecipeOff"
+											value=@recipe.getId()>Set Recipe Off</button>
+											</form>
+										}else{ <a class='personal-recipe-activation_OFF'> Recipe
+											NOT ACTIVE </a> <br>
+										<form class="navbar-form pull-right"
+											action="@routes.Application.activateRecipe()">
+											<button type="submit" class="btn" name="RecipeOn"
+												value=@recipe.getId()>Set Recipe On</button>
+												</form>
+											}
+										
+										<form class="navbar-form pull-right"
+											action="@routes.Application.viewRecipeLog()">
+											<button type="submit" class="btn" name="viewRecipesLog"
+												value=@recipe.getId()>View Recipe Log</button>
+										</form></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br> } } else{ You don't have any recipe }
+
+
+		</div>
+	</article>
 </body>
 
 

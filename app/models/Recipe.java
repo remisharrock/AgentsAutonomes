@@ -72,6 +72,10 @@ public class Recipe extends Model {
 	
 	
 	private List<String> log;
+	
+	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
+			Long.class, Recipe.class);
+	
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
@@ -522,6 +526,10 @@ public class Recipe extends Model {
 		while(i.hasPrevious())
 			logReverse.add(i.previous());
 		return logReverse;
+	}
+	
+	public static Recipe getRecipeById(Long id) {
+		return Recipe.find.byId(id);
 	}
 
 }
