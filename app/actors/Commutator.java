@@ -47,6 +47,9 @@ public class Commutator {
 	 *            Whatever you want to make this recipe easy to get. Anyway, not
 	 *            that sure about whether it's useful here in the back-and or
 	 *            not. Actually you still have TODO implement an use of it.
+	 *            However, even if this field is unused, most of the time it
+	 *            will incitate the developper to write a chunk of text to
+	 *            describe what they're doing then it can't be bad.
 	 * @param actionActor
 	 * @param actionMessageFactory
 	 *            can not be null

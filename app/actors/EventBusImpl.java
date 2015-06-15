@@ -36,6 +36,19 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		/**
+		 * <p>
+		 * Important to read.
+		 * </p>
+		 * <p>
+		 * Wow, hey wait, didn't you tell us it's impossible for the trigger
+		 * channel to immediately speak to the action channel? Well, actually
+		 * it's true, but the reason is the trigger channel can't decide by
+		 * itself which action message will be sent. Here we perfectly see that
+		 * the payload is not at all defined by the trigger channel, then the
+		 * actor model isn't broken.
+		 * </p>
+		 */
 		subscriber.tell(payload, event.suscribee);
 	}
 

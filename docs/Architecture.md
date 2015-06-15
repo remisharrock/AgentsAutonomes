@@ -1,7 +1,7 @@
 Architecture du projet
 ======================
 
-Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique.
+Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique. Nous abordons enfin de manière plus spécifique quelques questions, dont le sujet de thèse de Robin (Sujet de thèse de Robin : prévenir les situations aberrantes)
 
 Sommaire (mis à jour à la main, vérifier)
 
@@ -20,6 +20,8 @@ Sommaire (mis à jour à la main, vérifier)
  * Définir un envoi de message automatique avec `RandomScheduler`
 * Vers un système d'acteurs auto-organisé ?
 * Un défaut conceptuel : le serpent qui se mord la queue
+* Ajouter la notion de groupe d'objets et de propriétaire
+* Prévenir les situations aberrantes
 * What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
 * Utilisation
 * Dernière soutenance
@@ -70,7 +72,7 @@ Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment
 
 A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
 
-Tordons le cou à une fausse idée : `Commutator` utilise une réalisation de l'interface `LookUpEventBus`. Cette interface fonctionne avec un patron éditeur / lecteur (« publisher / subscriber » en anglais). En revanche, le commutateur porte bien son nom puisse qu'il a pour effet d'établir comme une ligne téléphonique entre deux acteurs. De la même manière que dans la boucle locale, il n'y a pas $n!$ lignes pour relier n utilisateurs du téléléphone mais que la commutation par circuit donne cette illusion, l'objet `Commutator` donne cette illusion : dans le cas d'une relation de causalité strictement bijective, il ne peut y avoir qu'un destinateur et un destinataire. En revanche, le patron éditeur / lecteur est effectif si plusieurs relations de causalité prennent pour source la même classe de message et le même acteur.
+Tordons le cou à une fausse idée : `Commutator` utilise une réalisation de l'interface `LookUpEventBus`. Cette interface fonctionne avec un patron éditeur / lecteur (« publisher / subscriber » en anglais). En revanche, le commutateur porte bien son nom puisse qu'il a pour effet d'établir comme une ligne téléphonique entre deux acteurs. De la même manière que dans la boucle locale, il n'y a pas $n!$ lignes pour relier n utilisateurs du téléléphone mais que la commutation par circuit donne cette illusion, l'objet `Commutator` émule cette situation : dans le cas d'une relation de causalité strictement bijective, il ne peut y avoir qu'un destinateur et un destinataire. En revanche, le patron éditeur / lecteur est effectif si plusieurs relations de causalité prennent pour source la même classe de message et le même acteur.
 
 (to be expanded) Les attributs des messages doivent être objets et non des types primitifs pour pouvoir être nul. Si nul, l'attribut correspondant de l'acteur n'est pas changé.
 
@@ -141,6 +143,22 @@ Les premières recherches menées en sens font état d'un niveau de technicité 
  * En fait, il semble même que des projets de recherche soient menés en ce sens : https://github.com/Sable/soot/wiki/Adding-attributes-to-class-files-%28Advanced%29
 
 Bien que techniquement passionnant, l'analyse que nous faisons de la relation de génération entre les deux niveaux d'abstraction tend à montrer que ce ne serait qu'une inutile fioriture dans l'état d'avancement actuel de ce projet.
+
+## Ajouter la notion de groupe d'objets et de propriétaire
+
+(to be expanded)
+
+On peut clairement utiliser plus d'un objet `actors.Commutator`. Il y aura donc des groupes de relations de causalité. On peut facilement définir pour chaque groupe un propriétaire. Attention cependant : créer des groupes de relations de causalité est une chose, rendre l'objet conscient de cette proriété en est une autre. Il ne faut pas définir un propriétaire pour un objet s'il est trop simple pour comprendre ce que cela signifie : « tu es trop jeune mon fils, tu n'es encore qu'un petit no0b ».
+
+## Prévenir les situations aberrantes
+
+Définir une situation aberrante.
+
+Une telle situation est causée par trois types d'interférences :
+* Intra-commutateur : on peut les prévenir super facilement, ça se résume à une recherche de cycle sur le graphe (A, C) des acteurs et des relations de causalité. La mise en œuvre est en revanche hardue : car en réalité ce n'est pas un graphe (mais ça se dessine pareil donc la structure est pareille) et il ne faut pas oublier que cet chose pseudo-graphe joue avec des pointeurs de fonction, des pointeurs de classe et des acteurs. Je suis très currieux de voir l'algorithme de recherche de cycle sur un hyper-graphe qui correspond au cas général des relations de causalité de rang quelconque.
+* Inter-commutateur : $x$ acteurs touchés par des relations de causalité qui appartiennent à $y$ commutateurs différents, $x$ et $y$ quelconques.
+* Extra-commutateur : par exemple l'influence thermodynamique mutuelle de $x$ acteurs radiateurs dont les relations de causalité respectives sont émulées par $y, y > x$ commutateurs sans qu'un commutateur émule deux recettes du même radiateur.
+* Le piège de l'utilisateur malicieux. **__Gentille__** périphrase. La supputation d'intention est probablement compliquée, mais on peut imaginer une forte incitation dans l'ergonomie de l'interface à le cantonner à des trucs basiques. On peut également éviter d'ajouter des éléments trop exotiques à l'objet `MessageMap` : même si le faisceau de relations de causalité est indemne de tout problème des types précédents, l'utilisateur risque de considérer comme un aberrant que sa porte de garage s'ouvre lorsqu'il se brosse les dents ou que l'alarme de sa maison se réveille quand il se réveille.
 
 ## What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
 

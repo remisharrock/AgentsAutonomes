@@ -56,10 +56,10 @@ public class Global extends GlobalSettings {
 				.findList()
 				.forEach(
 						recipe -> Application.getCommutator().addCausalRelation(
-								Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()),
+								Application.getSystemProxy().getOrCreateStaticActorFor(recipe.getTriggerChannel()),
 								recipe.getTrigger().getClazz(),
 								recipe.getDescription(),
-								Application.getSystemProxy().getStaticActorFor(recipe.getActionChannel()),
+								Application.getSystemProxy().getOrCreateStaticActorFor(recipe.getActionChannel()),
 								Application.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
 										recipe.getAction().getClazz())));
 	}
@@ -138,9 +138,9 @@ public class Global extends GlobalSettings {
 				() -> {
 					Application
 							.getSystemProxy()
-							.getStaticActorFor(lamp)
+							.getOrCreateStaticActorFor(lamp)
 							.tell(new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false),
-									Application.getSystemProxy().getStaticActorFor(detector));
+									Application.getSystemProxy().getOrCreateStaticActorFor(detector));
 				});
 		/*
 		 * Example how to schedule a random action to be performed. This example
@@ -153,7 +153,7 @@ public class Global extends GlobalSettings {
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
 				() -> {
 					Application.getCommutator().emitTriggerMessage(
-							Application.getSystemProxy().getStaticActorFor(detector),
+							Application.getSystemProxy().getOrCreateStaticActorFor(detector),
 							AllMessages.Lamp.ChangeState.class, () -> {
 								String colour = "AAEFAA";
 								int intensity = 10 * (int) StdRandom.gaussian(5, 2);
@@ -167,10 +167,10 @@ public class Global extends GlobalSettings {
 		 * it should be elsewhere, I don't know. Please put it at the correct
 		 * place and remove this comment
 		 */
-		Application.getCommutator().addCausalRelation(Application.getSystemProxy().getStaticActorFor(detector),
+		Application.getCommutator().addCausalRelation(Application.getSystemProxy().getOrCreateStaticActorFor(detector),
 				AllMessages.Lamp.ChangeState.class,
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
-				Application.getSystemProxy().getStaticActorFor(lamp),
+				Application.getSystemProxy().getOrCreateStaticActorFor(lamp),
 				triggerMessage -> new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false));
 
 		/*
@@ -178,10 +178,10 @@ public class Global extends GlobalSettings {
 		 * previous commit should be easier (without mapper).
 		 */
 		Application.getCommutator().addCausalRelation(
-				Application.getSystemProxy().getStaticActorFor(manythings),//
+				Application.getSystemProxy().getOrCreateStaticActorFor(manythings),//
 				AllMessages.Manythings.MotionDetected.class,//
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
-				Application.getSystemProxy().getStaticActorFor(lamp),//
+				Application.getSystemProxy().getOrCreateStaticActorFor(lamp),//
 				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class,
 						Lamp.ChangeState.class));
 

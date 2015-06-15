@@ -3,6 +3,7 @@ package actors;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import play.Logger;
 import scala.concurrent.duration.FiniteDuration;
 import actors.RandomScheduler.StopCriteria;
 import akka.actor.Cancellable;
@@ -11,11 +12,12 @@ import controllers.Application;
 public class CancellableRef implements Cancellable, Runnable {
 
 	private Cancellable cancellable;
-	private Duration init;
-	private Supplier<Duration> randomFunction;
-	private Runnable eventFunction;
-	private StopCriteria stopCriteria;
+	private final Duration init;
+	private final Supplier<Duration> randomFunction;
+	private final Runnable eventFunction;
+	private final StopCriteria stopCriteria;
 	private boolean isCancelled;
+	private final Thread thread;
 
 	public CancellableRef(Duration init, Supplier<Duration> randomFunction, StopCriteria stopCriteria,
 			Runnable eventFunction) {
@@ -23,13 +25,15 @@ public class CancellableRef implements Cancellable, Runnable {
 		this.randomFunction = randomFunction;
 		this.stopCriteria = stopCriteria;
 		this.eventFunction = eventFunction;
-		Thread thread = new Thread(this);
-		thread.setName("CancellableRef");
+		thread = new Thread(this);
+		thread.setName("CancellableRef " + this.toString());
+		Logger.info("CancellableRef thread " + thread.getName() + " created.");
 		thread.start();
 	}
 
 	@Override
 	public boolean cancel() {
+		Logger.info("CancellableRef thread " + thread.getName() + " cancelled.");
 		this.isCancelled = true;
 		this.cancellable.cancel();
 		return true;
@@ -43,6 +47,18 @@ public class CancellableRef implements Cancellable, Runnable {
 		return this.isCancelled;
 	}
 
+	@SuppressWarnings("unused")
+	private void setCancellable(Cancellable cancellable) {
+	}
+
+	@SuppressWarnings("unused")
+	private void setCancelled(boolean isCancelled) {
+	}
+
+	/*
+	 * Below, generated methods.
+	 */
+
 	@Override
 	public void run() {
 
@@ -52,14 +68,51 @@ public class CancellableRef implements Cancellable, Runnable {
 		}
 
 		while (!this.isCancelled && stopCriteria.getCriteria()) {
-			cancellable = ((MockUp) Application.getSystemProxy()).tem().scheduler()
-					.scheduleOnce(FiniteDuration.Zero(), () -> {
-						eventFunction.run();
-					}, ((MockUp) Application.getSystemProxy()).tem().dispatcher());
+			cancellable = ((SystemProxyCheatImpl) Application.getSystemProxy())
+					.tem()
+					.scheduler()
+					.scheduleOnce(
+							FiniteDuration.Zero(),
+							() -> {
+								Logger.info("CancellableRef " + thread.getName() + ": eventFunction "
+										+ eventFunction.toString() + " executed");
+								eventFunction.run();
+							}, ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().dispatcher());
 			try {
-				Thread.sleep(randomFunction.get().toMillis());
+				long timeInMillis = randomFunction.get().toMillis();
+				Logger.info("CancellableRef " + thread.getName() + " current issue scheduled, will now wait for "
+						+ (int) timeInMillis / 1000 + " seconds.");
+				Thread.sleep(timeInMillis);
 			} catch (InterruptedException e) {
 			}
 		}
+		if (!stopCriteria.getCriteria()) {
+			Logger.info("CancellableRef " + thread.getName()
+					+ " will now stop but wil remain in RandomScheduler thus won't be garbage collected.");
+		}
+	}
+
+	public Cancellable getCancellable() {
+		return cancellable;
+	}
+
+	public Duration getInit() {
+		return init;
+	}
+
+	public Supplier<Duration> getRandomFunction() {
+		return randomFunction;
+	}
+
+	public Runnable getEventFunction() {
+		return eventFunction;
+	}
+
+	public StopCriteria getStopCriteria() {
+		return stopCriteria;
+	}
+
+	public Thread getThread() {
+		return thread;
 	}
 }

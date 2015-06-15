@@ -3,6 +3,7 @@ package actors;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -44,7 +45,7 @@ import akka.actor.UntypedActor;
  * </p>
  */
 @Deprecated
-public class MockUp implements SystemProxy {
+public class SystemProxyCheatImpl implements SystemProxy {
 
 	/**
 	 * In the current implementation, the global object `ActorSystem system` is
@@ -67,7 +68,7 @@ public class MockUp implements SystemProxy {
 		return this.system;
 	}
 
-	public MockUp() {
+	public SystemProxyCheatImpl() {
 		this.cheat = new ConcurrentHashMap<>();
 		this.system = ActorSystem.create();
 	}
@@ -135,10 +136,33 @@ public class MockUp implements SystemProxy {
 	}
 
 	/**
+	 * Read this when you say this method doesn't work: there is zero or one
+	 * actor for a name. If you gave your actor a name that was registered
+	 * already, it has resulted into a name change for the new-coming actor and
+	 * this has been masked.
+	 * 
+	 * @param name
+	 *            We believe nobody will ever think to encode the name before
+	 *            looking for it, then it encodes it itself :)
+	 * @return
+	 */
+	public ActorRef getActorByName(String name) {
+		final String nameEncoded;
+		try {
+			nameEncoded = URLEncoder.encode(name, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			return null;
+		}
+		Optional<ActorRef> optional = cheat.values().parallelStream().flatMap(e -> e.parallelStream())
+				.filter(a -> a.path().name().equals(nameEncoded)).findFirst();
+		return optional.isPresent() ? optional.get() : null;
+	}
+
+	/**
 	 * Useful trick ;-)
 	 */
 	@Override
-	public ActorRef getStaticActorFor(Channel channel) {
+	public ActorRef getOrCreateStaticActorFor(Channel channel) {
 		return cheat.containsKey(channel.getClazz()) /**/
 		? cheat.get(channel.getClazz()).get(0) : createActorOf(channel, null);
 	}

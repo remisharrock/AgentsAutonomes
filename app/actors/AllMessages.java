@@ -5,10 +5,12 @@ import java.io.Serializable;
 import javax.xml.bind.TypeConstraintException;
 
 /**
+ * <p>
  * At least you have to define all the mapper implied by the current recipes. If
  * you don't do so, a static message will be sent. Then, it means you also HAVE
  * TO override the default constructor for each message to define a default
  * state for each.
+ * </p>
  */
 public final class AllMessages {
 
@@ -93,6 +95,7 @@ public final class AllMessages {
 				this.colour = colour;
 				this.intensity = intensity;
 				this.lowConsumptionMode = lowConsumptionMode;
+				this.state = state;
 			}
 
 			public Boolean getState() {

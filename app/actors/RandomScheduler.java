@@ -46,7 +46,18 @@ public class RandomScheduler {
 	}
 
 	public static enum StopCriteria {
-		TIME, OCCURENCE, NEVER;
+		/**
+		 * Time barrier of type java.time.LocalTime.
+		 */
+		TIME,
+		/**
+		 * Will raise the given number then get killed.
+		 */
+		OCCURENCE,
+		/**
+		 * Never stop
+		 */
+		NEVER;
 		private Object stopCriteria;
 
 		/**

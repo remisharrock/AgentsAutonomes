@@ -37,13 +37,13 @@ import actors.AllActors;
 import actors.AllActors.PresenceDetector;
 import actors.AllMessages;
 import actors.AllMessages.Lamp;
-import actors.RandomScheduler.StopCriteria;
 import actors.Commutator;
 import actors.MessageMap;
-import actors.MockUp;
 import actors.RandomScheduler;
+import actors.RandomScheduler.StopCriteria;
 import actors.StdRandom;
 import actors.SystemProxy;
+import actors.SystemProxyCheatImpl;
 import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
@@ -51,7 +51,7 @@ import com.avaje.ebean.Ebean;
 public class Application extends Controller {
 
 	private static RandomScheduler randomScheduler = new RandomScheduler();
-	private static SystemProxy systemProxy = new MockUp();
+	private static SystemProxy systemProxy = new SystemProxyCheatImpl();
 	private static MessageMap<UnaryOperator<Object>> messageMap = new MessageMap<>();
 	private static Commutator commutator = new Commutator();
 
@@ -98,45 +98,107 @@ public class Application extends Controller {
 		ActorRef actor3 = Application.getSystemProxy().createActorOf(channel);
 
 		/**
-		 * Now let's define some causal relations. Here is how to read the
-		 * 4-uplets: (emitter, trigger, receiver, actionFunction).
+		 * Now let's define some causal relations. Two of them are enough. Here
+		 * is how to read the 4-uplets: (emitter, trigger, receiver,
+		 * actionFunction).
 		 * <ul>
 		 * <li>(actor1, motionDetected, actor3, TurnState(true)</li>
-		 * <li></li>
-		 * <li></li>
-		 * <li></li>
+		 * <li>(Jenny's room detector, motionDetected, actor3, TurnState(false)</li>
 		 * </ul>
 		 */
-		UnaryOperator<Object> operator = o -> {
+		UnaryOperator<Object> operatorOn = o -> {
 			AllMessages.PresenceDetector.MotionDetected m = (AllMessages.PresenceDetector.MotionDetected) o;
-			String colour = null;
+			String colour = null; // don't change
+			/**
+			 * Notice it's not null then the actor will change this state
+			 * accordingly.
+			 * 
+			 * Also notice we use the input message o to define the output
+			 * message.
+			 * 
+			 */
 			Integer intensity = (m.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-			Boolean lowConsumptionMode = null;
-			Boolean state = true;
+			Boolean lowConsumptionMode = null; // don't change
+			Boolean state = true; // Notice it's TRUE
 			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
 		};
-		Application.getCommutator().addCausalRelation(actor1, AllMessages.PresenceDetector.MotionDetected.class,
-				"Première recette", actor3, operator);
+
+		Application.getCommutator().addCausalRelation(//
+				actor1,//
+				AllMessages.PresenceDetector.MotionDetected.class,//
+				"Première recette",//
+				actor3,//
+				operatorOn);
 
 		/*
-		 * 
+		 * Another causalRelation
 		 */
-		Supplier<Object> supplier = () -> new AllMessages.PresenceDetector.MotionDetected(new Double(2));
-		Application.getCommutator().emitTriggerMessage(actor1, AllMessages.PresenceDetector.MotionDetected.class,
-				supplier);
+
+		UnaryOperator<Object> operatorOff = o -> {
+			/*
+			 * Here we don't use any modality of input message to define the
+			 * output.
+			 */
+			String colour = null;
+			Integer intensity = null;
+			Boolean lowConsumptionMode = null; // all 3 previous won't change.
+			Boolean state = false; // Notice it's FALSE
+			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
+		};
+		Application.getCommutator().addCausalRelation(
+				Application.getSystemProxy().getActorByName("Jenny's room detector"),//
+				AllMessages.PresenceDetector.MotionDetected.class,//
+				"Deuxième recette",//
+				actor3,//
+				operatorOff);
 
 		/*
-		 * 
+		 * Just an example how to trigger a message manually. This is automated
+		 * by RandomScheduler.
+		 */
+		Application.getCommutator().emitTriggerMessage(actor1, AllMessages.PresenceDetector.MotionDetected.class,
+				() -> new AllMessages.PresenceDetector.MotionDetected(0.5));
+
+		Supplier<Object> supplier = () -> new AllMessages.PresenceDetector.MotionDetected(StdRandom.uniform());
+		/*
+		 * We can do anything we want upon a trigger raised.
 		 */
 		Application.getScheduler().addRandomIssue(Duration.Zero(),
-				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(5))),
-				StopCriteria.set(StopCriteria.OCCURENCE, 15),//
+				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(12))),
+				StopCriteria.set(StopCriteria.OCCURENCE, 16),//
 				() -> {
-					Application.getCommutator().emitTriggerMessage(//
-							actor1,//
-							AllMessages.PresenceDetector.MotionDetected.class,//
-							supplier);
-				});
+					// Raise trigger for first causal relation
+				Application.getCommutator().emitTriggerMessage(//
+						actor1,//
+						AllMessages.PresenceDetector.MotionDetected.class,//
+						supplier);
+				// // Raise trigger for second causal relation
+				// Application.getCommutator().emitTriggerMessage(//
+				// Application.getSystemProxy().getActorByName("Jenny's room detector"),//
+				// AllMessages.PresenceDetector.MotionDetected.class,//
+				// supplier);
+			});
+		/**
+		 * <p>
+		 * As seen previously we can do anything we want, even to raise two
+		 * triggers. But it wouldn't be in the same time : first because you
+		 * write your code sequentially, then because it's very likely to be
+		 * ordered either bu EventBusImpl either by the very akka system.
+		 * </p>
+		 * <p>
+		 * Please note we hereby define
+		 * </p>
+		 */
+		Application.getScheduler().addRandomIssue(Duration.Zero(),
+				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(12))),
+				StopCriteria.set(StopCriteria.TIME, 16),//
+				() -> {
+					// Raise trigger for second causal relation
+				Application.getCommutator().emitTriggerMessage(//
+						Application.getSystemProxy().getActorByName("Jenny's room detector"),//
+						AllMessages.PresenceDetector.MotionDetected.class,//
+						supplier);
+			});
 
 		return ok(index.render());
 	}
@@ -382,7 +444,7 @@ public class Application extends Controller {
 							try {
 								Application
 										.getSystemProxy()
-										.getStaticActorFor(recipe.getActionChannel())
+										.getOrCreateStaticActorFor(recipe.getActionChannel())
 										.tell(
 										/*
 										 * Message to be told: we send the
@@ -391,8 +453,9 @@ public class Application extends Controller {
 										recipe.getTriggerChannel().getTriggers().stream()
 												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
 												.getClass().newInstance(),
-										/* Sender */
-										Application.getSystemProxy().getStaticActorFor(recipe.getTriggerChannel()));
+												/* Sender */
+												Application.getSystemProxy().getOrCreateStaticActorFor(
+														recipe.getTriggerChannel()));
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

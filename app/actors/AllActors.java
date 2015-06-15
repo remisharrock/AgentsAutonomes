@@ -10,6 +10,15 @@ import play.Logger;
 import actors.RandomScheduler.StopCriteria;
 import akka.actor.UntypedActor;
 
+/**
+ * Actors class are defined here then they are easily reachable from the code.
+ * They should have neither public getters nor public setters as they should be
+ * talked to only by message. Any methods apart onReceive and constructors would
+ * result in a breach in the actor model.
+ * 
+ * TODO : faire un acteur radiateur, un acteur téléphone portable et un acteur
+ * compte en ligne (en marque blanche, pas la peine de matraquer Facebook).
+ */
 public final class AllActors {
 	private AllActors() {
 	}
@@ -70,16 +79,26 @@ public final class AllActors {
 		private Integer intensity = null;
 		private Boolean lowConsumptionMode = null;
 
+		public void Lamp() {
+		}
+
+		public void Lamp(Boolean state, String colour, Integer intensity, Boolean lowConsumptionMode) {
+			this.state = state;
+			this.colour = colour;
+			this.intensity = intensity;
+			this.lowConsumptionMode = lowConsumptionMode;
+		}
+
 		public void onReceive(Object message) {
-			try {
-				Logger.info("Lamp " + URLDecoder.decode(getSelf().path().name(), "UTF-8") + " received message "
-						+ message.toString());
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			if (message instanceof AllMessages.Lamp.ChangeState) {
 				AllMessages.Lamp.ChangeState action = (AllMessages.Lamp.ChangeState) message;
+				try {
+					Logger.info("Lamp " + URLDecoder.decode(getSelf().path().name(), "UTF-8") + " received message "
+							+ action.toString() + "with state is now {colour=" + action.getColour() + ", intensity="
+							+ action.getIntensity() + ", low=" + action.getLowConsumptionMode() + ", state="
+							+ action.getState() + "}");
+				} catch (UnsupportedEncodingException e1) {
+				}
 				this.colour = (action.getColour() == null) ? this.colour : action.getColour();
 				this.intensity = (action.getIntensity() == null) ? this.intensity : action.getIntensity();
 				this.lowConsumptionMode = (action.getLowConsumptionMode() == null) ? this.lowConsumptionMode : action
@@ -88,33 +107,13 @@ public final class AllActors {
 				try {
 					Logger.info("Lamp " + URLDecoder.decode(getSelf().path().name(), "UTF-8")
 							+ " state is now: {colour=" + this.colour + ", intensity=" + this.intensity + ", low="
-							+ this.lowConsumptionMode + ", state=" + this.state);
+							+ this.lowConsumptionMode + ", state=" + this.state + "}");
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else
 				unhandled(message);
-		}
-
-		public Boolean getState() {
-			return state;
-		}
-
-		public String getColour() {
-			return colour;
-		}
-
-		public Integer getIntensity() {
-			return intensity;
-		}
-
-		public Boolean getLowConsumptionMode() {
-			return lowConsumptionMode;
-		}
-
-		public void setLowConsumptionMode(Boolean lowConsumptionMode) {
-			this.lowConsumptionMode = lowConsumptionMode;
 		}
 	}
 

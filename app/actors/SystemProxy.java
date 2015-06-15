@@ -32,7 +32,8 @@ public interface SystemProxy {
 
 	/**
 	 * <p>
-	 * Returns the first actor ever created and creates it if needed.
+	 * Returns the first actor ever created for this channel and creates it if
+	 * needed.
 	 * </p>
 	 * <p>
 	 * This is cheating and very sweet syntactic sugar while this project is
@@ -41,5 +42,15 @@ public interface SystemProxy {
 	 * </p>
 	 */
 	@Deprecated
-	public ActorRef getStaticActorFor(Channel channel);
+	public ActorRef getOrCreateStaticActorFor(Channel channel);
+
+	/**
+	 * Not sure this is cheating or not then, in doubt, you should think about
+	 * it. I believe it legal to use it :)
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@Deprecated
+	public ActorRef getActorByName(String name);
 }
