@@ -219,6 +219,7 @@ public class Global extends GlobalSettings {
 			Field f1 = new Field("toto","tata");
 			f1.save();
 			rec.setTriggerField(f1);
+			
 			rec.setActionChannel(lamp);
 			rec.setAction(lampAction2);
 			Field f2 = new Field("lamp color","red");
@@ -226,7 +227,8 @@ public class Global extends GlobalSettings {
 			rec.setActionField(f2);
 			rec.setActive(true);
 			rec.save();
-
+			
+			
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
