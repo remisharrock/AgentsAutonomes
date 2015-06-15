@@ -1,11 +1,11 @@
-package actors;
+package logic;
 
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import logic.RandomScheduler.StopCriteria;
 import play.Logger;
 import scala.concurrent.duration.FiniteDuration;
-import actors.RandomScheduler.StopCriteria;
 import akka.actor.Cancellable;
 import controllers.Application;
 

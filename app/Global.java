@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
+import logic.RandomScheduler.StopCriteria;
+import logic.StdRandom;
 import models.Action;
 import models.Channel;
 import models.Modality;
@@ -14,11 +16,12 @@ import play.GlobalSettings;
 import play.Logger;
 import play.db.ebean.Model;
 import scala.concurrent.duration.Duration;
-import actors.AllActors;
-import actors.AllMessages;
-import actors.AllMessages.Lamp;
-import actors.RandomScheduler.StopCriteria;
-import actors.StdRandom;
+import world.BasicPresenceDetector;
+import world.Garage;
+import world.Lamp;
+import world.LuminosityDetector;
+import world.Manythings;
+import world.PresenceDetector;
 
 import com.avaje.ebean.Ebean;
 
@@ -104,13 +107,12 @@ public class Global extends GlobalSettings {
 			 */
 			// Ebean.find(Channel.class).where(Expression) would be better
 			List<Channel> channels = Ebean.find(Channel.class).findList();
-			detector = channels.stream().filter(x -> x.getClazz() == AllActors.BasicPresenceDetector.class).findFirst()
+			detector = channels.stream().filter(x -> x.getClazz() == BasicPresenceDetector.class).findFirst().get();
+			lamp = channels.stream().filter(x -> x.getClazz() == Lamp.class).findFirst().get();
+			luminosityDetector = channels.stream().filter(x -> x.getClazz() == LuminosityDetector.class).findFirst()
 					.get();
-			lamp = channels.stream().filter(x -> x.getClazz() == AllActors.Lamp.class).findFirst().get();
-			luminosityDetector = channels.stream().filter(x -> x.getClazz() == AllActors.LuminosityDetector.class)
-					.findFirst().get();
-			manythings = channels.stream().filter(x -> x.getClazz() == AllActors.Manythings.class).findFirst().get();
-			garage = channels.stream().filter(x -> x.getClazz() == AllActors.Garage.class).findFirst().get();
+			manythings = channels.stream().filter(x -> x.getClazz() == Manythings.class).findFirst().get();
+			garage = channels.stream().filter(x -> x.getClazz() == Garage.class).findFirst().get();
 		}
 
 		/*
@@ -139,7 +141,7 @@ public class Global extends GlobalSettings {
 					Application
 							.getSystemProxy()
 							.getOrCreateStaticActorFor(lamp)
-							.tell(new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false),
+							.tell(new Lamp.ChangeState(true, "turquoise", 4, false),
 									Application.getSystemProxy().getOrCreateStaticActorFor(detector));
 				});
 		/*
@@ -153,12 +155,12 @@ public class Global extends GlobalSettings {
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
 				() -> {
 					Application.getCommutator().emitTriggerMessage(
-							Application.getSystemProxy().getOrCreateStaticActorFor(detector),
-							AllMessages.Lamp.ChangeState.class, () -> {
+							Application.getSystemProxy().getOrCreateStaticActorFor(detector), Lamp.ChangeState.class,
+							() -> {
 								String colour = "AAEFAA";
 								int intensity = 10 * (int) StdRandom.gaussian(5, 2);
 								boolean lowConsumptionMode = true;
-								return new AllMessages.Lamp.ChangeState(true, colour, intensity, lowConsumptionMode);
+								return new Lamp.ChangeState(true, colour, intensity, lowConsumptionMode);
 							});
 				});
 
@@ -168,10 +170,10 @@ public class Global extends GlobalSettings {
 		 * place and remove this comment
 		 */
 		Application.getCommutator().addCausalRelation(Application.getSystemProxy().getOrCreateStaticActorFor(detector),
-				AllMessages.Lamp.ChangeState.class,
+				Lamp.ChangeState.class,
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",
 				Application.getSystemProxy().getOrCreateStaticActorFor(lamp),
-				triggerMessage -> new AllMessages.Lamp.ChangeState(true, "turquoise", 4, false));
+				triggerMessage -> new Lamp.ChangeState(true, "turquoise", 4, false));
 
 		/*
 		 * More powerful example. As this might seem weird, example from
@@ -179,11 +181,10 @@ public class Global extends GlobalSettings {
 		 */
 		Application.getCommutator().addCausalRelation(
 				Application.getSystemProxy().getOrCreateStaticActorFor(manythings),//
-				AllMessages.Manythings.MotionDetected.class,//
+				Manythings.MotionDetected.class,//
 				"This description should be easy to read. Not sure whether it'd avec be useful anyway ~",//
 				Application.getSystemProxy().getOrCreateStaticActorFor(lamp),//
-				Application.getMessageMap().getMapper(AllMessages.Manythings.MotionDetected.class,
-						Lamp.ChangeState.class));
+				Application.getMessageMap().getMapper(Manythings.MotionDetected.class, Lamp.ChangeState.class));
 
 		System.out.println(Ebean.find(Channel.class).findRowCount());
 		// if (Ebean.find(Channel.class).findRowCount() != 0) {
@@ -225,9 +226,9 @@ public class Global extends GlobalSettings {
 		List<Trigger> triggers = new ArrayList<Trigger>();
 		List<Action> actions = new ArrayList<Action>();
 
-		(new Channel(triggers, actions, AllActors.Manythings.class, "Manythings")).save();
-		(new Channel(triggers, actions, AllActors.Lamp.class, "Manythings")).save();
-		(new Channel(triggers, actions, AllActors.PresenceDetector.class, "Manythings")).save();
+		(new Channel(triggers, actions, Manythings.class, "Manythings")).save();
+		(new Channel(triggers, actions, Lamp.class, "Manythings")).save();
+		(new Channel(triggers, actions, PresenceDetector.class, "Manythings")).save();
 
 		// // PRESENCE DETECTOR CHANNEL
 		// Channel detector = new Channel("Detector", "Detects humans",

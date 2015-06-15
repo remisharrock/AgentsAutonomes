@@ -1,4 +1,4 @@
-package actors;
+package logic;
 
 import java.time.Duration;
 import java.time.LocalTime;

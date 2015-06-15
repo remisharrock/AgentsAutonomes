@@ -8,6 +8,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import logic.Commutator;
+import logic.MessageMap;
+import logic.RandomScheduler;
+import logic.RandomScheduler.StopCriteria;
+import logic.StdRandom;
+import logic.SystemProxy;
+import logic.SystemProxyCheatImpl;
 import models.Action;
 import models.Channel;
 import models.Modality;
@@ -33,21 +40,20 @@ import views.html.createRecipe;
 import views.html.index;
 import views.html.viewRecipeLog;
 import views.html.viewRecipes;
-import actors.AllActors;
-import actors.AllActors.PresenceDetector;
-import actors.AllMessages;
-import actors.AllMessages.Lamp;
-import actors.Commutator;
-import actors.MessageMap;
-import actors.RandomScheduler;
-import actors.RandomScheduler.StopCriteria;
-import actors.StdRandom;
-import actors.SystemProxy;
-import actors.SystemProxyCheatImpl;
+import world.Lamp;
+import world.PresenceDetector;
 import akka.actor.ActorRef;
 
 import com.avaje.ebean.Ebean;
 
+/**
+ * <p>
+ * At least you have to define all the mapper implied by the current recipes. If
+ * you don't do so, a static message will be sent. Then, it means you also HAVE
+ * TO override the default constructor for each message to define a default
+ * state for each.
+ * </p>
+ */
 public class Application extends Controller {
 
 	private static RandomScheduler randomScheduler = new RandomScheduler();
@@ -92,7 +98,7 @@ public class Application extends Controller {
 		/* The name should raise exception but this error will be hidden. */
 		ActorRef actor2 = Application.getSystemProxy().createActorOf(channel, "Jenny's room detector");
 
-		channel = new Channel(triggers, actions, AllActors.Lamp.class, "Basic lamp");
+		channel = new Channel(triggers, actions, Lamp.class, "Basic lamp");
 		/* Under these circumstances, this will be the static actor. */
 		Application.getSystemProxy().createActorOf(channel);
 		ActorRef actor3 = Application.getSystemProxy().createActorOf(channel);
@@ -107,7 +113,7 @@ public class Application extends Controller {
 		 * </ul>
 		 */
 		UnaryOperator<Object> operatorOn = o -> {
-			AllMessages.PresenceDetector.MotionDetected m = (AllMessages.PresenceDetector.MotionDetected) o;
+			PresenceDetector.MotionDetected m = (PresenceDetector.MotionDetected) o;
 			String colour = null; // don't change
 			/**
 			 * Notice it's not null then the actor will change this state
@@ -125,7 +131,7 @@ public class Application extends Controller {
 
 		Application.getCommutator().addCausalRelation(//
 				actor1,//
-				AllMessages.PresenceDetector.MotionDetected.class,//
+				PresenceDetector.MotionDetected.class,//
 				"Première recette",//
 				actor3,//
 				operatorOn);
@@ -147,7 +153,7 @@ public class Application extends Controller {
 		};
 		Application.getCommutator().addCausalRelation(
 				Application.getSystemProxy().getActorByName("Jenny's room detector"),//
-				AllMessages.PresenceDetector.MotionDetected.class,//
+				PresenceDetector.MotionDetected.class,//
 				"Deuxième recette",//
 				actor3,//
 				operatorOff);
@@ -156,10 +162,10 @@ public class Application extends Controller {
 		 * Just an example how to trigger a message manually. This is automated
 		 * by RandomScheduler.
 		 */
-		Application.getCommutator().emitTriggerMessage(actor1, AllMessages.PresenceDetector.MotionDetected.class,
-				() -> new AllMessages.PresenceDetector.MotionDetected(0.5));
+		Application.getCommutator().emitTriggerMessage(actor1, PresenceDetector.MotionDetected.class,
+				() -> new PresenceDetector.MotionDetected(0.5));
 
-		Supplier<Object> supplier = () -> new AllMessages.PresenceDetector.MotionDetected(StdRandom.uniform());
+		Supplier<Object> supplier = () -> new PresenceDetector.MotionDetected(StdRandom.uniform());
 		/*
 		 * We can do anything we want upon a trigger raised.
 		 */
@@ -170,7 +176,7 @@ public class Application extends Controller {
 					// Raise trigger for first causal relation
 				Application.getCommutator().emitTriggerMessage(//
 						actor1,//
-						AllMessages.PresenceDetector.MotionDetected.class,//
+						PresenceDetector.MotionDetected.class,//
 						supplier);
 				// // Raise trigger for second causal relation
 				// Application.getCommutator().emitTriggerMessage(//
@@ -196,7 +202,7 @@ public class Application extends Controller {
 					// Raise trigger for second causal relation
 				Application.getCommutator().emitTriggerMessage(//
 						Application.getSystemProxy().getActorByName("Jenny's room detector"),//
-						AllMessages.PresenceDetector.MotionDetected.class,//
+						PresenceDetector.MotionDetected.class,//
 						supplier);
 			});
 

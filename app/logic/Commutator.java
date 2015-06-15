@@ -1,4 +1,4 @@
-package actors;
+package logic;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
