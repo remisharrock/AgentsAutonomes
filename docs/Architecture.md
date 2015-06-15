@@ -152,13 +152,13 @@ On peut clairement utiliser plus d'un objet `actors.Commutator`. Il y aura donc 
 
 ## Prévenir les situations aberrantes
 
-Définir une situation aberrante.
+Définir une situation aberrante. C'est plus compliqué qu'il n'y parait : aberrant à partir de quel seuil, selon quel point de vue ?
 
 Une telle situation est causée par trois types d'interférences :
 * Intra-commutateur : on peut les prévenir super facilement, ça se résume à une recherche de cycle sur le graphe (A, C) des acteurs et des relations de causalité. La mise en œuvre est en revanche hardue : car en réalité ce n'est pas un graphe (mais ça se dessine pareil donc la structure est pareille) et il ne faut pas oublier que cet chose pseudo-graphe joue avec des pointeurs de fonction, des pointeurs de classe et des acteurs. Je suis très currieux de voir l'algorithme de recherche de cycle sur un hyper-graphe qui correspond au cas général des relations de causalité de rang quelconque.
 * Inter-commutateur : $x$ acteurs touchés par des relations de causalité qui appartiennent à $y$ commutateurs différents, $x$ et $y$ quelconques.
 * Extra-commutateur : par exemple l'influence thermodynamique mutuelle de $x$ acteurs radiateurs dont les relations de causalité respectives sont émulées par $y, y > x$ commutateurs sans qu'un commutateur émule deux recettes du même radiateur.
-* Le piège de l'utilisateur malicieux. **__Gentille__** périphrase. La supputation d'intention est probablement compliquée, mais on peut imaginer une forte incitation dans l'ergonomie de l'interface à le cantonner à des trucs basiques. On peut également éviter d'ajouter des éléments trop exotiques à l'objet `MessageMap` : même si le faisceau de relations de causalité est indemne de tout problème des types précédents, l'utilisateur risque de considérer comme un aberrant que sa porte de garage s'ouvre lorsqu'il se brosse les dents ou que l'alarme de sa maison se réveille quand il se réveille.
+* Le piège de l'utilisateur malicieux. *__Gentille__* périphrase. La supputation d'intention est probablement compliquée, mais on peut imaginer une forte incitation dans l'ergonomie de l'interface à le cantonner à des trucs basiques. On peut également éviter d'ajouter des éléments trop exotiques à l'objet `MessageMap` : même si le faisceau de relations de causalité est indemne de tout problème des types précédents, l'utilisateur risque de considérer comme un aberrant que sa porte de garage s'ouvre lorsqu'il se brosse les dents ou que l'alarme de sa maison se réveille quand il se réveille.
 
 ## What « Model (in MVC) is an abstraction of Actor » is and how we could implement it
 
