@@ -36,9 +36,10 @@ ifttt.
 
 #### Points saillants
 
-Nous confessons que l’architecture de cette branche n’est pas aussi
-simple que <span style="font-variant:small-caps;">kiss</span>. Il nous
-semble que la relative difficulté à passer outre la complexité de cette
+Nous confessons que l’architecture de cette branche n’est pas <span
+style="font-variant:small-caps;">kiss</span> en elle-même et que la
+branche `master` est plus agréable. Il nous semble cependant que la
+petite difficulté à passer outre la relative complexité de cette
 architecture procure quelques avantages :
 
 -   L’utilisation des dernières nouveautés de Java 8 nous apporte une
@@ -71,7 +72,7 @@ concepts utilisés par la suite.
 Le niveau des modèles
 ---------------------
 
-Ce niveau est le plus abstrait et définit des catégories dont on donnera
+Ce niveau est le plus abstrait et définit des archétypes dont on donnera
 en quelque sorte des réalisations [^1] dans le niveau inférieur.
 
 #### Canal
