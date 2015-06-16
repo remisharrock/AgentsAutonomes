@@ -6,6 +6,7 @@ import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
+import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
 import models.Trigger;
@@ -28,7 +29,7 @@ public class Global extends GlobalSettings {
 		System.out.println("test");
 		System.out.println("TESTING THE DATABASE LOAD");
 
-//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
 			List<Field> fieldsList = Ebean.find(Field.class).findList();
 			// channelsList.removeAll(channelsList);
@@ -226,13 +227,14 @@ public class Global extends GlobalSettings {
 			f2.save();
 			rec.setActionField(f2);
 			rec.setActive(true);
+			rec.setLog(new ArrayList<Log>());
 			rec.save();
 			
 			
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
-//		} else {
+		} else {
 			/**
 			 * In this case we already have recipes on our database But those
 			 * recipes won't have their equivalent in akka So we should iterate
@@ -261,7 +263,7 @@ public class Global extends GlobalSettings {
 			// courses.find.where().eq("student_id", student_id).findList();
 
 //test
-//		}
+		}
 
 	}
 
