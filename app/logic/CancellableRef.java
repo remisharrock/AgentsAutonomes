@@ -68,20 +68,18 @@ public class CancellableRef implements Cancellable, Runnable {
 		}
 
 		while (!this.isCancelled && stopCriteria.getCriteria()) {
-			cancellable = ((SystemProxyCheatImpl) Application.getSystemProxy())
-					.tem()
-					.scheduler()
-					.scheduleOnce(
-							FiniteDuration.Zero(),
-							() -> {
-								Logger.info("CancellableRef " + thread.getName() + ": eventFunction "
-										+ eventFunction.toString() + " executed");
-								eventFunction.run();
-							}, ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().dispatcher());
+			cancellable = ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().scheduler()
+					.scheduleOnce(FiniteDuration.Zero(), () -> {
+						// Logger.info("CancellableRef " + thread.getName() +
+						// ": eventFunction "
+						// + eventFunction.toString() + " executed");
+							eventFunction.run();
+						}, ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().dispatcher());
 			try {
 				long timeInMillis = randomFunction.get().toMillis();
-				Logger.info("CancellableRef " + thread.getName() + " current issue scheduled, will now wait for "
-						+ (int) timeInMillis / 1000 + " seconds.");
+				// Logger.info("CancellableRef " + thread.getName() +
+				// " current issue scheduled, will now wait for "
+				// + (int) timeInMillis / 1000 + " seconds.");
 				Thread.sleep(timeInMillis);
 			} catch (InterruptedException e) {
 			}

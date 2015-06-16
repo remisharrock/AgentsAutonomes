@@ -1,5 +1,8 @@
 package logic;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import play.Logger;
 import akka.actor.ActorRef;
 import akka.event.japi.LookupEventBus;
@@ -22,8 +25,12 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 	// themselves for the event's classifier
 	@Override
 	public void publish(MsgEnvelope event, ActorRef subscriber) {
-		Logger.info("Message " + event.payload.toString() + " commutated from " + event.suscribee.path().name()
-				+ " to " + subscriber.path().name());
+		try {
+			Logger.info("Message " + event.payload.getClass().getName() + " commutated from "
+					+ URLDecoder.decode(event.suscribee.path().name(), "UTF-8") + " to "
+					+ URLDecoder.decode(subscriber.path().name(), "UTF-8"));
+		} catch (UnsupportedEncodingException e1) {
+		}
 		Object payload = null;
 		try {
 			/**
@@ -49,6 +56,14 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 		 * actor model isn't broken.
 		 * </p>
 		 */
+		try {
+			Thread.sleep(StdRandom.poisson(150));
+		} catch (InterruptedException e) {
+			/*
+			 * Don't output it, it's to simulate a delay from the communication
+			 * medium (for example, wifi).
+			 */
+		}
 		subscriber.tell(payload, event.suscribee);
 	}
 

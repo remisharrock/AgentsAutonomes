@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,19 +36,7 @@ import scala.concurrent.duration.Duration;
 /*
  * import views.ExportJFrame;
  */
-import views.html.administratorLog;
-import views.html.administratorView;
-import views.html.chooseAction;
-import views.html.chooseActionChannel;
-import views.html.chooseTrigger;
-import views.html.chooseTriggerChannel;
-import views.html.chooseView;
-import views.html.completeActionFields;
-import views.html.completeTriggerFields;
-import views.html.createRecipe;
-import views.html.index;
-import views.html.viewRecipeLog;
-import views.html.viewRecipes;
+import views.html.*;
 import world.AutoCounter;
 import world.AutoCounter.NewStepPassedThrough;
 import world.AutoCounter.RandomCountDown;
@@ -150,7 +139,31 @@ public class Application extends Controller {
 		 */
 		UnaryOperator<Object> operatorOn = o -> {
 			PresenceDetector.MotionDetected m = (PresenceDetector.MotionDetected) o;
-			String colour = null; // don't change
+
+			String colour;
+			int random = (int) StdRandom.uniform(0, 6);
+			switch (random) {
+			case 0:
+				colour = "blue";
+				break;
+			case 1:
+				colour = "yellow";
+				break;
+			case 2:
+				colour = "turquoise";
+				break;
+			case 3:
+				colour = "brown";
+				break;
+			case 4:
+				colour = "orange";
+				break;
+			case 5:
+				colour = "purple";
+				break;
+			default:
+				colour = null; // don't change
+			}
 			/**
 			 * Notice it's not null then the actor will change this state
 			 * accordingly.
@@ -159,10 +172,9 @@ public class Application extends Controller {
 			 * message.
 			 * 
 			 */
-			Integer intensity = (m.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-			Boolean lowConsumptionMode = null; // don't change
+			Double intensity = m.getQuantitéDeMouvement();
 			Boolean state = true; // Notice it's TRUE
-			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
+			return new Lamp.ChangeState(state, colour, intensity, null);
 		};
 		Application.getCommutator().addCausalRelation(//
 				actor1,//
@@ -175,17 +187,13 @@ public class Application extends Controller {
 		/*
 		 * Another causalRelation
 		 */
-
 		UnaryOperator<Object> operatorOff = o -> {
 			/*
 			 * Here we don't use any modality of input message to define the
 			 * output.
 			 */
-			String colour = null;
-			Integer intensity = null;
-			Boolean lowConsumptionMode = null; // all 3 previous won't change.
 			Boolean state = false; // Notice it's FALSE
-			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
+			return new Lamp.ChangeState(state, null, null, null);
 		};
 		Application.getCommutator().addCausalRelation(
 				Application.getSystemProxy().getActorByName("Jenny's room detector"),//
@@ -207,8 +215,8 @@ public class Application extends Controller {
 		 * We can do anything we want upon a trigger raised.
 		 */
 		Application.getScheduler().addRandomIssue(Duration.Zero(),
-				() -> Duration.create(StdRandom.uniform(12), TimeUnit.SECONDS),
-				StopCriteria.set(StopCriteria.OCCURENCE, 16),//
+				() -> Duration.create(StdRandom.uniform(5, 15), TimeUnit.SECONDS),
+				StopCriteria.set(StopCriteria.NEVER, null),//
 				() -> {
 					// Raise trigger for first causal relation
 				Application.getCommutator().emitTriggerMessage(//
@@ -233,8 +241,8 @@ public class Application extends Controller {
 		 * </p>
 		 */
 		Application.getScheduler().addRandomIssue(Duration.Zero(),
-				() -> Duration.create(StdRandom.uniform(12), TimeUnit.SECONDS),
-				StopCriteria.set(StopCriteria.TIME, 16),//
+				() -> Duration.create(StdRandom.uniform(5, 15), TimeUnit.SECONDS),
+				StopCriteria.set(StopCriteria.OCCURENCE, 10),//
 				() -> {
 					// Raise trigger for second causal relation
 				Application.getCommutator().emitTriggerMessage(//
@@ -246,10 +254,26 @@ public class Application extends Controller {
 		/**
 		 * Finally we filter the causal relations to only display those related
 		 * to home and we display the result in a JFrame.
+		 * 
+		 * Data in files are handy then we store a copy in.
 		 */
-		Predicate<List<String>> predicate = w -> w.stream().anyMatch(q -> q.equals("home"));
-		Set<CausalRelation> toDisplay = Application.getCommutator().getCausalRelationByLabel(predicate);
-		//(new Thread(new ExportJFrame(toDisplay))).start();
+		Predicate<CausalRelation> predicate = w -> w.getLabel().stream().anyMatch(x -> x.equals("user"));
+		String filepath = "../export.txt";
+		File file = Application.getCommutator().exportCausalGraph(predicate, new File(filepath));
+
+		String[] args = { filepath };
+		// try {
+		// (new Thread(() -> visual.ExportJFrame.main(args))).start();
+		// } catch (Exception e) {
+		// Logger.info("grave: no gephi");
+		// }
+
+		try {
+			Runtime.getRuntime().exec("java -jar lib/Visual.jar " + filepath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return ok(index.render());
 	}
 

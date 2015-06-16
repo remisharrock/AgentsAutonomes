@@ -1,6 +1,8 @@
 package logic;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -180,7 +182,37 @@ public class Commutator {
 	 * relations which satisfy the predicate. You can use labels here if you
 	 * want.
 	 */
-	public File exportCausalGraph(Predicate<CausalRelation> predicate) {
-		return null;
+	public File exportCausalGraph(Predicate<CausalRelation> predicate, File file) {
+		try {
+			FileWriter fw = new FileWriter(file, false);
+
+			try {
+				this.causalSet.stream().filter(x -> {
+					@SuppressWarnings("unused")
+					List<String> label = x.getLabel();
+					boolean ret = predicate.test(x);
+					return ret;
+				}).collect(Collectors.toSet()).forEach(x -> {
+					/*
+					 * Start node name, start node id, arrival node name,
+					 * arrival node id
+					 */
+					try {
+						fw.write(/**/
+						x.getTriggerActor().path().name().toString() + "\t" + /**/
+						x.getTriggerActor().path().toStringWithoutAddress() + "\t" + /**/
+						x.getActionActor().path().name().toString() + "\t" + /**/
+						x.getActionActor().path().toStringWithoutAddress() + "\n");
+					} catch (IOException e) {
+						Logger.info("grave : can't export");
+					}
+				});
+			} finally {
+				fw.close();
+			}
+		} catch (IOException e) {
+			Logger.info("grave : can't export");
+		}
+		return file;
 	}
 }
