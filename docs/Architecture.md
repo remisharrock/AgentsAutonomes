@@ -1,45 +1,80 @@
 ---
-author:
-- 'Marie-Laure <span style="font-variant:small-caps;">Bardonner</span>'
-- 'Giulia <span style="font-variant:small-caps;">Zago</span>'
-- 'Marc <span style="font-variant:small-caps;">Nasrallah</span>'
-- 胡雨軒
 title: Architecture du projet
 ...
 
 Nous commençons par définir les concepts utilisés dans ce projet de
 simulation d’ifttt. En quelque sorte, une fois que les mots auront un
 sens, nous proposons une ébauche de formalisation mathématique puis nous
-détaillons notre proposition technique. Nous abordons enfin de manière
-plus spécifique quelques questions, dont le sujet de thèse de Robin
-(prévenir les situations aberrantes). L’ébauche de formalisation peut
-être ignorée en première lecture.
+détaillons notre proposition technique. Cette dernière s’appuie sur la
+philosophie de développement <span
+style="font-variant:small-caps;">kiss</span>: *Keep It (the actor)
+Simple Stupid* et sur l’*imitation de la nature* (la bionique). La
+combinaison de ces deux idées nous semble particulièrement féconde. Nous
+abordons enfin de manière plus spécifique quelques questions, dont le
+sujet de thèse de Robin (prévenir les situations aberrantes). L’ébauche
+de formalisation peut être ignorée en première lecture.
 
 #### Composition de ce document
 
 Ce document est originellement composée avec LaTeX (au format `tex`).
-Deux formats de sortie sont proposés : `pdf` et `md` (Markdown) pour
-s’adapter à une lecture hors ligne ou directement depuis le site GitHub.
-Le fichier `*.tex` est toujours à jour, suivi de près par le `*.pdf`. Le
-fichier `*.md` est susceptible d’accuser parfois un petit retard. Ce
-dernier est écrit par la commande
+Deux formats de sortie sont proposés : `pdf` et `md` (Markdown). Le
+fichier `*.tex` est toujours à jour ; il est suivi de près par le
+`*.pdf` qui est le plus agréable à l’œil. Le fichier `*.md` est
+susceptible d’accuser parfois un petit retard mais est adapté pour une
+lecture directement sur GitHub ; il est écrit par la commande
 `pandoc -s docs/Architecture.tex -o docs/Architecture.md`.
 
-Présentation générale
-=====================
+Introduction
+============
 
-Niveaux d’abstraction
----------------------
+(to be expended)
+
+#### Panorama général
+
+présentation de la programmation orientée acteur, de play, akka et
+ifttt.
+
+#### Points saillants
+
+Nous confessons que l’architecture de cette branche n’est pas aussi
+simple que <span style="font-variant:small-caps;">kiss</span>. Il nous
+semble que la relative difficulté à passer outre la complexité de cette
+architecture procure quelques avantages :
+
+-   L’utilisation des dernières nouveautés de Java 8 nous apporte une
+    grande finesse de simulation et améliore la compréhension intuitive
+    du code ;
+
+-   Les étiquettes sont capables de rendre compte d’une grande variété
+    de types de groupe ;
+
+-   La génération à la volée des messages d’action autorise de riches
+    interactions entre le destinateur et le destinataire tout en
+    respectant le modèle acteur ;
+
+-   L’accès au système au travers d’un proxy rendra probablement presque
+    indolore le passage à une simulation distribuée sur plusieurs
+    machines virtuelle Java ;
+
+-   L’envoi aléatoire de messages paramétrés permet de confronter un
+    ensemble d’acteurs à des configurations exotiques qui n’auraient
+    peut-être pas été prises en compte par une programmation
+    déterministe.
+
+Présentation des concepts
+=========================
 
 Nous voulons faire une simulation de ifttt. Pour cela, nous utilisons
-deux niveaux d’abstraction :
+deux niveaux d’abstraction en fonction desquels nous présentations les
+concepts utilisés par la suite.
 
-#### Le niveau des modèles
+Le niveau des modèles
+---------------------
 
 Ce niveau est le plus abstrait et définit des catégories dont on donnera
 en quelque sorte des réalisations [^1] dans le niveau inférieur.
 
-##### Canal
+#### Canal
 
 Un canal (`models.Channel` dans le code) est une catégorie d’éléments de
 l’internet des objets [^2] : ce peut être une classe d’objets physiques
@@ -47,7 +82,7 @@ ou immatériels comme un capteur, une lampe, le compte d’un service en
 ligne, un site de news. Comme dans ifttt, des canaux ont des signaux
 (triggers en anglais et `models.Trigger` dans le code) et des actions.
 
-##### Signal
+#### Signal
 
 Les signaux sont levés par le canal pour signaler un changement : ce
 peut-être un changement d’environnement (l’ouverture d’une porte, la
@@ -57,7 +92,7 @@ et le nouvel état de ce dernier ou ce qui a provoqué ce changement
 d’état [^3]. Il peut mentionner des modalités (dans le cas d’une porte,
 on peut mentionner son degré d’ouverture).
 
-##### Recette
+#### Recette
 
 Toujours de la même manière que ifttt, des recettes (`models.Recipe`)
 peuvent être créées pour matérialiser des réactions automatiques à un
@@ -72,7 +107,7 @@ la recette. Contrairement à certains de ses concurrents, une recette de
 ifttt ne peut lier plus d’un canal émetteur, un signal émis, un canal
 récepteur et une action : c’est atomique.
 
-##### Sémantique
+#### Sémantique
 
 Sémantiquement, les actions contiennent un verbe, un objet et si besoin
 des modalités complémentaires. Le sujet de l’action est toujours le
@@ -86,19 +121,20 @@ considère la recette actuelle comme une bijection, on propose une
 évolution possible de ce modèle pour avoir une surjection, une injection
 ou encore autre chose.
 
-#### Le niveau des acteurs
+Le niveau des acteurs
+---------------------
 
 Le niveau des acteurs est en quelque sorte une représentation concrète
 du monde. Il contient des acteurs qui évoluent indépendamment et
 communiquent par message. La communication entre ces acteurs suit le
 formalisme indiqué plus haut.
 
-##### Relation avec un canal
+#### Relation avec un canal
 
 Le mode d’action d’un acteur est définit par un canal. Un acteur peut
 donc être vu comme une instance d’un canal.
 
-##### Message
+#### Message
 
 Les messages échangés par des acteurs ont la sémantique soit d’un
 signal, soit d’une action. De la même manière qu’une lettre à la Poste,
@@ -107,7 +143,7 @@ Les acteurs ne communiquent que par message. Les messages peuvent
 contenir des modalités qui précisent le changement décrit par le signal
 ou l’action à effectuer.
 
-##### Relation de causalité
+#### Relation de causalité
 
 A ce niveau concret, une recette est définie comme relation de causalité
 entre deux acteurs et « if this then that » devient : quand un acteur
@@ -122,7 +158,7 @@ pseudo-acteur : à réception d’un message signal d’un acteur, le
 pseudo-acteur regarde si une relation de causalité existe. Le cas
 échéant, il envoit anonymement un message d’action à l’acteur définit.
 
-##### Pseudo-acteur
+#### Pseudo-acteur
 
 Ce pseudo-acteur est utile pour envoyer des messages signaux et simuler
 des changements. La période caractérisant l’envoi de ces messages est
@@ -132,7 +168,7 @@ style="font-variant:small-caps;">Bernouilli</span>, <span
 style="font-variant:small-caps;">Gauss</span>, <span
 style="font-variant:small-caps;">Poisson</span>…
 
-##### Alternative à cette architecture
+#### Alternative à cette architecture
 
 Pour plus de détail sur les alternatives à cette architecture, voir plus
 bas le paragraphe [auto].
@@ -184,9 +220,9 @@ le fait ?
 Construire à la volée un message d’action en fonction d’un message émis avec `MessageMap`
 -----------------------------------------------------------------------------------------
 
-Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir
-comment ça se passe à l’intérieur n’est pas important, on veut juste
-savoir à quoi ça sert.
+Du Java 8, de la réflexion, de la généricité…bon appétit. Savoir comment
+ça se passe à l’intérieur n’est pas important, on veut juste savoir à
+quoi ça sert.
 
 Etablir à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
 ------------------------------------------------------------------------------
@@ -334,8 +370,11 @@ Notre code se borne pour l’instant à proposer des relations de causalité
 de rang $(1, 1)$ qui sont dont des bijections strictes. Le délai de
 traitement n’est donc pas utile et n’est pas considéré.
 
+Quelques explications techniques et fonctionnelles
+==================================================
+
 Vers un système d’acteurs auto-organisé ? {#auto}
-=========================================
+-----------------------------------------
 
 Le pseudo-acteur défini plus haut n’est pas un acteur, d’où sa
 dénommination : c’est un objet. Quelles sont les possibilités de se
@@ -359,30 +398,30 @@ pseudo-acteur ne représente plus véritablement un objet du monde réel.
 D’aucun pourrait souhaiter que les classes d’objet définies soient des
 acteurs (c’est-à-dire réalisent l’interface `UntypedActor`) : cela
 serait tout à fait possible, aurait l’élégance de montrer qu’ifttt
-accepte une décomposition kiss et serait enfin plus proche du monde
-réel. Nous objections que cela ne serait cependant pas sans poser de
-vrais problèmes conceptuels :
+accepte une décomposition <span
+style="font-variant:small-caps;">kiss</span> et serait enfin plus proche
+du monde réel. Nous objections que cela ne serait cependant pas sans
+poser de vrais problèmes conceptuels :
 
 -   On attend tout d’abord dans ce projet qu’un acteur puisse être lié
     par des relations de causalité : serait-il acceptable qu’une
-    relation de causalité lie les acteurs \`MessageMap\` ou
-    \`Commutator\`, qui sont utilisés pour caractériser justement ces
-    relations ?
+    relation de causalité lie les acteurs `MessageMap` ou `Commutator`,
+    qui sont utilisés pour caractériser justement ces relations ?
 
--   Si \`Commutator\` était un acteur alors il perdrait son rôle de
+-   Si `Commutator` était un acteur alors il perdrait son rôle de
     commutateur (donc de médium de communication) pour devenir un
     routeur. En effet, un objet commutateur n’envoie pas de message en
     son nom propre mais ne fait qu’ouvrir une ligne téléphonique directe
     entre deux acteurs qui se parlent par l’intermédiaire d’une fonction
     de traduction. Un acteur devrait plutôt parler en son nom plutôt
-    qu’utiliser la méthode \`forward(Object message, ActorContext
-    context)\`.
+    qu’utiliser la méthode forward(Object message, ActorContext
+    context).
 
--   La classe \`RandomScheduler\` pourrait effectivement devenir un
+-   La classe `RandomScheduler` pourrait effectivement devenir un
     acteur. Au lieu d’un objet condamné à un certain immobilisme, on
-    pourrait alors considérer l’acteur \`RandomScheduler\` résultant
-    comme une espèce de Zorro masqué, qui reste discret mais se place
-    derrière un acteur pour lui soufler quoi faire.
+    pourrait alors considérer l’acteur `RandomScheduler` résultant comme
+    une espèce de Zorro masqué, qui reste discret mais se place derrière
+    un acteur pour lui soufler quoi faire.
 
 #### Mise en abyme : l’exemple type de la fausse bonne idée
 
@@ -397,7 +436,7 @@ de développement <span style="font-variant:small-caps;">kiss</span> :
 *keep it simple stupid*. Le nom de la branche vient de là.
 
 Un défaut conceptuel : le serpent qui se mord la queue
-======================================================
+------------------------------------------------------
 
 Dans toute discussion sur ce sujet, nous commençons toujours par parler
 des canaux pour en venir ensuite aux acteurs, définis par rapport aux
@@ -423,12 +462,12 @@ relation de génération entre les deux niveaux d’abstraction tend à
 montrer que ce ne serait qu’une inutile fioriture dans l’état
 d’avancement actuel de ce projet.
 
-Ajouter la notion de groupe d’objets et de propriétaire
-=======================================================
+Groupe d’objets et de propriétaire : la notion d’étiquette
+----------------------------------------------------------
 
-(to be expanded)
+#### Premier jet
 
-On peut clairement utiliser plus d’un objet \`actors.Commutator\`. Il y
+On peut clairement utiliser plus d’un objet `actors.Commutator`. Il y
 aura donc des groupes de relations de causalité. On peut facilement
 définir pour chaque groupe un propriétaire. Attention cependant : créer
 des groupes de relations de causalité est une chose, rendre l’objet
@@ -437,8 +476,69 @@ propriétaire pour un objet s’il est trop simple pour comprendre ce que
 cela signifie : « tu es trop jeune mon fils, tu n’es encore qu’un petit
 no0b ».
 
+#### Critique
+
+Démultiplier le commutateur revient à considérer qu’il y a plusieurs
+media de communication différents. Lorsqu’un objet émet un message, il
+doit aller chercher tous les commutateurs qui ont une relation de
+causalité pour lui. Dans le monde réel, cela correspondrait à plusieurs
+opérateurs téléphonique. En réalité, un téléphone n’est relié au réseau
+que d’un seul opérateur, sauf les téléphones portables qui proposent
+deux emplacements de cartes <span
+style="font-variant:small-caps;">sim</span> : ceci peut donner une image
+acceptable d’un acteur qui serait lié à des relations de causalité sur
+deux machines Java différentes.
+
+Exception faîte des téléphones à deux cartes <span
+style="font-variant:small-caps;">sim</span> qui correspond à une
+situation différente, voir tous les relations de causalité d’un même
+système local passer par le même commutateur est plus respectueux de la
+philosophie <span style="font-variant:small-caps;">kiss</span> pour les
+acteurs.
+
+#### Idée mise en œuvre : les étiquettes
+
+Nous proposons donc d’utiliser des étiquettes. Une étiquette est
+simplement un ensemble (au sens strict) de chaînes de caractères (des
+mots courts en langage compréhensible) dont on dote les relations de
+causalité. On peut alors former s’appuyer sur le sens de ces chaînes
+pour grouper des objets selon un critère spatial (une habitation, une
+pièce, une ville), d’appartenance (le groupe qui appartient à tel ou
+tel) ou un critère de proximité conceptuelle (tous les outils de
+bricolage). Les étiquettes offrent une plus grande richesse et une plus
+grande finesse de définition par rapport à un attribut `Propriétaire` ou
+`Groupe d’objet`.
+
+#### A quoi attacher ces étiquettes ?
+
+Nous considérons qu’il est plus judicieux, bien que contre-intuitif,
+d’attacher ces étiquettes aux relations de causalité. En effet, puisque
+nous voulons rester près de la réalité que nous cherchons à simuler, il
+faut bien considérer que beaucoup des objets les plus rudimentaires de
+l’internet n’ont pas la moindre idée[^4] de leur emplacement (quand ils
+en ont seulement un) ou de leur propriétaire : ces informations sont
+dans l’esprit des êtres humains qui les utilisent et définissent entre
+eux des relations de causalité. En outre, il est très tentant de
+renseigner un attribut sémantiquement très fort (comme un champ
+référençant l’objet `Propriétaire` lié) pour tous les objets : un tel
+propriétaire ne serait donc défini que dans la machine virtuelle locale
+tandis que les acteurs sont mobiles : notre simulation serait alors
+moins facile à distribuer. Enfin, du point de vue du développement, il
+est plus facile de parcourir l’ensemble des relations de causalité d’un
+commutateur que l’ensemble des acteurs d’un système.
+
+Distribuer les acteurs sur plusieurs machines virtuelles Java
+-------------------------------------------------------------
+
+(to be expended)
+
+C’est possible avec cette architecture, à condition de comprendre
+comment accéder à une machine virtuelle depuis une autre. Une fois ce
+détail technique résolé[^5], l’objet `SystemProxy` devra ne plus
+permettre d’accéder aux acteurs par leur nom[^6] mais par leur chemin.
+
 Prévenir les situations aberrantes
-==================================
+----------------------------------
 
 Définir une situation aberrante. C’est plus compliqué qu’il n’y parait :
 aberrant à partir de quel seuil, selon quel point de vue ?
@@ -481,7 +581,7 @@ un aberrant que sa porte de garage s’ouvre lorsqu’il se brosse les dents
 ou que l’alarme de sa maison se réveille quand il se réveille.
 
 What « Model (in <span style="font-variant:small-caps;">mvc</span>) is an abstraction of Actor » is and how we could implement it
-=================================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------------
 
 Model is an abstraction of Actor. Because it takes a class reference,
 one could have subtypes of this class. By the way, the best abstraction
@@ -493,14 +593,70 @@ by onReceive() and the message sending protocol doesn’t imply any other
 method.
 
 Lien entre une recette et une relation de causalité
-===================================================
+---------------------------------------------------
 
 Nous pouvons relier ces deux notions.
 
 Euh en fait ça se fait à l’instinct dans le code puisque le niveau 1
 n’est utilisé que par l’interface et que pour l’instant il n’y a pas
 d’interface. Les exemples du code n’utilisent que des événements de
-niveau 2. Mais c’est une vraie question qu’il faut traiter.
+niveau 2. Mais c’est une vraie question qu’il faut traiter. D’ailleurs,
+petit détail tant qu’on y est : les actions et les signaux d’un canal
+sont complètement inutiles. Il prévu de ne s’en servir lorsqu’on crée ni
+une recette ni une relation de causalité, cela par conception. Ils ne
+servent qu’à être affichés dans l’interface.
+
+Quelques utilisations de l’interface
+------------------------------------
+
+Pour aider à finir l’interface, voici quelques exemples de ce qu’on doit
+pouvoir y faire.
+
+#### Pour un utilisateur donné
+
+##### Enregistrer un objet connecté
+
+Equivaut à créé un acteur et à le sauvegarder en base (`Model.Actor`).
+
+##### Oublier un objet enregistré
+
+Inutile pour nous, la base est purgée pour chaque nouvelle simulation.
+
+##### Créer une relation de causalité
+
+Cette étape est abusivement appelée création d’une recette par ifttt,
+mais les recettes sont déjà définies (ou crées) et on ne fait que
+choisir celle qu’on veut appliquer comme relation de causalité pour le
+quadruplet (acteur émetteur, type de message, canal récepteur, type
+d’action). Il est a noter que la fonction de création d’une relation de
+causalité demande qu’on lui passe ne paramètre la fonction qui permet de
+créer le message d’action en fonction du message de signal. Si cette
+fonction n’est pas définie alors on va demander une fonction par défaut
+à l’objet `MessageMap`. Si une telle fonction par défaut n’a pas encore
+été explicitement définie, `MessageMap` créera une fonction constante à
+la volée. Il est donc bon de noter que définir une recette
+programmatiquement est bien plus fin et offre bien plus de liberté.
+
+##### Voir le log
+
+A mieux définir
+
+#### Pour l’administrateur de la machine virtuelle Java locale
+
+##### Définition d’une recette
+
+Attention on reste dans le côté abstrait, ne pas confondre avec créer
+une relation de causalité. Il ne s’agit ici que de créer un quadruplet
+(canal émetteur, signal, canal récepteur, action).
+
+##### Simuler l’envoi aléatoire d’un message
+
+Si la période est constante alors l’envoi est périodique. Pour n’envoyer
+qu’un seul message, il suffit d’utiliser (`StopCriteria.Occurence`, 1).
+
+##### Voir le log
+
+A mieux définir
 
 Utilisation
 ===========
@@ -538,3 +694,10 @@ Ce qui pourrait faire briller les yeux de Mme Vigne :
 
 [^3]: Par exemple : *la porte est ouverte* pour un capteur de porte ou
     bien *quelque chose a bougé* pour un détecteur de mouvement
+
+[^4]: Voire pas la moindre idée tout court.
+
+[^5]: Coquille. Contraction de *résolu* et *réglé*.
+
+[^6]: Qui n’est que la dernière partie de leur chemin et dont l’unicité
+    n’est garantie qu’au sein d’une seule machine virtuelle.
