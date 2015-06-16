@@ -531,6 +531,28 @@ moins facile à distribuer. Enfin, du point de vue du développement, il
 est plus facile de parcourir l’ensemble des relations de causalité d’un
 commutateur que l’ensemble des acteurs d’un système.
 
+Afficher le graphe des relations de causalité
+---------------------------------------------
+
+Gephi, la bibliothèque utilisée, requiert Java 6. Bien que toute machine
+virtuelle soit capable d’exécuter du code compilé pour une machine
+antérieure, le framework Play refuse de se lancer à cause d’une
+exception inattendue. Nous avons essayé de dissocier les versions du
+code et de la machine virtuelle mais le compilateur refuse bizarrement
+du produire du code Java 7 à partir de Java 8 alors que ce devrait être
+possible. Nous avons également tenté d’intégrer comme bibliothèque du
+projet un projet annexe qui s’exécute avec java 6 mais cela n’a rien
+donné non plus, bien que l’erreur ait changé de nom type. Il faut donc
+se résoudre à passer par un appel système Linux.
+
+Mécompréhension de Play
+-----------------------
+
+Play semble ne pas gérer le cas de deux classes filles entités
+(`@Entity`) qui hérite d’une classe mère. Voir la classe
+`logic.Semantic` pour plus de détails. Plusieurs personnes rapport le
+même problème sur internet.
+
 Distribuer les acteurs sur plusieurs machines virtuelles Java
 -------------------------------------------------------------
 
@@ -696,6 +718,8 @@ Ce qui pourrait faire briller les yeux de Mme Vigne :
 -   Graphe des relations de causalité
 
 -   Java 8 : flux, lambda-calcul
+
+-   Incompatibilité des programmes écrits pour Java 6, 7 ou 8.
 
 -   Interface fonctionnelle : on doit bien pouvoir en placer une en
     réfléchissant bien.
