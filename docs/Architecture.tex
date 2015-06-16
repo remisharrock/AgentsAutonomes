@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage{hyperref,fontspec,url,xeCJK}
-\usepackage[francais,british]{babel}
+\usepackage[british,francais]{babel}
 \setmainfont{Junicode}
 \setCJKmainfont{教育部標準楷書}
 
@@ -9,12 +9,14 @@
 \author{Marie-Laure \textsc{Bardonner} \and Giulia \textsc{Zago} \and Marc \textsc{Nasrallah} \and 胡雨軒}
 
 \begin{document}
-	
-% pandoc -s docs/Architecture.tex -o docs/Architecture.md	
 
 \maketitle
 
-Nous commencons par définir les concepts utilisés dans ce projet. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique. Nous abordons enfin de manière plus spécifique quelques questions, dont le sujet de thèse de Robin (prévenir les situations aberrantes)
+\begin{abstract}
+Nous commençons par définir les concepts utilisés dans ce projet de simulation d'ifttt. En quelque sorte, une fois que les mots auront un sens, nous proposons une ébauche de formalisation mathématique puis nous détaillons notre proposition technique. Nous abordons enfin de manière plus spécifique quelques questions, dont le sujet de thèse de Robin (prévenir les situations aberrantes). L'ébauche de formalisation peut être ignorée en première lecture.
+\end{abstract}
+
+\paragraph{Composition de ce document} Ce document est originellement composée avec \LaTeX{} (au format \texttt{tex}). Deux formats de sortie sont proposés : \texttt{pdf} et \texttt{md} (Markdown) pour s'adapter à une lecture hors ligne ou directement depuis le site GitHub. Le fichier \texttt{*.tex} est toujours à jour, suivi de près par le \texttt{*.pdf}. Le fichier \texttt{*.md} est susceptible d'accuser parfois un petit retard. Ce dernier est écrit par la commande \texttt{pandoc -s docs/Architecture.tex -o docs/Architecture.md}.
 
 \tableofcontents
 
@@ -70,7 +72,7 @@ A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça 
 
 Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir comment ça se passe à l'intérieur n'est pas important, on veut juste savoir à quoi ça sert.
 
-\subsection{Tirer à la volée une ligne téléphonique entre deux acteurs avec \texttt{Commutator}}
+\subsection{Etablir à la volée une ligne téléphonique entre deux acteurs avec \texttt{Commutator}}
 
 A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
 

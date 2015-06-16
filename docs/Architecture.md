@@ -7,12 +7,23 @@ author:
 title: Architecture du projet
 ...
 
-Nous commencons par définir les concepts utilisés dans ce projet. En
-quelque sorte, une fois que les mots auront un sens, nous proposons une
-ébauche de formalisation mathématique puis nous détaillons notre
-proposition technique. Nous abordons enfin de manière plus spécifique
-quelques questions, dont le sujet de thèse de Robin (prévenir les
-situations aberrantes)
+Nous commençons par définir les concepts utilisés dans ce projet de
+simulation d’ifttt. En quelque sorte, une fois que les mots auront un
+sens, nous proposons une ébauche de formalisation mathématique puis nous
+détaillons notre proposition technique. Nous abordons enfin de manière
+plus spécifique quelques questions, dont le sujet de thèse de Robin
+(prévenir les situations aberrantes). L’ébauche de formalisation peut
+être ignorée en première lecture.
+
+#### Composition de ce document
+
+Ce document est originellement composée avec LaTeX (au format `tex`).
+Deux formats de sortie sont proposés : `pdf` et `md` (Markdown) pour
+s’adapter à une lecture hors ligne ou directement depuis le site GitHub.
+Le fichier `*.tex` est toujours à jour, suivi de près par le `*.pdf`. Le
+fichier `*.md` est susceptible d’accuser parfois un petit retard. Ce
+dernier est écrit par la commande
+`pandoc -s docs/Architecture.tex -o docs/Architecture.md`.
 
 Présentation générale
 =====================
@@ -177,8 +188,8 @@ Du Java 8, de la réflexion, de la généricité… bon appétit. Savoir
 comment ça se passe à l’intérieur n’est pas important, on veut juste
 savoir à quoi ça sert.
 
-Tirer à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
-----------------------------------------------------------------------------
+Etablir à la volée une ligne téléphonique entre deux acteurs avec `Commutator`
+------------------------------------------------------------------------------
 
 A décrire : à quel problème ça répond, qu’est-ce que ça fait, comment ça
 le fait ?
