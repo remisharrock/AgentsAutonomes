@@ -84,6 +84,7 @@ public class Global extends GlobalSettings {
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
+			human.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png");
 			human.save();
 
 			Action humanEnterRoomAction = new Action("Enter room");
@@ -100,6 +101,7 @@ public class Global extends GlobalSettings {
 
 			// PRESENCE DETECTOR CHANNEL
 			Channel detector = new Channel("Detector", "Detects humans");
+			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
@@ -127,6 +129,7 @@ public class Global extends GlobalSettings {
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector",
 					"Detects luminosity");
+			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
 			// Keep in mind to change null pointer for messages
@@ -205,6 +208,7 @@ public class Global extends GlobalSettings {
 
 			// LAMP CHANNEL
 			Channel lamp = new Channel("Lamp", "I am a Lamp");
+			lamp.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/637201122/icons/regular.png");
 			lamp.save();
 
 			Action lampAction1 = new Action("Turn on lamp");
@@ -231,6 +235,19 @@ public class Global extends GlobalSettings {
 			rec.setActionField(null);
 			rec.setActive(true);
 			rec.save();
+			
+			//
+			Recipe rec2 = new Recipe();
+			rec2.setTitle("Recipe1");
+			rec2.setUser(user1);
+			rec2.setTriggerChannel(human);
+			rec2.setTrigger(detectorTrigger1);
+			rec2.setTriggerField(new Field("toto","tata"));
+			rec2.setActionChannel(lamp);
+			rec2.setAction(lampAction2);
+			rec2.setActionField(null);
+			rec2.setActive(true);
+			rec2.save();
 
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);

@@ -67,7 +67,6 @@ public class Recipe extends Model {
 
 	private RecipeAkka recipeAkka;
 	
-	
 	private List<String> log;
 
 	public Recipe() {

@@ -28,6 +28,8 @@ public class Channel extends Model {
 	
 	private String description;
 	
+	private String logo;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Trigger> triggers;
 	
@@ -81,6 +83,13 @@ public class Channel extends Model {
 		this.description = description;
 	}
 	
+	public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
 
 	public List<Trigger> getTriggers() {
 		return triggers;
