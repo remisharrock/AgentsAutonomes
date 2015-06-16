@@ -1,16 +1,36 @@
 package logic;
 
-import java.util.HashMap;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
+import play.Logger;
 import akka.actor.ActorRef;
 
 @SuppressWarnings("rawtypes")
 public class Commutator {
 
 	private EventBusImpl eventBus = new EventBusImpl();
-	private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>> causalRelations = new HashMap<>(eventBus.mapSize());
+	// private HashMap<ActorRef, HashMap<Class, UnaryOperator<Object>>>
+	// causalRelations = new HashMap<>(eventBus.mapSize());
+	/*
+	 * We can take advantage of Java 8 and remove the former weird map of map
+	 * for a cleaner set.
+	 */
+	private CopyOnWriteArraySet<CausalRelation> causalSet = new CopyOnWriteArraySet<>();
+
+	/* Here we could define some functionnal interface if willing to. */
+	private Predicate<CausalRelation> getUnicityPredicate(ActorRef triggerActor, Class<?> triggerMessageClass,
+			ActorRef actionActor) {
+		return x -> x.getTriggerActor() == triggerActor && x.getActionActor() == actionActor
+				&& x.getTriggerMessageClass() == triggerMessageClass;
+	}
 
 	public Commutator() {
 	}
@@ -40,9 +60,6 @@ public class Commutator {
 	 * 
 	 * @param triggerActor
 	 * @param triggerMessageClass
-	 * @param name
-	 *            = topic. We put the formal programmatic name of the recipe, if
-	 *            any. Is has to be unique.
 	 * @param description
 	 *            Whatever you want to make this recipe easy to get. Anyway, not
 	 *            that sure about whether it's useful here in the back-and or
@@ -51,20 +68,28 @@ public class Commutator {
 	 *            will incitate the developper to write a chunk of text to
 	 *            describe what they're doing then it can't be bad.
 	 * @param actionActor
-	 * @param actionMessageFactory
+	 * @param mapper
 	 *            can not be null
+	 * @param label
 	 */
 	public void addCausalRelation(ActorRef triggerActor, Class<?> triggerMessageClass, String description,
-			ActorRef actionActor, UnaryOperator<Object> mapper) {
+			ActorRef actionActor, UnaryOperator<Object> mapper, List<String> label) {
+
+		/*
+		 * Safety check
+		 */
+		if (label == null) {
+			label = new ArrayList<String>();
+		}
 
 		// First part: triggerActor.
 
-		if (causalRelations.get(triggerActor) == null) {
-			causalRelations.put(triggerActor, new HashMap<Class, UnaryOperator<Object>>());
+		if (causalSet.stream().anyMatch(getUnicityPredicate(triggerActor, triggerMessageClass, actionActor))) {
+			Logger.info("SEVERE: causal relation already defined, not overwritten.");
+		} else {
+			causalSet
+					.add(new CausalRelation(triggerActor, triggerMessageClass, description, actionActor, mapper, label));
 		}
-		HashMap<Class, UnaryOperator<Object>> value = new HashMap<>();
-		value.put(triggerMessageClass, mapper);
-		causalRelations.put(triggerActor, value);
 
 		// Second part : action actor.
 
@@ -74,6 +99,20 @@ public class Commutator {
 		 * convince yourself).
 		 */
 		eventBus.subscribe(actionActor, triggerActor.path().toString() + triggerMessageClass.getName());
+	}
+
+	/**
+	 * Syntactic sugar
+	 * 
+	 * @param triggerActor
+	 * @param triggerMessageClass
+	 * @param description
+	 * @param actionActor
+	 * @param mapper
+	 */
+	public void addCausalRelation(ActorRef triggerActor, Class<?> triggerMessageClass, String description,
+			ActorRef actionActor, UnaryOperator<Object> mapper) {
+		addCausalRelation(triggerActor, triggerMessageClass, description, actionActor, mapper, null);
 	}
 
 	/**
@@ -89,9 +128,7 @@ public class Commutator {
 	public void removeCausalRelation(ActorRef triggerActor, Class<?> triggerMessageClass, ActorRef actionActor) {
 
 		// First part: triggerActor.
-
-		causalRelations.get(triggerActor).remove(triggerMessageClass);
-		// We leave empty maps, it can't hurt that much.
+		causalSet.removeIf(getUnicityPredicate(triggerActor, triggerMessageClass, actionActor));
 
 		// Second part : action actor. This is a one-to-one relation.
 
@@ -100,14 +137,27 @@ public class Commutator {
 	}
 
 	/**
+	 * 
 	 * @param triggerActor
 	 * @param triggerMessageClass
+	 * @param actionActor
 	 * @param triggerMessage
-	 *            Can be `null` if you don't need it to be tweaked.
 	 * @return
 	 */
-	public Object getMappedActionMessage(ActorRef triggerActor, Class triggerMessageClass, Object triggerMessage) {
-		return causalRelations.get(triggerActor).get(triggerMessageClass).apply(triggerMessage);
+	public Object getMappedActionMessage(ActorRef triggerActor, Class triggerMessageClass, ActorRef actionActor,
+			Object triggerMessage) {
+		return causalSet.stream().filter(getUnicityPredicate(triggerActor, triggerMessageClass, actionActor))
+				.findFirst().get().getMapper().apply(triggerMessage);
+	}
+
+	/**
+	 * It's defined but quite loosy. From now we just need to find it a use.
+	 * 
+	 * @param labelPredicate
+	 * @return
+	 */
+	public Set<CausalRelation> getCausalRelationForLabel(Predicate<List<String>> labelPredicate) {
+		return this.causalSet.stream().filter(x -> labelPredicate.test(x.getLabel())).collect(Collectors.toSet());
 	}
 
 	/**
@@ -120,8 +170,17 @@ public class Commutator {
 	 * 
 	 * @param event
 	 */
-	public void emitTriggerMessage(ActorRef triggerActor, Class<?> triggerClass, Supplier<Object> triggerFunction) {
+	public void emitTriggerMessage(ActorRef triggerActor, Class<?> triggerClass, Supplier<Object> triggerSupplier) {
 		eventBus.publish(new MsgEnvelope(triggerActor.path().toString() + triggerClass.getName(),
-				triggerFunction.get(), triggerActor));
+				triggerSupplier.get(), triggerActor));
+	}
+
+	/**
+	 * Export as graph picture reference for Gephi. Filter and only show
+	 * relations which satisfy the predicate. You can use labels here if you
+	 * want.
+	 */
+	public File exportCausalGraph(Predicate<CausalRelation> predicate) {
+		return null;
 	}
 }

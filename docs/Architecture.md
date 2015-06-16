@@ -46,6 +46,9 @@ architecture procure quelques avantages :
     grande finesse de simulation et améliore la compréhension intuitive
     du code ;
 
+-   L’accès dans l’interface web à un graphe[^1] des relations de
+    causalité permet de voir intuitivement l’état de la simulation.
+
 -   Les étiquettes sont capables de rendre compte d’une grande variété
     de types de groupe ;
 
@@ -73,12 +76,12 @@ Le niveau des modèles
 ---------------------
 
 Ce niveau est le plus abstrait et définit des archétypes dont on donnera
-en quelque sorte des réalisations [^1] dans le niveau inférieur.
+en quelque sorte des réalisations [^2] dans le niveau inférieur.
 
 #### Canal
 
 Un canal (`models.Channel` dans le code) est une catégorie d’éléments de
-l’internet des objets [^2] : ce peut être une classe d’objets physiques
+l’internet des objets [^3] : ce peut être une classe d’objets physiques
 ou immatériels comme un capteur, une lampe, le compte d’un service en
 ligne, un site de news. Comme dans ifttt, des canaux ont des signaux
 (triggers en anglais et `models.Trigger` dans le code) et des actions.
@@ -90,7 +93,7 @@ peut-être un changement d’environnement (l’ouverture d’une porte, la
 détection d’un mouvement) ou un changement interne (un délai expire, une
 date échoit). Sémantiquement, un signal mentionne généralement un objet
 et le nouvel état de ce dernier ou ce qui a provoqué ce changement
-d’état [^3]. Il peut mentionner des modalités (dans le cas d’une porte,
+d’état [^4]. Il peut mentionner des modalités (dans le cas d’une porte,
 on peut mentionner son degré d’ouverture).
 
 #### Recette
@@ -218,8 +221,8 @@ Manipuler facilement le système d’acteurs avec `SystemProxy`
 A décrire : à quel problème ça répond, qu’est-ce que ça fait, comment ça
 le fait ?
 
-Construire à la volée un message d’action en fonction d’un message émis avec `MessageMap`
------------------------------------------------------------------------------------------
+Construire à la volée un message avec `MessageMap`
+--------------------------------------------------
 
 Du Java 8, de la réflexion, de la généricité…bon appétit. Savoir comment
 ça se passe à l’intérieur n’est pas important, on veut juste savoir à
@@ -294,8 +297,8 @@ canal peut avoir plusieurs signaux. Un canal sans signal est comme une
 soupe sans sel : c’est moins bon puisqu’il ne peut pas communiquer.
 
 Une recette de rang $(m, n)$ est une relation de
-$\left(S\times C\right)^m$ dans $\left(S\times C\right)^m$ qui lie m
-doublets à n autre doublets. Une recette dont le rang n’est pas récisé
+$\left(S\times C\right)^m$ dans $\left(S\times C\right)^n$ qui lie $m$
+doublets à $n$ autre doublets. Une recette dont le rang n’est pas récisé
 est une recette de rang $(1, 1)$. Une recette est dite réalisable si et
 seulement si :
 
@@ -326,7 +329,7 @@ phrases d’ensemble de classes de messages. Si nous détaillons pour les
 messages, une explication du même acabit vaut aussi pour les acteurs.
 Peut-être pourrions-nous pour les messages parler d’ensemble de classes.
 Tout message a une sémantique particulière : il est d’une classe donnée
-[^4] mais chaque message possède ses propres modalités [^5]. Chaque
+[^5] mais chaque message possède ses propres modalités [^6]. Chaque
 espace regroupe les messages qui ont la même sémantique. Chacun de ces
 espaces est de dimension le nombre de modalités des message de cette
 sémantique.
@@ -514,7 +517,7 @@ Nous considérons qu’il est plus judicieux, bien que contre-intuitif,
 d’attacher ces étiquettes aux relations de causalité. En effet, puisque
 nous voulons rester près de la réalité que nous cherchons à simuler, il
 faut bien considérer que beaucoup des objets les plus rudimentaires de
-l’internet n’ont pas la moindre idée[^6] de leur emplacement (quand ils
+l’internet n’ont pas la moindre idée[^7] de leur emplacement (quand ils
 en ont seulement un) ou de leur propriétaire : ces informations sont
 dans l’esprit des êtres humains qui les utilisent et définissent entre
 eux des relations de causalité. En outre, il est très tentant de
@@ -533,8 +536,10 @@ Distribuer les acteurs sur plusieurs machines virtuelles Java
 
 C’est possible avec cette architecture, à condition de comprendre
 comment accéder à une machine virtuelle depuis une autre. Une fois ce
-détail technique résolé[^7], l’objet `SystemProxy` devra ne plus
-permettre d’accéder aux acteurs par leur nom[^8] mais par leur chemin.
+détail technique résolé[^8], l’objet `SystemProxy` devra ne plus
+permettre d’accéder aux acteurs par leur nom[^9] mais par leur chemin.
+Les ojets `ActorRef` peuvent déjà référencer de façon indifférenciée un
+acteur distant ou local
 
 Prévenir les situations aberrantes
 ----------------------------------
@@ -636,6 +641,12 @@ fonction n’est pas définie alors on va demander une fonction par défaut
 la volée. Il est donc bon de noter que définir une recette
 programmatiquement est bien plus fin et offre bien plus de liberté.
 
+##### Obtenir le graphe des relations de causalité
+
+Il suffit d’appeler la méthode idoine de l’objet `Commutator` et de
+préciser les relations que l’on veut. L’utilisateur ne verra que ses
+recettes.
+
 ##### Voir le log
 
 A mieux définir
@@ -653,6 +664,11 @@ une relation de causalité. Il ne s’agit ici que de créer un quadruplet
 Si la période est constante alors l’envoi est périodique. Pour n’envoyer
 qu’un seul message, il suffit d’utiliser (`StopCriteria.Occurence`, 1).
 
+##### Obtenir le graphe des relations de causalité
+
+Il suffit d’appeler la méthode idoine de l’objet `Commutator` et de
+préciser les relations que l’on veut. L’administrateur verra tout.
+
 ##### Voir le log
 
 A mieux définir
@@ -663,6 +679,8 @@ Utilisation
 Parler des classes et des manières pratiques de les utiliser avec des
 exemples de code and so on…
 
+Parler du contenu des packages.
+
 Bah euh la javadoc et les exemples du code peuvent suffire
 (temporairement) à ce point.
 
@@ -672,6 +690,8 @@ Dernière soutenance
 Ce qui pourrait faire briller les yeux de Mme Vigne :
 
 -   Qualimétrie (pas encore fait)
+
+-   Graphe des relations de causalité
 
 -   Java 8 : flux, lambda-calcul
 
@@ -686,23 +706,25 @@ Ce qui pourrait faire briller les yeux de Mme Vigne :
 
 -   …
 
-[^1]: Au sens philosophique du terme : rendre réel ; synonyme de
+[^1]: En cours de réalisation avec la biblithèque Gephi.
+
+[^2]: Au sens philosophique du terme : rendre réel ; synonyme de
     l’anglais « to implement ».
 
-[^2]: Plus précisément : une catégorie d’objets de l’internet
+[^3]: Plus précisément : une catégorie d’objets de l’internet
 
-[^3]: Par exemple : *la porte est ouverte* pour un capteur de porte ou
+[^4]: Par exemple : *la porte est ouverte* pour un capteur de porte ou
     bien *quelque chose a bougé* pour un détecteur de mouvement
 
-[^4]: Par exemple : la classe des messages qui disent que quelqu’un est
+[^5]: Par exemple : la classe des messages qui disent que quelqu’un est
     entré dans la pièce, ou qui ordonnent à une lampe de s’allumer.
 
-[^5]: Par exemple : la quantité de mouvement détectée, la couleur dont
+[^6]: Par exemple : la quantité de mouvement détectée, la couleur dont
     allumer la lampe, la valeur du potentiomètre
 
-[^6]: Voire pas la moindre idée tout court.
+[^7]: Voire pas la moindre idée tout court.
 
-[^7]: Coquille. Contraction de *résolu* et *réglé*.
+[^8]: Coquille. Contraction de *résolu* et *réglé*.
 
-[^8]: Qui n’est que la dernière partie de leur chemin et dont l’unicité
+[^9]: Qui n’est que la dernière partie de leur chemin et dont l’unicité
     n’est garantie qu’au sein d’une seule machine virtuelle.

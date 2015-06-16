@@ -30,6 +30,7 @@ Nous commençons par définir les concepts utilisés dans ce projet de simulatio
 \paragraph{Points saillants} Nous confessons que l'architecture de cette branche n'est pas \textsc{kiss} en elle-même et que la branche \texttt{master} est plus agréable. Il nous semble cependant que la petite difficulté à passer outre la relative complexité de cette architecture procure quelques avantages :
 \begin{itemize}
 \item L'utilisation des dernières nouveautés de Java 8 nous apporte une grande finesse de simulation et améliore la compréhension intuitive du code ;
+\item L'accès dans l'interface web à un graphe\footnote{En cours de réalisation avec la biblithèque Gephi.} des relations de causalité permet de voir intuitivement l'état de la simulation.
 \item Les étiquettes sont capables de rendre compte d'une grande variété de types de groupe ;
 \item La génération à la volée des messages d'action autorise de riches interactions entre le destinateur et le destinataire tout en respectant le modèle acteur ;
 \item L'accès au système au travers d'un proxy rendra probablement presque indolore le passage à une simulation distribuée sur plusieurs machines virtuelle Java ;
@@ -82,7 +83,7 @@ Java 8 permet une manipulation intuitive des collections de données grâce au �
 
 A décrire : à quel problème ça répond, qu'est-ce que ça fait, comment ça le fait ?
 
-\subsection{Construire à la volée un message d'action en fonction d'un message émis avec \texttt{MessageMap}}
+\subsection{Construire à la volée un message avec \texttt{MessageMap}}
 
 Du Java 8, de la réflexion, de la généricité\dots bon appétit. Savoir comment ça se passe à l'intérieur n'est pas important, on veut juste savoir à quoi ça sert.
 
@@ -119,7 +120,7 @@ On rappelle qu'une application est une relation mathématique entre deux ensembl
 
 Soient $S$ et $C$ respectivement les ensembles des signaux et des canaux. L'ensemble $S$ se décompose en deux parties exclusives $S_E$ et $S_R$ car un signal est soit émis (le premier) soit reçu (le second). Un canal peut avoir plusieurs signaux. Un canal sans signal est comme une soupe sans sel : c'est moins bon puisqu'il ne peut pas communiquer.
 
-Une recette de rang $(m, n)$ est une relation de $\left(S\times C\right)^m$ dans $\left(S\times C\right)^m$ qui lie m doublets à n autre doublets. Une recette dont le rang n'est pas récisé est une recette de rang $(1, 1)$. Une recette est dite réalisable si et seulement si :
+Une recette de rang $(m, n)$ est une relation de $\left(S\times C\right)^m$ dans $\left(S\times C\right)^n$ qui lie $m$ doublets à $n$ autre doublets. Une recette dont le rang n'est pas récisé est une recette de rang $(1, 1)$. Une recette est dite réalisable si et seulement si :
 \begin{itemize}
 \item Pour tout doublet $(s, c)$ de $\left(S\times C\right)^m$, $s$ est élément de $E$ (c'est un signal émis) ;
 \item Pour tout doublet $(s, c)$ de $\left(S\times C\right)^n$, $s$ est élément de $R$ (c'est un signal reçu) ;
@@ -192,7 +193,7 @@ Exception faîte des téléphones à deux cartes \textsc{sim} qui correspond à 
 
 (to be expended)
 
-C'est possible avec cette architecture, à condition de comprendre comment accéder à une machine virtuelle depuis une autre. Une fois ce détail technique résolé\footnote{Coquille. Contraction de \textsl{résolu} et \textsl{réglé}.}, l'objet \texttt{SystemProxy} devra ne plus permettre d'accéder aux acteurs par leur nom\footnote{Qui n'est que la dernière partie de leur chemin et dont l'unicité n'est garantie qu'au sein d'une seule machine virtuelle.} mais par leur chemin.	
+C'est possible avec cette architecture, à condition de comprendre comment accéder à une machine virtuelle depuis une autre. Une fois ce détail technique résolé\footnote{Coquille. Contraction de \textsl{résolu} et \textsl{réglé}.}, l'objet \texttt{SystemProxy} devra ne plus permettre d'accéder aux acteurs par leur nom\footnote{Qui n'est que la dernière partie de leur chemin et dont l'unicité n'est garantie qu'au sein d'une seule machine virtuelle.} mais par leur chemin. Les ojets \texttt{ActorRef} peuvent déjà référencer de façon indifférenciée un acteur distant ou local
 
 \subsection{Prévenir les situations aberrantes}
 
@@ -234,6 +235,8 @@ Pour aider à finir l'interface, voici quelques exemples de ce qu'on doit pouvoi
 
 \subparagraph{Créer une relation de causalité} Cette étape est abusivement appelée création d'une recette par ifttt, mais les recettes sont déjà définies (ou crées) et on ne fait que choisir celle qu'on veut appliquer comme relation de causalité pour le quadruplet (acteur émetteur, type de message, canal récepteur, type d'action). Il est a noter que la fonction de création d'une relation de causalité demande qu'on lui passe ne paramètre la fonction qui permet de créer le message d'action en fonction du message de signal. Si cette fonction n'est pas définie alors on va demander une fonction par défaut à l'objet \texttt{MessageMap}. Si une telle fonction par défaut n'a pas encore été explicitement définie, \texttt{MessageMap} créera une fonction constante à la volée. Il est donc bon de noter que définir une recette programmatiquement est bien plus fin et offre bien plus de liberté.
 
+\subparagraph{Obtenir le graphe des relations de causalité} Il suffit d'appeler la méthode idoine de l'objet \texttt{Commutator} et de préciser les relations que l'on veut. L'utilisateur ne verra que ses recettes.
+
 \subparagraph{Voir le log} A mieux définir
 
 \paragraph{Pour l'administrateur de la machine virtuelle Java locale}
@@ -242,11 +245,15 @@ Pour aider à finir l'interface, voici quelques exemples de ce qu'on doit pouvoi
 
 \subparagraph{Simuler l'envoi aléatoire d'un message} Si la période est constante alors l'envoi est périodique. Pour n'envoyer qu'un seul message, il suffit d'utiliser (\texttt{StopCriteria.Occurence}, 1).
 
+\subparagraph{Obtenir le graphe des relations de causalité} Il suffit d'appeler la méthode idoine de l'objet \texttt{Commutator} et de préciser les relations que l'on veut. L'administrateur verra tout.
+
 \subparagraph{Voir le log} A mieux définir
 
 \section{Utilisation}
 
 Parler des classes et des manières \og pratiques \fg{} de les utiliser avec des exemples de code and so on\dots
+
+Parler du contenu des packages.
 
 Bah euh la javadoc et les exemples du code peuvent suffire (temporairement) à ce point.
 
@@ -255,6 +262,7 @@ Bah euh la javadoc et les exemples du code peuvent suffire (temporairement) à c
 Ce qui pourrait faire briller les yeux de Mme Vigne :
 \begin{itemize}
 \item Qualimétrie (pas encore fait)
+\item Graphe des relations de causalité
 \item Java 8 : flux, lambda-calcul
 \item Interface fonctionnelle : on doit bien pouvoir en placer une en réfléchissant bien.
 \item Réification des génériques

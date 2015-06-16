@@ -31,10 +31,10 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 			 * MsgEnvelope but it would be less clean.
 			 */
 			Class<?> clazz = Class.forName(event.payload.getClass().getName());
-			payload = Application.getCommutator().getMappedActionMessage(event.suscribee, clazz, event.payload);
+			payload = Application.getCommutator().getMappedActionMessage(event.suscribee, clazz, subscriber,
+					event.payload);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.info("SEVERE in EventBusImpl: ClassNotFoundException");
 		}
 		/**
 		 * <p>

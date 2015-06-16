@@ -2,11 +2,13 @@ package controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import scala.concurrent.duration.FiniteDuration;
 
 import logic.Commutator;
 import logic.MessageMap;
@@ -40,6 +42,9 @@ import views.html.createRecipe;
 import views.html.index;
 import views.html.viewRecipeLog;
 import views.html.viewRecipes;
+import world.AutoCounter;
+import world.AutoCounter.NewStepPassedThrough;
+import world.AutoCounter.RandomCountDown;
 import world.Lamp;
 import world.PresenceDetector;
 import akka.actor.ActorRef;
@@ -89,6 +94,31 @@ public class Application extends Controller {
 		List<Trigger> triggers = new ArrayList<Trigger>();
 		List<Action> actions = new ArrayList<Action>();
 
+		channel = new Channel(triggers, actions, AutoCounter.class, "simple counter who can talk to itself");
+		ActorRef countDown = Application.getSystemProxy().createActorOf(channel, "Simple counter");
+		/*
+		 * It returns always the same message because for this special kind
+		 * actor there is no need for a conversion.
+		 */
+		UnaryOperator<Object> changeMessage = o -> o;
+		/*
+		 * Every time this actor issues a new trigger, saying
+		 * "I've reached a new step", it's sent to any other causal relation
+		 * starting from it. However, in this very case, this actor listens to
+		 * itself so there is no need to define a complex message mapper.
+		 */
+		Application.getCommutator().addCausalRelation(countDown,//
+				NewStepPassedThrough.class,//
+				"Recette simpliste : monologue",//
+				countDown,//
+				changeMessage);
+		/*
+		 * And now we start a countdown
+		 */
+		Supplier<Duration> randomPeriodSupplier = () -> FiniteDuration.apply(StdRandom.uniform(5, 8), TimeUnit.SECONDS);
+		Application.getCommutator().emitTriggerMessage(countDown, RandomCountDown.class,
+				() -> new RandomCountDown(5, randomPeriodSupplier));
+
 		channel = new Channel(triggers, actions, PresenceDetector.class, "Presence Detector");
 		Application.getSystemProxy().createActorOf(channel);
 		Application.getSystemProxy().createActorOf(channel, "Garden");
@@ -128,13 +158,13 @@ public class Application extends Controller {
 			Boolean state = true; // Notice it's TRUE
 			return new Lamp.ChangeState(state, colour, intensity, lowConsumptionMode);
 		};
-
 		Application.getCommutator().addCausalRelation(//
 				actor1,//
 				PresenceDetector.MotionDetected.class,//
 				"Première recette",//
 				actor3,//
-				operatorOn);
+				operatorOn,//
+				Arrays.asList("user", "home"));
 
 		/*
 		 * Another causalRelation
@@ -156,7 +186,8 @@ public class Application extends Controller {
 				PresenceDetector.MotionDetected.class,//
 				"Deuxième recette",//
 				actor3,//
-				operatorOff);
+				operatorOff,//
+				Arrays.asList("user", "home"));
 
 		/*
 		 * Just an example how to trigger a message manually. This is automated
