@@ -2,6 +2,8 @@
 title: Architecture du projet
 ...
 
+This document can be translated in English if needed.
+
 Nous commençons par définir les concepts utilisés dans ce projet de
 simulation d’ifttt. En quelque sorte, une fois que les mots auront un
 sens, nous proposons une ébauche de formalisation mathématique puis nous

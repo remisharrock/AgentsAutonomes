@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
@@ -135,7 +136,7 @@ public class Global extends GlobalSettings {
 		 */
 		Application.getScheduler().addRandomIssue(
 				Duration.Zero(),
-				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
+				() -> Duration.create(3 * StdRandom.gaussian(5, 2), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
 				() -> {
 					Application
@@ -151,7 +152,7 @@ public class Global extends GlobalSettings {
 		 */
 		Application.getScheduler().addRandomIssue(
 				Duration.Zero(),
-				() -> java.time.Duration.ofSeconds((long) (3 * StdRandom.gaussian(5, 2))),
+				() -> Duration.create(3 * StdRandom.gaussian(5, 2), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.OCCURENCE, 5),//
 				() -> {
 					Application.getCommutator().emitTriggerMessage(

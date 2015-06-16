@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import scala.concurrent.duration.FiniteDuration;
 
+import scala.concurrent.duration.FiniteDuration;
+import logic.CausalRelation;
 import logic.Commutator;
 import logic.MessageMap;
 import logic.RandomScheduler;
@@ -29,6 +32,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.concurrent.duration.Duration;
+/*
+ * import views.ExportJFrame;
+ */
 import views.html.administratorLog;
 import views.html.administratorView;
 import views.html.chooseAction;
@@ -164,7 +170,7 @@ public class Application extends Controller {
 				"Première recette",//
 				actor3,//
 				operatorOn,//
-				Arrays.asList("user", "home"));
+				Arrays.asList("user", "garden"));
 
 		/*
 		 * Another causalRelation
@@ -201,7 +207,7 @@ public class Application extends Controller {
 		 * We can do anything we want upon a trigger raised.
 		 */
 		Application.getScheduler().addRandomIssue(Duration.Zero(),
-				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(12))),
+				() -> Duration.create(StdRandom.uniform(12), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.OCCURENCE, 16),//
 				() -> {
 					// Raise trigger for first causal relation
@@ -227,7 +233,7 @@ public class Application extends Controller {
 		 * </p>
 		 */
 		Application.getScheduler().addRandomIssue(Duration.Zero(),
-				() -> java.time.Duration.ofSeconds((long) (StdRandom.uniform(12))),
+				() -> Duration.create(StdRandom.uniform(12), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.TIME, 16),//
 				() -> {
 					// Raise trigger for second causal relation
@@ -237,6 +243,13 @@ public class Application extends Controller {
 						supplier);
 			});
 
+		/**
+		 * Finally we filter the causal relations to only display those related
+		 * to home and we display the result in a JFrame.
+		 */
+		Predicate<List<String>> predicate = w -> w.stream().anyMatch(q -> q.equals("home"));
+		Set<CausalRelation> toDisplay = Application.getCommutator().getCausalRelationByLabel(predicate);
+		//(new Thread(new ExportJFrame(toDisplay))).start();
 		return ok(index.render());
 	}
 

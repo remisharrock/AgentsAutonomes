@@ -68,7 +68,7 @@ public class CausalRelation {
 		this.mapper = mapper;
 	}
 
-	public ArrayList<String> getLabel() {
+	public List<String> getLabel() {
 		return label;
 	}
 

@@ -1,10 +1,11 @@
 package logic;
 
-import java.time.Duration;
+import scala.concurrent.duration.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import logic.RandomScheduler.StopCriteria;
 import scala.concurrent.duration.FiniteDuration;
 
 public class RandomScheduler {
@@ -39,8 +40,7 @@ public class RandomScheduler {
 
 	public CancellableRef addRandomIssue(FiniteDuration init, Supplier<Duration> randomSupplier,
 			StopCriteria stopCriteria, Runnable eventRunnable) {
-		CancellableRef cr = new CancellableRef(Duration.ofMillis(init.toMillis()), randomSupplier, stopCriteria,
-				eventRunnable);
+		CancellableRef cr = new CancellableRef(init, randomSupplier, stopCriteria, eventRunnable);
 		this.tickingCancellables.add(cr);
 		return cr;
 	}
@@ -93,5 +93,5 @@ public class RandomScheduler {
 			}
 
 		}
-	};
+	}
 }

@@ -11,6 +11,11 @@ create table action (
   constraint pk_action primary key (id))
 ;
 
+create table actor (
+  actor_name                varchar(255),
+  clazz                     varchar(255))
+;
+
 create table channel (
   id                        bigint not null,
   clazz                     varchar(255),
@@ -96,6 +101,8 @@ create index ix_trigger_channel_9 on trigger (channel_id);
 SET REFERENTIAL_INTEGRITY FALSE;
 
 drop table if exists action;
+
+drop table if exists actor;
 
 drop table if exists channel;
 

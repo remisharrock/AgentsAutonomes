@@ -156,7 +156,7 @@ public class Commutator {
 	 * @param labelPredicate
 	 * @return
 	 */
-	public Set<CausalRelation> getCausalRelationForLabel(Predicate<List<String>> labelPredicate) {
+	public Set<CausalRelation> getCausalRelationByLabel(Predicate<List<String>> labelPredicate) {
 		return this.causalSet.stream().filter(x -> labelPredicate.test(x.getLabel())).collect(Collectors.toSet());
 	}
 

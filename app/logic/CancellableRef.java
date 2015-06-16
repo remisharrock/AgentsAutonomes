@@ -1,6 +1,6 @@
 package logic;
 
-import java.time.Duration;
+import scala.concurrent.duration.Duration;
 import java.util.function.Supplier;
 
 import logic.RandomScheduler.StopCriteria;
@@ -21,7 +21,7 @@ public class CancellableRef implements Cancellable, Runnable {
 
 	public CancellableRef(Duration init, Supplier<Duration> randomFunction, StopCriteria stopCriteria,
 			Runnable eventFunction) {
-		this.init = java.time.Duration.ofMillis(init.toMillis());
+		this.init = init;
 		this.randomFunction = randomFunction;
 		this.stopCriteria = stopCriteria;
 		this.eventFunction = eventFunction;

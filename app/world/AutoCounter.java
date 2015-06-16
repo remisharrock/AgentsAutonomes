@@ -41,7 +41,7 @@ public class AutoCounter extends UntypedActor {
 			}
 		} else if (message instanceof RandomCountDown) {
 			RandomCountDown castedMessage = (RandomCountDown) message;
-			innerRandomScheduler.addRandomIssue(Duration.ZERO, castedMessage.periodSupplier,
+			innerRandomScheduler.addRandomIssue(Duration.Zero(), castedMessage.periodSupplier,
 					StopCriteria.set(StopCriteria.OCCURENCE, castedMessage.seed), () -> {
 						currentSeed--;
 						Application.getCommutator().emitTriggerMessage(//

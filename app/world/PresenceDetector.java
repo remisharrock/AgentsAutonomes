@@ -3,7 +3,7 @@ package world;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.time.Duration;
+import scala.concurrent.duration.Duration;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
