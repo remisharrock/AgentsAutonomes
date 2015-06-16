@@ -85,31 +85,73 @@
 
 					<div class='personal-recipe-manage_meta'>
 						<div class='personal-recipe-manage_buttons'>
-							<span><div id="statement_create">
-									@if(recipe.getActive()){ <a
-										class='personal-recipe-activation_ON'> Recipe ACTIVE </a> <span
-										style="display: block; width: 70px; height: 70px; background-image: url('http://icons.iconarchive.com/icons/custom-icon-design/mono-general-4/512/power-icon.png'); background-size: cover; display: block;"></span>
-									<br>
-									<form class="navbar-form pull-right"
-										action="@routes.Application.activateRecipe()">
+							<span>
+							<div id="statement_create">
+									@if(recipe.getActive()){ <a> Recipe ACTIVE </a> 
+<!-- 										<div>
+										<span type="submit" style="float:left; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/toggleImage.png")'); background-size: cover; display: block;"></span>
+										<span style="float:right; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/logImage.png")'); background-size: cover; display: block;"></span>
+										</div> -->
+								
+									<div style="width:130px">
+									<form action="@routes.Application.activateRecipe()">
 
-										<button type="submit" class="btn" name="RecipeOff"
-											value=@recipe.getId()>Set Recipe Off</button>
-											</form>
-										}else{ <a class='personal-recipe-activation_OFF'> Recipe
-											NOT ACTIVE </a> <br>
-										<form class="navbar-form pull-right"
-											action="@routes.Application.activateRecipe()">
-											<button type="submit" class="btn" name="RecipeOn"
-												value=@recipe.getId()>Set Recipe On</button>
-												</form>
+											<button 
+											style="
+											float:left;
+											width: 55px; 
+											height: 55px;
+											display: block;
+											background: url('@routes.Assets.at("images/toggleImage.png")') no-repeat;
+											background-size: 100%;
+											"
+											title="Turn Off Recipe"
+											type="submit" 
+											class="btn" 
+											name="RecipeOff"
+											value=@recipe.getId()>
+											</button>
+										</form>
+										</div>
+										}else{ <a> Recipe NOT ACTIVE </a>
+										<div style="width:130px">
+										<form action="@routes.Application.activateRecipe()">
+											<button 
+											style="
+											float:left;
+											width: 55px; 
+											height: 55px;
+											display: block;
+											background: url('@routes.Assets.at("images/toggleImage.png")') no-repeat;
+											background-size: 100%;
+											"
+											title="Turn On Recipe"
+											type="submit"
+											class="btn"
+											name="RecipeOn"
+											value=@recipe.getId()>
+											</button>
+										</form>
 											}
 										
-										<form class="navbar-form pull-right"
+										<form 
 											action="@routes.Application.viewRecipeLog()">
-											<button type="submit" class="btn" name="viewRecipesLog"
-												value=@recipe.getId()>View Recipe Log</button>
+											<button 
+											style="
+											float:right;
+										width: 55px; 
+										height: 55px;
+										display: block;
+										background: url('@routes.Assets.at("images/logImage.png")') no-repeat;
+										background-size: 100%;
+										"
+										title="View Recipe Log"
+											type="submit" class="btn" name="viewRecipesLog"
+												value=@recipe.getId()></button>
 										</form></span>
+										</div>
+										</div>
+										</div>
 						</div>
 					</div>
 				</div>
