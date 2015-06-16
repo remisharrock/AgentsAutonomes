@@ -280,8 +280,8 @@ Rappels mathématiques
 On rappelle qu’une application est une relation mathématique entre deux
 ensembles pour laquelle chaque élément du premier est relié à un unique
 élément du second. On rappelle qu’une relation dans un ensemble $E$ est
-caractérisée par un sous-ensemble du produit cartésien $E × E$, soit une
-collection de doublet d’éléments de $E$.
+caractérisée par un sous-ensemble du produit cartésien $E \times E$,
+soit une collection de doublet d’éléments de $E$.
 
 Définitions
 -----------
@@ -292,23 +292,24 @@ $S_R$ car un signal est soit émis (le premier) soit reçu (le second). Un
 canal peut avoir plusieurs signaux. Un canal sans signal est comme une
 soupe sans sel : c’est moins bon puisqu’il ne peut pas communiquer.
 
-Une recette de rang $(m, n)$ est une relation de $\left(S×C\right)^m$
-dans $\left(S×C\right)^m$ qui lie m doublets à n autre doublets. Une
-recette dont le rang n’est pas récisé est une recette de rang $(1, 1)$.
-Une recette est dite réalisable si et seulement si :
+Une recette de rang $(m, n)$ est une relation de
+$\left(S\times C\right)^m$ dans $\left(S\times C\right)^m$ qui lie m
+doublets à n autre doublets. Une recette dont le rang n’est pas récisé
+est une recette de rang $(1, 1)$. Une recette est dite réalisable si et
+seulement si :
 
--   Pour tout doublet (s, c) de $\left(S×C\right)^m$, $s$ est élément de
-    $E$ (c’est un signal émis) ;
+-   Pour tout doublet $(s, c)$ de $\left(S\times C\right)^m$, $s$ est
+    élément de $E$ (c’est un signal émis) ;
 
--   Pour tout doublet (s, c) de $\left(S×C\right)^n$, $s$ est élément de
-    $R$ (c’est un signal reçu) ;
+-   Pour tout doublet $(s, c)$ de $\left(S\times C\right)^n$, $s$ est
+    élément de $R$ (c’est un signal reçu) ;
 
 Pour définir clairement les choses, une recette (de rang $(1, 1)$) est
-une application dans $S×C$ qui lie un doublet $d_1 = (e, c_1)$ à un
-autre doublet $d_2 = (r, c_2)$. Une telle recette est dite réalisable si
-et seulement si $e$ appartient à $E$ et $r$ à $R$. On notera incidemment
-que les canaux impliqués dans une recette ne sont, suivant cette
-définition, pas forcément, tous différents.
+une application dans $S\times C$ qui lie un doublet $d_1 = (e, c_1)$ à
+un autre doublet $d_2 = (r, c_2)$. Une telle recette est dite réalisable
+si et seulement si $e$ appartient à $E$ et $r$ à $R$. On notera
+incidemment que les canaux impliqués dans une recette ne sont, suivant
+cette définition, pas forcément, tous différents.
 
 D’autre part, soit $M$ et $A$ respectivement l’ensemble des espaces de
 messages et l’ensemble des espaces acteurs. Tout élément de $A$ est un
@@ -318,25 +319,22 @@ des deux sous-ensembles $M_E$ et $M_A$ car un message contient une
 sémantique particulière : il est envoyé par un acteur après un évènement
 ou reçu par un acteur pour accomplir une action.
 
-Précisons tout de suite cette formulation d’ensemble d’espace qui peut
+Précisons tout de suite cette formulation d’ensemble d’espaces qui peut
 sembler lourde et inutile. Par la suite nous parlerons pour alléger les
 phrases d’ensemble de classes de messages. Si nous détaillons pour les
 messages, une explication du même acabit vaut aussi pour les acteurs.
-Peut-être pourrions-nous pour les messages parler d’ensemble de classes
-: tout message a une sémantique particulière : il est d’une classe
-particulière (par exemple : la classe des messages qui disent que
-quelqu’un est entré dans la pièce, ou qui ordonnent à une lampe de
-s’allumer) mais chaque message possède ses propres modalités (la
-quantité de mouvement détectée, la couleur dont allumer la lampe, la
-valeur du potentiomètre). Chaque espace regroupe les messages qui ont la
-même sémantique. Chacun de ces espaces est de dimension le nombre de
-modalités des message de cette sémantique.
+Peut-être pourrions-nous pour les messages parler d’ensemble de classes.
+Tout message a une sémantique particulière : il est d’une classe donnée
+[^4] mais chaque message possède ses propres modalités [^5]. Chaque
+espace regroupe les messages qui ont la même sémantique. Chacun de ces
+espaces est de dimension le nombre de modalités des message de cette
+sémantique.
 
 Une relation de causalité de rang $(m, n)$ est définie sur
-$\left(M×A\right)^m$ dans $\left(M×A\right)^m$ et lie $m$ doublets
-d’émission à $n$ doublets de réception . Une relation de causalité dont
-le rang n’est pas précisé est de rang $(1, 1)$. Par un abus de langage
-bien pratique, on définit les types de rang suivants :
+$\left(M\times A\right)^m$ dans $\left(M\times A\right)^m$ et lie $m$
+doublets d’émission à $n$ doublets de réception . Une relation de
+causalité dont le rang n’est pas précisé est de rang $(1, 1)$. Par un
+abus de langage bien pratique, on définit les types de rang suivants :
 
 -   Une relation de causalité de rang $(m, n), m > n$ est une injection,
     dite stricte quand $n = 1$ ;
@@ -377,7 +375,7 @@ Vers un système d’acteurs auto-organisé ? {#auto}
 -----------------------------------------
 
 Le pseudo-acteur défini plus haut n’est pas un acteur, d’où sa
-dénommination : c’est un objet. Quelles sont les possibilités de se
+dénomination : c’est un objet. Quelles sont les possibilités de se
 passer d’un tel objet pour un système d’acteurs qui s’organiserait de
 lui-même ?
 
@@ -409,7 +407,7 @@ poser de vrais problèmes conceptuels :
     qui sont utilisés pour caractériser justement ces relations ?
 
 -   Si `Commutator` était un acteur alors il perdrait son rôle de
-    commutateur (donc de médium de communication) pour devenir un
+    commutateur (donc de medium de communication) pour devenir un
     routeur. En effet, un objet commutateur n’envoie pas de message en
     son nom propre mais ne fait qu’ouvrir une ligne téléphonique directe
     entre deux acteurs qui se parlent par l’intermédiaire d’une fonction
@@ -515,7 +513,7 @@ Nous considérons qu’il est plus judicieux, bien que contre-intuitif,
 d’attacher ces étiquettes aux relations de causalité. En effet, puisque
 nous voulons rester près de la réalité que nous cherchons à simuler, il
 faut bien considérer que beaucoup des objets les plus rudimentaires de
-l’internet n’ont pas la moindre idée[^4] de leur emplacement (quand ils
+l’internet n’ont pas la moindre idée[^6] de leur emplacement (quand ils
 en ont seulement un) ou de leur propriétaire : ces informations sont
 dans l’esprit des êtres humains qui les utilisent et définissent entre
 eux des relations de causalité. En outre, il est très tentant de
@@ -534,8 +532,8 @@ Distribuer les acteurs sur plusieurs machines virtuelles Java
 
 C’est possible avec cette architecture, à condition de comprendre
 comment accéder à une machine virtuelle depuis une autre. Une fois ce
-détail technique résolé[^5], l’objet `SystemProxy` devra ne plus
-permettre d’accéder aux acteurs par leur nom[^6] mais par leur chemin.
+détail technique résolé[^7], l’objet `SystemProxy` devra ne plus
+permettre d’accéder aux acteurs par leur nom[^8] mais par leur chemin.
 
 Prévenir les situations aberrantes
 ----------------------------------
@@ -580,8 +578,8 @@ problème des types précédents, l’utilisateur risque de considérer comme
 un aberrant que sa porte de garage s’ouvre lorsqu’il se brosse les dents
 ou que l’alarme de sa maison se réveille quand il se réveille.
 
-What « Model (in <span style="font-variant:small-caps;">mvc</span>) is an abstraction of Actor » is and how we could implement it
----------------------------------------------------------------------------------------------------------------------------------
+What « Model (in <span style="font-variant:small-caps;">mvc</span>) is an abstraction of Actor » means and how we could implement it
+------------------------------------------------------------------------------------------------------------------------------------
 
 Model is an abstraction of Actor. Because it takes a class reference,
 one could have subtypes of this class. By the way, the best abstraction
@@ -695,9 +693,15 @@ Ce qui pourrait faire briller les yeux de Mme Vigne :
 [^3]: Par exemple : *la porte est ouverte* pour un capteur de porte ou
     bien *quelque chose a bougé* pour un détecteur de mouvement
 
-[^4]: Voire pas la moindre idée tout court.
+[^4]: Par exemple : la classe des messages qui disent que quelqu’un est
+    entré dans la pièce, ou qui ordonnent à une lampe de s’allumer.
 
-[^5]: Coquille. Contraction de *résolu* et *réglé*.
+[^5]: Par exemple : la quantité de mouvement détectée, la couleur dont
+    allumer la lampe, la valeur du potentiomètre
 
-[^6]: Qui n’est que la dernière partie de leur chemin et dont l’unicité
+[^6]: Voire pas la moindre idée tout court.
+
+[^7]: Coquille. Contraction de *résolu* et *réglé*.
+
+[^8]: Qui n’est que la dernière partie de leur chemin et dont l’unicité
     n’est garantie qu’au sein d’une seule machine virtuelle.
