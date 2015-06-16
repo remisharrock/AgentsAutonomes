@@ -440,9 +440,9 @@ public class Recipe extends Model {
 			// Class.forName(classNameFull)
 
 			System.out.println("classActorTrigger: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
+			/*ActorRef actor = AllActors.system.actorOf(
 					Props.create(classActor, null), "actorTrigger" + getId());
-			return actor;
+			return actor;*/ return null;
 		} else if (type.equals("Action")) {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
 					"")
@@ -452,9 +452,9 @@ public class Recipe extends Model {
 					classNameFull);
 
 			System.out.println("classActorActionr: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
+			/*ActorRef actor = AllActors.system.actorOf(
 					Props.create(classActor, null), "actorAction" + getId());
-			return actor;
+			return actor;*/ return null;
 		}
 
 		return null;
