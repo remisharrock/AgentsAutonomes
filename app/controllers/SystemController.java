@@ -24,7 +24,7 @@ public class SystemController {
 		return instance;
 	}
 	
-	public void createActorRouterMap(ArrayList<String> userGroups) {
+	/*public void createActorRouterMap(ArrayList<String> userGroups) {
 		for (String groupName: userGroups) {
 			
 			ActorRef actor = AllActors.system.actorOf(
@@ -33,7 +33,7 @@ public class SystemController {
 			
 			
 		}
-	}
+	}*/
 
 	public HashMap<String, ActorRef> getUserGroupActorRouterMap() {
 		return userGroupActorRouterMap;

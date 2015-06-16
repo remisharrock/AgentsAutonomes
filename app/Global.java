@@ -241,8 +241,8 @@ public class Global extends GlobalSettings {
 			 */
 
 			// Create actor router for all the user groups that we have
-			SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-			System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+			//SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+			//System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
 			
 			// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 			for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -250,8 +250,8 @@ public class Global extends GlobalSettings {
 				RecipeAkka.recipesMap.put(r.getId(), r.createRecipeAkkaFromRecipe());
 			}
 
-			Recipe r = Ebean.find(Recipe.class).findList().get(0);
-			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
+			//SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 			// List<User> allUsersFromSameGroup = User
 			// .getAllUsersFromSameGroup(controllers.Application
 			// .getUserLoggedIn().getUserGroup());
