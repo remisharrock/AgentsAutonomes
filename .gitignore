@@ -9,3 +9,7 @@
 /target/
 /build.sbt
 *.class
+*.aux
+*.log
+*.synctex.gz
+*.toc
