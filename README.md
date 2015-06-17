@@ -7,3 +7,4 @@ Les branches sont accessibles à cette adresse : https://github.com/2marcn/Agent
  * master est la branche upstream courante ;
  * marc est la branche de l'implémentation de Marc ;
  * kiss est la proposition de branche selon "keep it simple stupid".
+
