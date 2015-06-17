@@ -53,7 +53,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Trigger trigger;
 
-//	@OneToOne(cascade=CascadeType.ALL)
+	// @OneToOne(cascade=CascadeType.ALL)
 	private Field triggerField;
 
 	@ManyToOne
@@ -62,20 +62,17 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Action action;
 
-//	@OneToOne(cascade = CascadeType.ALL)
+	// @OneToOne(cascade = CascadeType.ALL)
 	private Field actionField;
 
 	@ManyToOne
 	private User user;
 
 	private RecipeAkka recipeAkka;
-	
-	
+
 	private List<String> log;
-	
-	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
-			Long.class, Recipe.class);
-	
+
+	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(Long.class, Recipe.class);
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
@@ -137,17 +134,14 @@ public class Recipe extends Model {
 		List<User> allUsersFromSameGroup;
 		if (controllers.Application.getUserLoggedIn() == null) {
 			System.out.println("this user: " + this.getUser());
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(this.getUser().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(this.getUser().getUserGroup());
 		} else {
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(controllers.Application
-							.getUserLoggedIn().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(controllers.Application.getUserLoggedIn()
+					.getUserGroup());
 		}
 
 		for (User u : allUsersFromSameGroup) {
-			System.out.println("user: " + u + " / recipeSize = "
-					+ u.getRecipes().size());
+			System.out.println("user: " + u + " / recipeSize = " + u.getRecipes().size());
 			for (Recipe r : u.getRecipes()) {
 				if (r != this) {
 					System.out.println("r!=this");
@@ -157,20 +151,14 @@ public class Recipe extends Model {
 						System.out.println(r.getTitle());
 
 						System.out.println("ZE RECIPE: " + r.getActive());
-						System.out.println("recipe trigger channel: "
-								+ r.getTriggerChannel() + " / "
-								+ triggerChannel);
-						if (r.getTriggerChannel().getId() == triggerChannel
-								.getId()) {
+						System.out.println("recipe trigger channel: " + r.getTriggerChannel() + " / " + triggerChannel);
+						if (r.getTriggerChannel().getId() == triggerChannel.getId()) {
 							// it means that there is an actor that exists for
 							// this group of users and this channel
-							ActorRef existingActor = RecipeAkka.recipesMap.get(
-									r.getId()).getTriggerChannelActor();
+							ActorRef existingActor = RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor();
 							recipeAkka.setTriggerChannelActor(existingActor);
-							System.out
-									.println("SAME ACTOR: Recipe akka trigger: "
-											+ recipeAkka
-													.getTriggerChannelActor());
+							System.out.println("SAME ACTOR: Recipe akka trigger: "
+									+ recipeAkka.getTriggerChannelActor());
 							return;
 						}
 					}
@@ -185,11 +173,9 @@ public class Recipe extends Model {
 		 * for the recipes that are using it
 		 */
 
-		ActorRef actorTrigger = createActorFromClassName(
-				triggerChannel.getName(), "Trigger");
+		ActorRef actorTrigger = createActorFromClassName(triggerChannel.getName(), "Trigger");
 		recipeAkka.setTriggerChannelActor(actorTrigger);
-		System.out.println("Recipe akka trigger: "
-				+ recipeAkka.getTriggerChannelActor());
+		System.out.println("Recipe akka trigger: " + recipeAkka.getTriggerChannelActor());
 	}
 
 	public Field getTriggerField() {
@@ -223,20 +209,17 @@ public class Recipe extends Model {
 		 * if there isn't => we create our actor if there is => we use the
 		 * created actor
 		 */
-		
+
 		List<User> allUsersFromSameGroup;
 		if (controllers.Application.getUserLoggedIn() == null) {
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(this.getUser().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(this.getUser().getUserGroup());
 		} else {
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(controllers.Application
-							.getUserLoggedIn().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(controllers.Application.getUserLoggedIn()
+					.getUserGroup());
 		}
 
 		for (User u : allUsersFromSameGroup) {
-			System.out.println("user: " + u + " / recipeSize = "
-					+ u.getRecipes().size());
+			System.out.println("user: " + u + " / recipeSize = " + u.getRecipes().size());
 			for (Recipe r : u.getRecipes()) {
 				if (r != this) {
 					System.out.println("r!=this");
@@ -246,19 +229,13 @@ public class Recipe extends Model {
 						System.out.println(r.getTitle());
 
 						System.out.println("ZE RECIPE: " + r.getActive());
-						System.out.println("recipe action channel: "
-								+ r.getActionChannel() + " / " + actionChannel);
-						if (r.getActionChannel().getId() == actionChannel
-								.getId()) {
+						System.out.println("recipe action channel: " + r.getActionChannel() + " / " + actionChannel);
+						if (r.getActionChannel().getId() == actionChannel.getId()) {
 							// it means that there is an actor that exists for
 							// this group of users and this channel
-							ActorRef existingActor = RecipeAkka.recipesMap.get(
-									r.getId()).getActionChannelActor();
+							ActorRef existingActor = RecipeAkka.recipesMap.get(r.getId()).getActionChannelActor();
 							recipeAkka.setActionChannelActor(existingActor);
-							System.out
-									.println("SAME ACTOR: Recipe akka action: "
-											+ recipeAkka
-													.getActionChannelActor());
+							System.out.println("SAME ACTOR: Recipe akka action: " + recipeAkka.getActionChannelActor());
 							return;
 						}
 					}
@@ -273,11 +250,9 @@ public class Recipe extends Model {
 		 * for the recipes that are using it
 		 */
 		// When we arrive here it means that the actor doesn't exist before
-		ActorRef actorAction = createActorFromClassName(
-				actionChannel.getName(), "Action");
+		ActorRef actorAction = createActorFromClassName(actionChannel.getName(), "Action");
 		recipeAkka.setActionChannelActor(actorAction);
-		System.out.println("Recipe akka trigger: "
-				+ recipeAkka.getActionChannelActor());
+		System.out.println("Recipe akka trigger: " + recipeAkka.getActionChannelActor());
 	}
 
 	public Field getActionField() {
@@ -358,68 +333,53 @@ public class Recipe extends Model {
 		 */
 		boolean triggerActorFound = false;
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
-			if (r.getId() != this.getId()
-					&& RecipeAkka.recipesMap.containsKey(r.getId())) {
+			if (r.getId() != this.getId() && RecipeAkka.recipesMap.containsKey(r.getId())) {
 				if ((r.getTriggerChannel() == this.getTriggerChannel())
-						&& (r.getUser().getUserGroup() == this.getUser()
-								.getUserGroup())) {
+						&& (r.getUser().getUserGroup() == this.getUser().getUserGroup())) {
 					/**
 					 * If we are here, it means that there exists in the hashmap
 					 * a recipe, that belongs to the same group and has the same
 					 * trigger channel/actor of the recipe that we are working
 					 * on. so we use this actor
 					 */
-					System.out.println("The actor: "
-							+ RecipeAkka.recipesMap.get(r.getId())
-									.getTriggerChannelActor());
-					ra.setTriggerChannelActor(RecipeAkka.recipesMap.get(
-							r.getId()).getTriggerChannelActor());
+					System.out.println("The actor: " + RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+					ra.setTriggerChannelActor(RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 					triggerActorFound = true;
 				}
 			}
 		}
 		if (!triggerActorFound) {
-			ra.setTriggerChannelActor(createActorFromClassName(
-					triggerChannel.getName(), "Trigger"));
+			ra.setTriggerChannelActor(createActorFromClassName(triggerChannel.getName(), "Trigger"));
 		}
 
-		System.out.println("Recipe akka trigger: "
-				+ ra.getTriggerChannelActor());
+		System.out.println("Recipe akka trigger: " + ra.getTriggerChannelActor());
 
 		boolean actionActorFound = false;
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
-			if (r.getId() != this.getId()
-					&& RecipeAkka.recipesMap.containsKey(r.getId())) {
+			if (r.getId() != this.getId() && RecipeAkka.recipesMap.containsKey(r.getId())) {
 				if ((r.getActionChannel() == this.getActionChannel())
-						&& (r.getUser().getUserGroup() == this.getUser()
-								.getUserGroup())) {
+						&& (r.getUser().getUserGroup() == this.getUser().getUserGroup())) {
 					/**
 					 * If we are here, it means that there exists in the hashmap
 					 * a recipe, that belongs to the same group and has the same
 					 * trigger channel/actor of the recipe that we are working
 					 * on. so we use this actor
 					 */
-					ra.setActionChannelActor(RecipeAkka.recipesMap.get(
-							r.getId()).getActionChannelActor());
+					ra.setActionChannelActor(RecipeAkka.recipesMap.get(r.getId()).getActionChannelActor());
 					actionActorFound = true;
 				}
 			}
 		}
 		if (!actionActorFound) {
-			ra.setActionChannelActor(createActorFromClassName(
-					actionChannel.getName(), "Action"));
+			ra.setActionChannelActor(createActorFromClassName(actionChannel.getName(), "Action"));
 		}
 
 		System.out.println("Recipe akka action:" + ra.getActionChannelActor());
 
-		
-		
-		ra.setTriggerMessage(createMessageFromClassName(this.getTrigger()
-				.getName(), ra));
-		
-		ra.setActionMessage(createMessageFromClassName(this.getAction()
-				.getName(), ra));
-		
+		ra.setTriggerMessage(createMessageFromClassName(this.getTrigger().getName(), ra));
+
+		ra.setActionMessage(createMessageFromClassName(this.getAction().getName(), ra));
+
 		System.out.println("Message: " + ra.getTriggerMessage());
 
 		return ra;
@@ -428,32 +388,24 @@ public class Recipe extends Model {
 
 	private ActorRef createActorFromClassName(String className, String type) {
 		if (type.equals("Trigger")) {
-			String classNameFull = WordUtils.capitalize(className).replace(" ",
-					"")
-					+ "Actor";
+			String classNameFull = WordUtils.capitalize(className).replace(" ", "") + "Actor";
 			System.out.println("classNameTrigger: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(
-					classNameFull);
+			Class<?> classActor = AllActors.getMapClassNameActor().get(classNameFull);
 			/**
 			 * TO DO replace class.forname => to remove hashmap
 			 */
 			// Class.forName(classNameFull)
 
 			System.out.println("classActorTrigger: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor, null), "actorTrigger" + getId());
+			ActorRef actor = AllActors.system.actorOf(Props.create(classActor), "actorTrigger" + getId());
 			return actor;
 		} else if (type.equals("Action")) {
-			String classNameFull = WordUtils.capitalize(className).replace(" ",
-					"")
-					+ "Actor";
+			String classNameFull = WordUtils.capitalize(className).replace(" ", "") + "Actor";
 			System.out.println("classNameAction: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(
-					classNameFull);
+			Class<?> classActor = AllActors.getMapClassNameActor().get(classNameFull);
 
 			System.out.println("classActorActionr: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor, null), "actorAction" + getId());
+			ActorRef actor = AllActors.system.actorOf(Props.create(classActor), "actorAction" + getId());
 			return actor;
 		}
 
@@ -462,23 +414,21 @@ public class Recipe extends Model {
 	}
 
 	private MessageEnvelope createMessageFromClassName(String className, RecipeAkka recipe) {
-		String classNameMessage = WordUtils.capitalize(className).replace(" ",
-				"")
-				+ "Message";
+		String classNameMessage = WordUtils.capitalize(className).replace(" ", "") + "Message";
 		System.out.println("classNameMessage: " + classNameMessage);
-		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage()
-				.get(classNameMessage);
+		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage().get(classNameMessage);
 		System.out.println("classtriggerMessage: " + classTriggerMessage);
 		MessageEnvelope message = null;
 		try {
 			Class<?>[] types = new Class[] { messages.AllMessages.class, RecipeAkka.class };
 			Constructor<?> cst = classTriggerMessage.getConstructor(types);
-//			Constructor c[] = classTriggerMessage.getConstructors();
-//	        for(int i = 0; i < c.length; i++) {
-//	           System.out.println(c[i]);
-//	        }
+			// Constructor c[] = classTriggerMessage.getConstructors();
+			// for(int i = 0; i < c.length; i++) {
+			// System.out.println(c[i]);
+			// }
 			message = (MessageEnvelope) cst.newInstance(messages.AllMessages.getInstance(), recipe);
-//			message = (MessageEnvelope) classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
+			// message = (MessageEnvelope)
+			// classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -498,17 +448,15 @@ public class Recipe extends Model {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return message;
 	}
 
 	@Override
 	public String toString() {
-		return "Recipe [Id=" + Id + ", title=" + title + ", active=" + active
-				+ ", triggerChannel=" + triggerChannel + ", triggerField="
-				+ triggerField + ", actionChannel=" + actionChannel
-				+ ", "
-//				+ "actionField=" + actionField 
+		return "Recipe [Id=" + Id + ", title=" + title + ", active=" + active + ", triggerChannel=" + triggerChannel
+				+ ", triggerField=" + triggerField + ", actionChannel=" + actionChannel + ", "
+				// + "actionField=" + actionField
 				+ ", user=" + user + "]";
 	}
 
@@ -519,15 +467,15 @@ public class Recipe extends Model {
 	public void setLog(List<String> log) {
 		this.log = log;
 	}
-	
+
 	public List<String> getLogReverseOrder() {
 		List<String> logReverse = new LinkedList<String>();
 		ListIterator<String> i = log.listIterator(log.size());
-		while(i.hasPrevious())
+		while (i.hasPrevious())
 			logReverse.add(i.previous());
 		return logReverse;
 	}
-	
+
 	public static Recipe getRecipeById(Long id) {
 		return Recipe.find.byId(id);
 	}
