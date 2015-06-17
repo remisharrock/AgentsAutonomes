@@ -53,7 +53,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Trigger trigger;
 
-//	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
 	private Field triggerField;
 
 	@ManyToOne
@@ -62,7 +62,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Action action;
 
-//	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Field actionField;
 
 	@ManyToOne
