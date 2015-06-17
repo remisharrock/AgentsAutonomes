@@ -35,11 +35,11 @@ public class Channel extends Model {
 	private List<Action> actions;
 	
 	//RECIPES WHERE THE CHANNEL IS A TRIGGER
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="triggerChannel")
 	private List<Recipe> triggerRecipes;
 	
 	//RECIPES WHERE THE CHANNEL IS AN ACTION
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="actionChannel")
 	private List<Recipe> actionRecipes;
 	
 	public static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(

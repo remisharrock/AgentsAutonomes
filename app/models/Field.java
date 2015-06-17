@@ -28,14 +28,16 @@ public class Field extends Model {
 //	private Action action;
 	
 	//RECIPES WHERE THE field IS FOR A TRIGGER
-	@OneToMany
-	private List<Recipe> triggerRecipes;
+//	@OneToOne(cascade=CascadeType.ALL)
+//	private Recipe triggerRecipe;
 	
 	//RECIPES WHERE THE field IS FOR AN ACTION
-	@OneToMany
-	private List<Recipe> actionRecipes;
+//	@OneToOne(cascade=CascadeType.ALL)
+//	private Recipe actionRecipe;
 	
-	
+	public Field() {
+		
+	}
 	
 	public Field(String name, String value) {
 		this.name = name;
@@ -88,21 +90,21 @@ public class Field extends Model {
 	}
 	
 
-	public List<Recipe> getTriggerRecipes() {
-		return triggerRecipes;
-	}
-
-	public void setTriggerRecipes(List<Recipe> triggerRecipes) {
-		this.triggerRecipes = triggerRecipes;
-	}
-
-	public List<Recipe> getActionRecipes() {
-		return actionRecipes;
-	}
-
-	public void setActionRecipes(List<Recipe> actionRecipes) {
-		this.actionRecipes = actionRecipes;
-	}
+//	public Recipe getTriggerRecipe() {
+//		return triggerRecipe;
+//	}
+//
+//	public void setTriggerRecipe(Recipe triggerRecipe) {
+//		this.triggerRecipe = triggerRecipe;
+//	}
+//
+//	public Recipe getActionRecipe() {
+//		return actionRecipe;
+//	}
+//
+//	public void setActionRecipe(Recipe actionRecipe) {
+//		this.actionRecipe = actionRecipe;
+//	}
 
 
 	@Override

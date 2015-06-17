@@ -27,7 +27,7 @@ import views.html.*;
 
 public class Application extends Controller {
 
-	private static User userLoggedIn;
+	private static User userLoggedIn = null;
 
 	public static User getUserLoggedIn() {
 		return userLoggedIn;
@@ -40,6 +40,14 @@ public class Application extends Controller {
 	}
 
 	public static Result loginForm() {
+		
+		if (userLoggedIn != null) {
+			if (userLoggedIn.getRole() == "administrator")
+				return administratorView();
+			else
+				return ok(chooseView.render(userLoggedIn));
+		}
+		
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
@@ -367,18 +375,18 @@ public class Application extends Controller {
 
 	public static Result userLogOut() {
 		DynamicForm requestData = Form.form().bindFromRequest();
-		if (requestData.get("LogOutButton") != null) {
+//		if (requestData.get("LogOutButton") != null) {
 			userLoggedIn = null;
 			recipe = null;
-			return index();
-		}
-		if (requestData.get("HomeButton") != null) {
-			recipe = null;
-			if (userLoggedIn.getRole() == "administrator")
-				return administratorView();
-			else
-				return ok(chooseView.render(userLoggedIn));
-		}
+			
+//		}
+//		if (requestData.get("HomeButton") != null) {
+//			recipe = null;
+//			if (userLoggedIn.getRole() == "administrator")
+//				return administratorView();
+//			else
+//				return ok(chooseView.render(userLoggedIn));
+//		}
 		if (requestData.get("AdminLog") != null) {
 			return viewAdministratorLog();
 		} 
