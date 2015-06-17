@@ -18,9 +18,10 @@ de formalisation peut être ignorée en première lecture.
 
 #### Composition de ce document
 
-Ce document est originellement composée avec LaTeX (au format `tex`).
-Deux formats de sortie sont proposés : `pdf` et `md` (Markdown). Le
-fichier `*.tex` est toujours à jour ; il est suivi de près par le
+Ce document est originellement composée à la main avec LaTeX (au format
+`tex`). Deux formats de sortie sont proposés : `pdf` et `md` (Markdown).
+Les fichiers de ces formats sont écrasés et fabriqués automatiquement.
+Le fichier `*.tex` est toujours à jour ; il est suivi de près par le
 `*.pdf` qui est le plus agréable à l’œil. Le fichier `*.md` est
 susceptible d’accuser parfois un petit retard mais est adapté pour une
 lecture directement sur GitHub ; il est écrit par la commande
@@ -531,6 +532,11 @@ moins facile à distribuer. Enfin, du point de vue du développement, il
 est plus facile de parcourir l’ensemble des relations de causalité d’un
 commutateur que l’ensemble des acteurs d’un système.
 
+#### Précision
+
+Pour l’interface graphique, nous ajoutons le champ utilisateur à l’objet
+`model.Actor`.
+
 Afficher le graphe des relations de causalité
 ---------------------------------------------
 
@@ -673,7 +679,7 @@ recettes.
 
 ##### Voir le log
 
-A mieux définir
+Peut-être pas, il y a la console qui est plus efficace pour cela.
 
 #### Pour l’administrateur de la machine virtuelle Java locale
 
@@ -695,7 +701,28 @@ préciser les relations que l’on veut. L’administrateur verra tout.
 
 ##### Voir le log
 
-A mieux définir
+Peut-être pas, il y a la console qui est plus efficace pour cela.
+
+Reste à faire
+-------------
+
+-   Créer de nouveaux acteurs et de nouveaux messages.
+
+-   Lier chaque channel de la base à une image du dossier `assets` :-)
+
+-   Mettre à jour les appels techniques de l’interface.
+
+-   Garder les commentaires qui informent mais enlever le code more qui
+    est commenté.
+
+-   Voir s’il est possible de faire hériter les objets `Action` et
+    `Trigger` de `Signal` ;
+
+-   Voir pourquoi les méthodes onStart() et beforeStart() ne sont pas
+    exécutées ;
+
+-   Corriger la BDD : vérifier que les tables sont correctes (avec les
+    bonnes annotations pour les objets) ;
 
 Utilisation
 ===========

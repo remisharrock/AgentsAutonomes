@@ -1,28 +1,12 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.IntUnaryOperator;
 
-import logic.RandomScheduler.StopCriteria;
-import logic.StdRandom;
 import models.Action;
-import models.Channel;
 import models.Modality;
-import models.Recipe;
 import models.Trigger;
-import models.User;
 import play.GlobalSettings;
 import play.Logger;
 import play.db.ebean.Model;
-import scala.concurrent.duration.Duration;
-import world.BasicPresenceDetector;
-import world.Garage;
-import world.Lamp;
-import world.LuminosityDetector;
-import world.Manythings;
-import world.PresenceDetector;
 
 import com.avaje.ebean.Ebean;
 
@@ -56,16 +40,16 @@ public class Global extends GlobalSettings {
 	}
 
 	private void generateStaticCausalityFromRecipes() {
-		Ebean.find(Recipe.class)
-				.findList()
-				.forEach(
-						recipe -> Application.getCommutator().addCausalRelation(
-								Application.getSystemProxy().getOrCreateStaticActorFor(recipe.getTriggerChannel()),
-								recipe.getTrigger().getClazz(),
-								recipe.getDescription(),
-								Application.getSystemProxy().getOrCreateStaticActorFor(recipe.getActionChannel()),
-								Application.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
-										recipe.getAction().getClazz())));
+		// Ebean.find(Recipe.class)
+		// .findList()
+		// .forEach(
+		// recipe -> LogicController.getCommutator().addCausalRelation(
+		// LogicController.getSystemProxy().getOrCreateStaticActorFor(recipe.getTriggerChannel()),
+		// recipe.getTrigger().getClazz(),
+		// recipe.getDescription(),
+		// LogicController.getSystemProxy().getOrCreateStaticActorFor(recipe.getActionChannel()),
+		// LogicController.getMessageMap().getMapper(recipe.getTrigger().getClazz(),
+		// recipe.getAction().getClazz())));
 	}
 
 	private void generateCausalityFromRecipes() {
@@ -73,28 +57,30 @@ public class Global extends GlobalSettings {
 
 	public void onStart(Application app) {
 
-		Logger.info("\n\n\nHear me from Global");
-
-		/*
-		 * First, to make it clear about functions defined on the fly, this is
-		 * such a function that can multiply an integer by two:
-		 */
-		@SuppressWarnings("unused")
-		Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
-		/*
-		 * It's the same but the semantic is more precise to change for an unary
-		 * operator:
-		 */
-		@SuppressWarnings("unused")
-		IntUnaryOperator multiplyByTwo1 = n -> n * 2;
-
-		int thisWillBeFour = multiplyByTwo0.apply(2);
-		List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		int result = list.stream().filter(x -> x > 7).map(multiplyByTwo0).reduce(Integer::sum).get();
-		boolean thisWillBeTrue = (result == 2 * (8 + 9));
-
-		generateStaticCausalityFromRecipes();
-		generateCausalityFromRecipes();
+		// Logger.info("\n\n\nHear me from Global");
+		//
+		// /*
+		// * First, to make it clear about functions defined on the fly, this is
+		// * such a function that can multiply an integer by two:
+		// */
+		// @SuppressWarnings("unused")
+		// Function<Integer, Integer> multiplyByTwo0 = n -> n * 2;
+		// /*
+		// * It's the same but the semantic is more precise to change for an
+		// unary
+		// * operator:
+		// */
+		// @SuppressWarnings("unused")
+		// IntUnaryOperator multiplyByTwo1 = n -> n * 2;
+		//
+		// int thisWillBeFour = multiplyByTwo0.apply(2);
+		// List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		// int result = list.stream().filter(x -> x >
+		// 7).map(multiplyByTwo0).reduce(Integer::sum).get();
+		// boolean thisWillBeTrue = (result == 2 * (8 + 9));
+		//
+		// generateStaticCausalityFromRecipes();
+		// generateCausalityFromRecipes();
 	}
 
 	public void onStop(Application app) {
@@ -115,27 +101,30 @@ public class Global extends GlobalSettings {
 	 */
 	@Deprecated
 	private void DBpopulate() {// Users
-		User user1 = new User("1", "1", "user", "home1");
-		user1.save();
-
-		User user2 = new User("2", "2", "administrator", "home1");
-		user2.save();
-
-		// We can't have human channel : it's not a channel as define as object
-		// from IoT.
-
-		Channel manythings, garage;
-
-		/*
-		 * Triggers and Actions are needed only for the interface. If we keep
-		 * programmatically working on causality, we don't need them.
-		 */
-		List<Trigger> triggers = new ArrayList<Trigger>();
-		List<Action> actions = new ArrayList<Action>();
-
-		(new Channel(triggers, actions, Manythings.class, "Manythings")).save();
-		(new Channel(triggers, actions, Lamp.class, "Manythings")).save();
-		(new Channel(triggers, actions, PresenceDetector.class, "Manythings")).save();
+		// User user1 = new User("1", "1", "user", "home1");
+		// user1.save();
+		//
+		// User user2 = new User("2", "2", "administrator", "home1");
+		// user2.save();
+		//
+		// // We can't have human channel : it's not a channel as define as
+		// object
+		// // from IoT.
+		//
+		// Channel manythings, garage;
+		//
+		// /*
+		// * Triggers and Actions are needed only for the interface. If we keep
+		// * programmatically working on causality, we don't need them.
+		// */
+		// List<Trigger> triggers = new ArrayList<Trigger>();
+		// List<Action> actions = new ArrayList<Action>();
+		//
+		// (new Channel(triggers, actions, Manythings.class,
+		// "Manythings")).save();
+		// (new Channel(triggers, actions, Lamp.class, "Manythings")).save();
+		// (new Channel(triggers, actions, PresenceDetector.class,
+		// "Manythings")).save();
 
 		// // PRESENCE DETECTOR CHANNEL
 		// Channel detector = new Channel("Detector", "Detects humans",

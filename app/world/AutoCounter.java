@@ -5,13 +5,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.function.Supplier;
 
+import logic.LogicController;
 import logic.RandomScheduler;
 import logic.RandomScheduler.StopCriteria;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import world.AutoCounter.NewStepPassedThrough;
 import akka.actor.UntypedActor;
-import controllers.Application;
 
 /**
  * This demonstrates how an actor can talk to the ones of its kind, including
@@ -44,7 +44,7 @@ public class AutoCounter extends UntypedActor {
 			innerRandomScheduler.addRandomIssue(Duration.Zero(), castedMessage.periodSupplier,
 					StopCriteria.set(StopCriteria.OCCURENCE, castedMessage.seed), () -> {
 						currentSeed--;
-						Application.getCommutator().emitTriggerMessage(//
+						LogicController.getCommutator().emitTriggerMessage(//
 								getSelf(),//
 								NewStepPassedThrough.class,//
 								() -> new NewStepPassedThrough(currentSeed));

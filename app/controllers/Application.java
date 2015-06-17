@@ -4,47 +4,35 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import scala.concurrent.duration.FiniteDuration;
 import logic.CausalRelation;
-import logic.Commutator;
-import logic.MessageMap;
-import logic.RandomScheduler;
+import logic.LogicController;
 import logic.RandomScheduler.StopCriteria;
 import logic.StdRandom;
-import logic.SystemProxy;
-import logic.SystemProxyCheatImpl;
 import models.Action;
 import models.Channel;
-import models.Modality;
+import models.IPI;
+import models.InterfaceProxy;
 import models.Recipe;
 import models.Trigger;
 import models.User;
 import play.Logger;
-import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import scala.concurrent.duration.Duration;
-/*
- * import views.ExportJFrame;
- */
-import views.html.*;
+import scala.concurrent.duration.FiniteDuration;
+import views.html.index;
 import world.AutoCounter;
 import world.AutoCounter.NewStepPassedThrough;
 import world.AutoCounter.RandomCountDown;
 import world.Lamp;
 import world.PresenceDetector;
 import akka.actor.ActorRef;
-
-import com.avaje.ebean.Ebean;
 
 /**
  * <p>
@@ -56,25 +44,10 @@ import com.avaje.ebean.Ebean;
  */
 public class Application extends Controller {
 
-	private static RandomScheduler randomScheduler = new RandomScheduler();
-	private static SystemProxy systemProxy = new SystemProxyCheatImpl();
-	private static MessageMap<UnaryOperator<Object>> messageMap = new MessageMap<>();
-	private static Commutator commutator = new Commutator();
+	private static InterfaceProxy ipi = new IPI();
 
-	public static RandomScheduler getScheduler() {
-		return randomScheduler;
-	}
-
-	public static SystemProxy getSystemProxy() {
-		return systemProxy;
-	}
-
-	public static MessageMap<UnaryOperator<Object>> getMessageMap() {
-		return messageMap;
-	}
-
-	public static Commutator getCommutator() {
-		return commutator;
+	public static InterfaceProxy getInterfaceProxy() {
+		return ipi;
 	}
 
 	public static String turnOnCheckbox = "";
@@ -90,7 +63,7 @@ public class Application extends Controller {
 		List<Action> actions = new ArrayList<Action>();
 
 		channel = new Channel(triggers, actions, AutoCounter.class, "simple counter who can talk to itself");
-		ActorRef countDown = Application.getSystemProxy().createActorOf(channel, "Simple counter");
+		ActorRef countDown = LogicController.getSystemProxy().createActorOf(channel, "Simple counter");
 		/*
 		 * It returns always the same message because for this special kind
 		 * actor there is no need for a conversion.
@@ -102,7 +75,7 @@ public class Application extends Controller {
 		 * starting from it. However, in this very case, this actor listens to
 		 * itself so there is no need to define a complex message mapper.
 		 */
-		Application.getCommutator().addCausalRelation(countDown,//
+		LogicController.getCommutator().addCausalRelation(countDown,//
 				NewStepPassedThrough.class,//
 				"Recette simpliste : monologue",//
 				countDown,//
@@ -111,22 +84,22 @@ public class Application extends Controller {
 		 * And now we start a countdown
 		 */
 		Supplier<Duration> randomPeriodSupplier = () -> FiniteDuration.apply(StdRandom.uniform(5, 8), TimeUnit.SECONDS);
-		Application.getCommutator().emitTriggerMessage(countDown, RandomCountDown.class,
+		LogicController.getCommutator().emitTriggerMessage(countDown, RandomCountDown.class,
 				() -> new RandomCountDown(5, randomPeriodSupplier));
 
 		channel = new Channel(triggers, actions, PresenceDetector.class, "Presence Detector");
-		Application.getSystemProxy().createActorOf(channel);
-		Application.getSystemProxy().createActorOf(channel, "Garden");
-		Application.getSystemProxy().createActorOf(channel, null);
-		ActorRef actor1 = Application.getSystemProxy().createActorOf(channel, "Hall_Detector");
-		Application.getSystemProxy().createActorOf(channel, "Jenny's room detector");
+		LogicController.getSystemProxy().createActorOf(channel);
+		LogicController.getSystemProxy().createActorOf(channel, "Garden");
+		LogicController.getSystemProxy().createActorOf(channel, null);
+		ActorRef actor1 = LogicController.getSystemProxy().createActorOf(channel, "Hall_Detector");
+		LogicController.getSystemProxy().createActorOf(channel, "Jenny's room detector");
 		/* The name should raise exception but this error will be hidden. */
-		ActorRef actor2 = Application.getSystemProxy().createActorOf(channel, "Jenny's room detector");
+		ActorRef actor2 = LogicController.getSystemProxy().createActorOf(channel, "Jenny's room detector");
 
 		channel = new Channel(triggers, actions, Lamp.class, "Basic lamp");
 		/* Under these circumstances, this will be the static actor. */
-		Application.getSystemProxy().createActorOf(channel);
-		ActorRef actor3 = Application.getSystemProxy().createActorOf(channel);
+		LogicController.getSystemProxy().createActorOf(channel);
+		ActorRef actor3 = LogicController.getSystemProxy().createActorOf(channel);
 
 		/**
 		 * Now let's define some causal relations. Two of them are enough. Here
@@ -176,7 +149,7 @@ public class Application extends Controller {
 			Boolean state = true; // Notice it's TRUE
 			return new Lamp.ChangeState(state, colour, intensity, null);
 		};
-		Application.getCommutator().addCausalRelation(//
+		LogicController.getCommutator().addCausalRelation(//
 				actor1,//
 				PresenceDetector.MotionDetected.class,//
 				"Première recette",//
@@ -195,8 +168,8 @@ public class Application extends Controller {
 			Boolean state = false; // Notice it's FALSE
 			return new Lamp.ChangeState(state, null, null, null);
 		};
-		Application.getCommutator().addCausalRelation(
-				Application.getSystemProxy().getActorByName("Jenny's room detector"),//
+		LogicController.getCommutator().addCausalRelation(
+				LogicController.getSystemProxy().getActorByName("Jenny's room detector"),//
 				PresenceDetector.MotionDetected.class,//
 				"Deuxième recette",//
 				actor3,//
@@ -207,19 +180,19 @@ public class Application extends Controller {
 		 * Just an example how to trigger a message manually. This is automated
 		 * by RandomScheduler.
 		 */
-		Application.getCommutator().emitTriggerMessage(actor1, PresenceDetector.MotionDetected.class,
+		LogicController.getCommutator().emitTriggerMessage(actor1, PresenceDetector.MotionDetected.class,
 				() -> new PresenceDetector.MotionDetected(0.5));
 
 		Supplier<Object> supplier = () -> new PresenceDetector.MotionDetected(StdRandom.uniform());
 		/*
 		 * We can do anything we want upon a trigger raised.
 		 */
-		Application.getScheduler().addRandomIssue(Duration.Zero(),
+		LogicController.getScheduler().addRandomIssue(Duration.Zero(),
 				() -> Duration.create(StdRandom.uniform(5, 15), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.NEVER, null),//
 				() -> {
 					// Raise trigger for first causal relation
-				Application.getCommutator().emitTriggerMessage(//
+				LogicController.getCommutator().emitTriggerMessage(//
 						actor1,//
 						PresenceDetector.MotionDetected.class,//
 						supplier);
@@ -240,13 +213,13 @@ public class Application extends Controller {
 		 * Please note we hereby define
 		 * </p>
 		 */
-		Application.getScheduler().addRandomIssue(Duration.Zero(),
+		LogicController.getScheduler().addRandomIssue(Duration.Zero(),
 				() -> Duration.create(StdRandom.uniform(5, 15), TimeUnit.SECONDS),
 				StopCriteria.set(StopCriteria.OCCURENCE, 10),//
 				() -> {
 					// Raise trigger for second causal relation
-				Application.getCommutator().emitTriggerMessage(//
-						Application.getSystemProxy().getActorByName("Jenny's room detector"),//
+				LogicController.getCommutator().emitTriggerMessage(//
+						LogicController.getSystemProxy().getActorByName("Jenny's room detector"),//
 						PresenceDetector.MotionDetected.class,//
 						supplier);
 			});
@@ -259,7 +232,7 @@ public class Application extends Controller {
 		 */
 		Predicate<CausalRelation> predicate = w -> w.getLabel().stream().anyMatch(x -> x.equals("user"));
 		String filepath = "../export.txt";
-		File file = Application.getCommutator().exportCausalGraph(predicate, new File(filepath));
+		File file = LogicController.getCommutator().exportCausalGraph(predicate, new File(filepath));
 
 		String[] args = { filepath };
 		// try {
@@ -278,320 +251,344 @@ public class Application extends Controller {
 	}
 
 	public static Result loginForm() {
+		return ok();
 
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		String username = requestData.get("username");
-		String password = requestData.get("password");
-
-		User user = User.authenticate(username, password);
-		if (user == null) {
-			return ok(index.render());
-		}
-
-		else {
-			userLoggedIn = user;
-			if (userLoggedIn.getRole() == "administrator") {
-
-				List<Channel> channelsList = Channel.find.all();
-				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
-				for (int i = 0; i < channelsList.size(); i++) {
-					triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
-				}
-
-				return ok(administratorView.render(channelsList, triggersDic));
-			} else {
-				Recipe r = new Recipe(null, null, null, null, null);
-				r.setName("Default recipe");
-				r.setActive(true);
-				r.getLog().add("Recipe created.");
-				r.getLog().add("Recipe activated on creation.");
-				r.setUser(userLoggedIn);
-				r.save();
-				userLoggedIn.save();
-				/*
-				 * Recipe recipe2 = new Recipe();
-				 * recipe2.setTitle("Second recipe"); recipe2.setId(2);
-				 * recipe2.setUser(userLoggedIn); recipe2.setActive(true);
-				 * recipe2.getLog().add("Recipe created.");
-				 * recipe2.getLog().add("Recipe activated on creation.");
-				 * recipe2.save();
-				 */
-
-				return ok(chooseView.render(userLoggedIn));
-			}
-
-		}
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// String username = requestData.get("username");
+		// String password = requestData.get("password");
+		//
+		// User user = User.authenticate(username, password);
+		// if (user == null) {
+		// return ok(index.render());
+		// }
+		//
+		// else {
+		// userLoggedIn = user;
+		// if (userLoggedIn.getRole() == "administrator") {
+		//
+		// List<Channel> channelsList = Channel.find.all();
+		// HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel,
+		// List<Trigger>>();
+		// for (int i = 0; i < channelsList.size(); i++) {
+		// triggersDic.put(channelsList.get(i),
+		// channelsList.get(i).getTriggers());
+		// }
+		//
+		// return ok(administratorView.render(channelsList, triggersDic));
+		// } else {
+		// Recipe r = new Recipe(null, null, null, null, null);
+		// r.setName("Default recipe");
+		// r.setActive(true);
+		// r.getLog().add("Recipe created.");
+		// r.getLog().add("Recipe activated on creation.");
+		// r.setUser(userLoggedIn);
+		// r.save();
+		// userLoggedIn.save();
+		// /*
+		// * Recipe recipe2 = new Recipe();
+		// * recipe2.setTitle("Second recipe"); recipe2.setId(2);
+		// * recipe2.setUser(userLoggedIn); recipe2.setActive(true);
+		// * recipe2.getLog().add("Recipe created.");
+		// * recipe2.getLog().add("Recipe activated on creation.");
+		// * recipe2.save();
+		// */
+		//
+		// return ok(chooseView.render(userLoggedIn));
+		// }
+		//
+		// }
 
 	}
 
 	public static Result administratorView() {
-		List<Channel> channelsList = Channel.find.all();
-		HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
-		for (int i = 0; i < channelsList.size(); i++) {
-			triggersDic.put(channelsList.get(i), channelsList.get(i).getTriggers());
-		}
-		return ok(administratorView.render(channelsList, triggersDic));
+		return ok();
+		// List<Channel> channelsList = Channel.find.all();
+		// HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel,
+		// List<Trigger>>();
+		// for (int i = 0; i < channelsList.size(); i++) {
+		// triggersDic.put(channelsList.get(i),
+		// channelsList.get(i).getTriggers());
+		// }
+		// return ok(administratorView.render(channelsList, triggersDic));
 	}
 
 	public static Result chooseView() {
+		return ok();
 
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		if (requestData.get("viewRecipesButton") != null) {
-			return ok(viewRecipes.render(userLoggedIn));
-		} else {
-			List<Channel> channelsList = Channel.find.all();
-			recipe = new Recipe(null, null, null, null, null);
-			return ok(chooseTriggerChannel.render(channelsList));
-		}
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// if (requestData.get("viewRecipesButton") != null) {
+		// return ok(viewRecipes.render(userLoggedIn));
+		// } else {
+		// List<Channel> channelsList = Channel.find.all();
+		// recipe = new Recipe(null, null, null, null, null);
+		// return ok(chooseTriggerChannel.render(channelsList));
+		// }
 
 	}
 
 	public static Result viewAdministratorLog() {
-		return ok(administratorLog.render());
+		return ok();
+		// return ok(administratorLog.render());
 	}
 
 	public static Result submitForm() throws IOException {
-		Boolean lampOn = false;
-
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		turnOnCheckbox = requestData.get("turnOnCheckbox");
-		turnOffCheckbox = requestData.get("turnOffCheckbox");
-
-		System.out.println("turn off checkbox: " + turnOffCheckbox);
-
-		if (requestData.get("enterRoomButton") != null) {
-			// // Tell the detector that a human entered the room
-			// if (turnOnCheckbox != null) {
-			// AllActors.detector.tell(new AllMessages.EnterRoom(true),
-			// AllActors.human);
-			// } else {
-			// AllActors.detector.tell(new AllMessages.EnterRoom(false),
-			// AllActors.human);
-			// }
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(10);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-			}
-
-			// if (AllActors.Lamp.state.equals("ON"))
-			// lampOn = true;
-			// else
-			// lampOn = false;
-			System.out.println("Enter room button - LampOn is TRUE");
-
-		} else if (requestData.get("exitRoomButton") != null) {
-			// Tell the detector that a human exited the room
-			// if (turnOffCheckbox != null) {
-			// AllActors.detector.tell(new AllMessages.ExitRoom(true),
-			// AllActors.human);
-			// } else {
-			// AllActors.detector.tell(new AllMessages.ExitRoom(false),
-			// AllActors.human);
-			// }
-
-			try {
-				TimeUnit.MILLISECONDS.sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// if (AllActors.Lamp.state.equals("OFF"))
-			// lampOn = false;
-			// else
-			// lampOn = true;
-
-			System.out.println("Exit room button - LampOn is FALSE");
-		}
-
-		List<Channel> channelsList = Channel.find.all();
-		return ok(chooseTriggerChannel.render(channelsList));
+		return ok();
+		// Boolean lampOn = false;
+		//
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// turnOnCheckbox = requestData.get("turnOnCheckbox");
+		// turnOffCheckbox = requestData.get("turnOffCheckbox");
+		//
+		// System.out.println("turn off checkbox: " + turnOffCheckbox);
+		//
+		// if (requestData.get("enterRoomButton") != null) {
+		// // // Tell the detector that a human entered the room
+		// // if (turnOnCheckbox != null) {
+		// // AllActors.detector.tell(new AllMessages.EnterRoom(true),
+		// // AllActors.human);
+		// // } else {
+		// // AllActors.detector.tell(new AllMessages.EnterRoom(false),
+		// // AllActors.human);
+		// // }
+		//
+		// try {
+		// TimeUnit.MILLISECONDS.sleep(10);
+		// } catch (InterruptedException e) {
+		//
+		// e.printStackTrace();
+		// }
+		//
+		// // if (AllActors.Lamp.state.equals("ON"))
+		// // lampOn = true;
+		// // else
+		// // lampOn = false;
+		// System.out.println("Enter room button - LampOn is TRUE");
+		//
+		// } else if (requestData.get("exitRoomButton") != null) {
+		// // Tell the detector that a human exited the room
+		// // if (turnOffCheckbox != null) {
+		// // AllActors.detector.tell(new AllMessages.ExitRoom(true),
+		// // AllActors.human);
+		// // } else {
+		// // AllActors.detector.tell(new AllMessages.ExitRoom(false),
+		// // AllActors.human);
+		// // }
+		//
+		// try {
+		// TimeUnit.MILLISECONDS.sleep(10);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// // if (AllActors.Lamp.state.equals("OFF"))
+		// // lampOn = false;
+		// // else
+		// // lampOn = true;
+		//
+		// System.out.println("Exit room button - LampOn is FALSE");
+		// }
+		//
+		// List<Channel> channelsList = Channel.find.all();
+		// return ok(chooseTriggerChannel.render(channelsList));
 	}
 
 	public static Result chooseTrigger(Long channelId) {
-
-		Channel channel = Channel.find.byId(channelId);
-
-		recipe.setTriggerChannel(channel);
-
-		return ok(chooseTrigger.render(channel));
+		return ok();
+		//
+		// Channel channel = Channel.find.byId(channelId);
+		//
+		// recipe.setTriggerChannel(channel);
+		//
+		// return ok(chooseTrigger.render(channel));
 	}
 
 	public static Result completeTriggerFields(Long triggerId) {
-
-		Trigger trigger = Trigger.find.byId(triggerId);
-
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		HashMap<Modality, String> triggerFields = new HashMap<Modality, String>();
-		for (Modality f : trigger.getFields()) {
-			triggerFields.put(f, requestData.get(f.getName()));
-		}
-
-		/**
-		 * TODO should not be commented but understood.
-		 */
-		// recipe.setTriggersMap(triggerFields);
-
-		return ok(completeTriggerFields.render(trigger));
+		return ok();
+		//
+		// Trigger trigger = Trigger.find.byId(triggerId);
+		//
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// HashMap<Modality, String> triggerFields = new HashMap<Modality,
+		// String>();
+		// for (Modality f : trigger.getFields()) {
+		// triggerFields.put(f, requestData.get(f.getName()));
+		// }
+		//
+		// /**
+		// * TODO should not be commented but understood.
+		// */
+		// // recipe.setTriggersMap(triggerFields);
+		//
+		// return ok(completeTriggerFields.render(trigger));
 	}
 
 	public static Result chooseActionChannel() {
-		List<Channel> channelsList = Channel.find.all();
-		return ok(chooseActionChannel.render(channelsList));
+		return ok();
+		// List<Channel> channelsList = Channel.find.all();
+		// return ok(chooseActionChannel.render(channelsList));
 	}
 
 	public static Result chooseAction(Long channelId) {
-		Channel channel = Channel.find.byId(channelId);
-
-		recipe.setActionChannel(channel);
-
-		return ok(chooseAction.render(channel));
+		return ok();
+		// Channel channel = Channel.find.byId(channelId);
+		//
+		// recipe.setActionChannel(channel);
+		//
+		// return ok(chooseAction.render(channel));
 	}
 
 	public static Result completeActionFields(Long actionId) {
-
-		Action action = Action.find.byId(actionId);
-
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		HashMap<Modality, String> actionFields = new HashMap<Modality, String>();
-		for (Modality f : action.getFields()) {
-			actionFields.put(f, requestData.get(f.getName()));
-		}
-
-		/**
-		 * TODO should not be commented but corrected
-		 */
-		// recipe.setActionsMap(actionFields);
-
-		return ok(completeActionFields.render(action));
+		return ok();
+		//
+		// Action action = Action.find.byId(actionId);
+		//
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// HashMap<Modality, String> actionFields = new HashMap<Modality,
+		// String>();
+		// for (Modality f : action.getFields()) {
+		// actionFields.put(f, requestData.get(f.getName()));
+		// }
+		//
+		// /**
+		// * TODO should not be commented but corrected
+		// */
+		// // recipe.setActionsMap(actionFields);
+		//
+		// return ok(completeActionFields.render(action));
 	}
 
 	public static Result createRecipe() {
-		return ok(createRecipe.render(recipe));
+		return ok();
+		// return ok(createRecipe.render(recipe));
 	}
 
 	public static Result viewRecipesAfterCreate() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-
-		recipe.setName(requestData.get("recipeTitle"));
-
-		recipe.setActive(true);
-		recipe.getLog().add("Recipe created.");
-		recipe.getLog().add("Recipe activated on creation.");
-
-		// List<Recipe> list = userLoggedIn.getRecipes();
-		// list.add(recipe);
-		// System.out.println("RECIPEEEEES:" + list.size());
-		// userLoggedIn.setRecipes(list)
-		// (userLoggedIn.getRecipes().add(recipe);
-		recipe.setUser(userLoggedIn);
-		recipe.save();
-		userLoggedIn.save();
-		return ok(viewRecipes.render(userLoggedIn));
+		return ok();
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		//
+		// recipe.setName(requestData.get("recipeTitle"));
+		//
+		// recipe.setActive(true);
+		// recipe.getLog().add("Recipe created.");
+		// recipe.getLog().add("Recipe activated on creation.");
+		//
+		// // List<Recipe> list = userLoggedIn.getRecipes();
+		// // list.add(recipe);
+		// // System.out.println("RECIPEEEEES:" + list.size());
+		// // userLoggedIn.setRecipes(list)
+		// // (userLoggedIn.getRecipes().add(recipe);
+		// recipe.setUser(userLoggedIn);
+		// recipe.save();
+		// userLoggedIn.save();
+		// return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result viewRecipes() {
-		if (userLoggedIn != null)
-			return ok(viewRecipes.render(userLoggedIn));
-		else
-			return ok(index.render());
+		return ok();
+		// if (userLoggedIn != null)
+		// return ok(viewRecipes.render(userLoggedIn));
+		// else
+		// return ok(index.render());
 	}
 
 	public static Result activateTrigger(Long triggerId) {
-
-		Ebean.find(Recipe.class)
-				.findList()
-				.parallelStream()
-				/* Now we have a stream, we filter on the id of TriggerChannel */
-				.filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
-				/* And now we send a message to each channel */
-				.forEach(
-						recipe -> {
-							/* This actor is the object which will be told */
-							try {
-								Application
-										.getSystemProxy()
-										.getOrCreateStaticActorFor(recipe.getActionChannel())
-										.tell(
-										/*
-										 * Message to be told: we send the
-										 * message of the first trigger found
-										 */
-										recipe.getTriggerChannel().getTriggers().stream()
-												.filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
-												.getClass().newInstance(),
-												/* Sender */
-												Application.getSystemProxy().getOrCreateStaticActorFor(
-														recipe.getTriggerChannel()));
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						});
 		return ok();
+
+		// Ebean.find(Recipe.class)
+		// .findList()
+		// .parallelStream()
+		// /* Now we have a stream, we filter on the id of TriggerChannel */
+		// .filter(recipe -> recipe.getTriggerChannel().getId() == triggerId)
+		// /* And now we send a message to each channel */
+		// .forEach(
+		// recipe -> {
+		// /* This actor is the object which will be told */
+		// try {
+		// LogicController
+		// .getSystemProxy()
+		// .getOrCreateStaticActorFor(recipe.getActionChannel())
+		// .tell(
+		// /*
+		// * Message to be told: we send the
+		// * message of the first trigger found
+		// */
+		// recipe.getTriggerChannel().getTriggers().stream()
+		// .filter(trigger -> trigger.getId() == triggerId).reduce((x, y) -> x)
+		// .getClass().newInstance(),
+		// /* Sender */
+		// LogicController.getSystemProxy().getOrCreateStaticActorFor(
+		// recipe.getTriggerChannel()));
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// });
+		// return ok();
 	}
 
 	public static Result viewRecipeLog() {
-		/*
-		 * //search the recipe and update it: DynamicForm requestData =
-		 * Form.form().bindFromRequest(); String value =
-		 * requestData.get("viewRecipesLog"); long recipeId; Recipe recipe;
-		 * if(value!=null){ recipeId = Long.parseLong(value); recipe =
-		 * Recipe.find.byId(recipeId); }else{ recipe = null; }
-		 * 
-		 * if(userLoggedIn!=null && recipe != null) return
-		 * ok(viewRecipeLog.render(userLoggedIn, recipe)); else return
-		 * ok(index.render());
-		 */
-		if (userLoggedIn != null) {
-			Recipe r = userLoggedIn.getRecipes().get(0);
-			return ok(viewRecipeLog.render(userLoggedIn, r));
-		} else
-			return ok(index.render());
+		return ok();
+		// /*
+		// * //search the recipe and update it: DynamicForm requestData =
+		// * Form.form().bindFromRequest(); String value =
+		// * requestData.get("viewRecipesLog"); long recipeId; Recipe recipe;
+		// * if(value!=null){ recipeId = Long.parseLong(value); recipe =
+		// * Recipe.find.byId(recipeId); }else{ recipe = null; }
+		// *
+		// * if(userLoggedIn!=null && recipe != null) return
+		// * ok(viewRecipeLog.render(userLoggedIn, recipe)); else return
+		// * ok(index.render());
+		// */
+		// if (userLoggedIn != null) {
+		// Recipe r = userLoggedIn.getRecipes().get(0);
+		// return ok(viewRecipeLog.render(userLoggedIn, r));
+		// } else
+		// return ok(index.render());
 	}
 
 	public static Result activateRecipe() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-		// long recipeId = Long.parseLong( requestData.get("RecipeOff") );
-		// search the recipe and update it:
-		Recipe r = userLoggedIn.getRecipes().get(0);
-		if (requestData.get("RecipeOff") != null && r.isActive()) {
-			r.setActive(false);
-			r.getLog().add("Recipe turned off.");
-			r.save();
-		} else if (requestData.get("RecipeOn") != null && r.isActive() == false) {
-			r.setActive(true);
-			r.getLog().add("Recipe turned on.");
-			r.save();
-		}
-		userLoggedIn.save();
-		return ok(viewRecipes.render(userLoggedIn));
+		return ok();
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		// // long recipeId = Long.parseLong( requestData.get("RecipeOff") );
+		// // search the recipe and update it:
+		// Recipe r = userLoggedIn.getRecipes().get(0);
+		// if (requestData.get("RecipeOff") != null && r.isActive()) {
+		// r.setActive(false);
+		// r.getLog().add("Recipe turned off.");
+		// r.save();
+		// } else if (requestData.get("RecipeOn") != null && r.isActive() ==
+		// false) {
+		// r.setActive(true);
+		// r.getLog().add("Recipe turned on.");
+		// r.save();
+		// }
+		// userLoggedIn.save();
+		// return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result userLogOut() {
-		DynamicForm requestData = Form.form().bindFromRequest();
-		if (requestData.get("LogOutButton") != null) {
-			userLoggedIn = null;
-			recipe = null;
-			return index();
-		}
-		if (requestData.get("HomeButton") != null) {
-
-			if (userLoggedIn.getRole() == "administrator")
-				// return ok(administratorView.render(channelsList,
-				// triggersDic));
-				return ok();
-			else
-				return ok(chooseView.render(userLoggedIn));
-		} else
-			return index();
+		return ok();
+		// DynamicForm requestData = Form.form().bindFromRequest();
+		// if (requestData.get("LogOutButton") != null) {
+		// userLoggedIn = null;
+		// recipe = null;
+		// return index();
+		// }
+		// if (requestData.get("HomeButton") != null) {
+		//
+		// if (userLoggedIn.getRole() == "administrator")
+		// // return ok(administratorView.render(channelsList,
+		// // triggersDic));
+		// return ok();
+		// else
+		// return ok(chooseView.render(userLoggedIn));
+		// } else
+		// return index();
 	}
 
 }

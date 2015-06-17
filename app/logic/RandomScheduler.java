@@ -1,11 +1,10 @@
 package logic;
 
-import scala.concurrent.duration.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
-import logic.RandomScheduler.StopCriteria;
+import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
 public class RandomScheduler {

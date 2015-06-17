@@ -105,38 +105,41 @@ public class MessageMap<T> {
 		return null;
 	}
 
-//	// Static initializer
-//	{
-//		// At initialization we define some common mappings
-//		Application
-//				.getMessageMap()
-//				.setMapper(Manythings.MotionDetected.class,
-//						Lamp.ChangeState.class,
-//						triggerMessage -> {
-//
-//							String colour = null;
-//							Integer intensity = null;
-//							Boolean lowConsumptionMode = null;
-//							Boolean state = null;
-//
-//							// Don't forget to check for nullity.
-//						if (triggerMessage != null && triggerMessage instanceof AllMessages.Manythings.MotionDetected) {
-//							AllMessages.Manythings.MotionDetected trigger = (AllMessages.Manythings.MotionDetected) triggerMessage;
-//							colour = null;
-//							switch (trigger.getDeviceId()) {
-//							case 1:
-//								colour = "Orange";
-//								break;
-//							default:
-//								colour = "Green";
-//								break;
-//							}
-//							intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
-//							lowConsumptionMode = true;
-//						}
-//						AllMessages.Lamp.ChangeState message = new AllMessages.Lamp.ChangeState(state, colour,
-//								intensity, lowConsumptionMode);
-//						return message;
-//					});
-//	}
+	// // Static initializer
+	// {
+	// // At initialization we define some common mappings
+	// Application
+	// .getMessageMap()
+	// .setMapper(Manythings.MotionDetected.class,
+	// Lamp.ChangeState.class,
+	// triggerMessage -> {
+	//
+	// String colour = null;
+	// Integer intensity = null;
+	// Boolean lowConsumptionMode = null;
+	// Boolean state = null;
+	//
+	// // Don't forget to check for nullity.
+	// if (triggerMessage != null && triggerMessage instanceof
+	// AllMessages.Manythings.MotionDetected) {
+	// AllMessages.Manythings.MotionDetected trigger =
+	// (AllMessages.Manythings.MotionDetected) triggerMessage;
+	// colour = null;
+	// switch (trigger.getDeviceId()) {
+	// case 1:
+	// colour = "Orange";
+	// break;
+	// default:
+	// colour = "Green";
+	// break;
+	// }
+	// intensity = (trigger.getQuantitéDeMouvement() > 0.6) ? 10 : 4;
+	// lowConsumptionMode = true;
+	// }
+	// AllMessages.Lamp.ChangeState message = new
+	// AllMessages.Lamp.ChangeState(state, colour,
+	// intensity, lowConsumptionMode);
+	// return message;
+	// });
+	// }
 }

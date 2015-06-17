@@ -1,9 +1,8 @@
 package logic;
 
+import java.util.List;
+
 import models.Channel;
-
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import akka.actor.ActorRef;
 
 /**
@@ -24,11 +23,13 @@ public interface SystemProxy {
 
 	public ActorRef createActorOf(Channel channel);
 
+	public void deleteActor(ActorRef victim);
+
 	/**
 	 * Returns a set to emphasize that similar system ActorSelection are not
 	 * ordered.
 	 */
-	public CopyOnWriteArraySet<ActorRef> getActorsFor(Channel channel);
+	public List<ActorRef> getActorsFor(Channel channel);
 
 	/**
 	 * <p>

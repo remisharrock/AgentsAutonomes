@@ -1,8 +1,9 @@
 package models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
-import akka.actor.UntypedActor;
 import play.db.ebean.Model;
 
 /**
@@ -19,9 +20,32 @@ public class Actor extends Model {
 	/**
 	 * Must be unique in the local database.
 	 */
-	private String actorName;
-	/**
-	 * Class of the actor.
-	 */
-	public Class<? extends UntypedActor> clazz;
+	private final String actorName;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private final Channel channel;
+	private final User user;
+
+	public final static Model.Finder<Long, Actor> find = new Model.Finder<Long, Actor>(Long.class, Actor.class);
+
+	public Actor(String actorName, Channel channel, User user) {
+		this.actorName = actorName;
+		this.channel = channel;
+		this.user = user;
+	}
+
+	public String getActorName() {
+		return actorName;
+	}
+
+	public Channel getChannel() {
+		return channel;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public static Model.Finder<Long, Actor> getFind() {
+		return find;
+	}
 }

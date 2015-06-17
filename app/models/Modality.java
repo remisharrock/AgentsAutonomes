@@ -10,7 +10,8 @@ import play.db.ebean.Model;
 /**
  * Can be used in multiple Trigger or Action
  * 
- * @param <T> BUG you should
+ * @param <T>
+ *            BUG you should
  */
 @Entity
 public class Modality extends Model {

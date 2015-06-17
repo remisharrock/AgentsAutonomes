@@ -1,13 +1,12 @@
 package logic;
 
-import scala.concurrent.duration.Duration;
 import java.util.function.Supplier;
 
 import logic.RandomScheduler.StopCriteria;
 import play.Logger;
+import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 import akka.actor.Cancellable;
-import controllers.Application;
 
 public class CancellableRef implements Cancellable, Runnable {
 
@@ -68,13 +67,13 @@ public class CancellableRef implements Cancellable, Runnable {
 		}
 
 		while (!this.isCancelled && stopCriteria.getCriteria()) {
-			cancellable = ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().scheduler()
+			cancellable = ((SystemProxyCheatImpl) LogicController.getSystemProxy()).tem().scheduler()
 					.scheduleOnce(FiniteDuration.Zero(), () -> {
 						// Logger.info("CancellableRef " + thread.getName() +
 						// ": eventFunction "
 						// + eventFunction.toString() + " executed");
 							eventFunction.run();
-						}, ((SystemProxyCheatImpl) Application.getSystemProxy()).tem().dispatcher());
+						}, ((SystemProxyCheatImpl) LogicController.getSystemProxy()).tem().dispatcher());
 			try {
 				long timeInMillis = randomFunction.get().toMillis();
 				// Logger.info("CancellableRef " + thread.getName() +

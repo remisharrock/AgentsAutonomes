@@ -1,7 +1,7 @@
 package models;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,12 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
-import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-
-import com.avaje.ebean.Ebean;
-
-import controllers.Application;
 
 /**
  * Model is an abstraction of Actor. Because it takes a class reference, one
@@ -34,6 +29,8 @@ public class Channel extends Model {
 	private List<Trigger> triggers;
 	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
 	private List<Action> actions;
+	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+	private List<Actor> actors;
 
 	@Id
 	private long id;
@@ -63,8 +60,8 @@ public class Channel extends Model {
 	 * 
 	 * @return
 	 */
-	public CopyOnWriteArraySet<ActorRef> getActors() {
-		return Application.getSystemProxy().getActorsFor(this);
+	public List<Actor> getActors() {
+		return Actor.find.findList().stream().filter(x -> x.getChannel() == this).collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unused")

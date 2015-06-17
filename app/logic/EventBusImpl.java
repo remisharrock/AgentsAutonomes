@@ -6,7 +6,6 @@ import java.net.URLDecoder;
 import play.Logger;
 import akka.actor.ActorRef;
 import akka.event.japi.LookupEventBus;
-import controllers.Application;
 
 /**
  * Within the creation of a recipe, actors are made suscribers to this bus with
@@ -38,7 +37,7 @@ public class EventBusImpl extends LookupEventBus<MsgEnvelope, ActorRef, String> 
 			 * MsgEnvelope but it would be less clean.
 			 */
 			Class<?> clazz = Class.forName(event.payload.getClass().getName());
-			payload = Application.getCommutator().getMappedActionMessage(event.suscribee, clazz, subscriber,
+			payload = LogicController.getCommutator().getMappedActionMessage(event.suscribee, clazz, subscriber,
 					event.payload);
 		} catch (ClassNotFoundException e) {
 			Logger.info("SEVERE in EventBusImpl: ClassNotFoundException");

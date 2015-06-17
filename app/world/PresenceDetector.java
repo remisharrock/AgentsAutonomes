@@ -3,7 +3,6 @@ package world;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import scala.concurrent.duration.Duration;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
@@ -11,6 +10,7 @@ import logic.CancellableRef;
 import logic.RandomScheduler;
 import logic.RandomScheduler.StopCriteria;
 import play.Logger;
+import scala.concurrent.duration.Duration;
 import akka.actor.UntypedActor;
 
 public class PresenceDetector extends UntypedActor {

@@ -3,10 +3,11 @@ package logic;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import models.Channel;
 import play.Logger;
@@ -128,9 +129,13 @@ public class SystemProxyCheatImpl implements SystemProxy {
 		return actorRef;
 	}
 
+	public void deleteActor(ActorRef victim) {
+		victim.tell(akka.actor.Kill.getInstance(), ActorRef.noSender());
+	}
+
 	@Override
-	public CopyOnWriteArraySet<ActorRef> getActorsFor(Channel channel) {
-		CopyOnWriteArraySet<ActorRef> set = new CopyOnWriteArraySet<>();
+	public List<ActorRef> getActorsFor(Channel channel) {
+		List<ActorRef> set = new ArrayList<>();
 		cheat.get(channel.getClass()).forEach(set::add);
 		return set;
 	}

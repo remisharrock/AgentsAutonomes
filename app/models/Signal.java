@@ -30,7 +30,7 @@ import play.db.ebean.Model;
 @Deprecated
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Semantic extends Model {
+public abstract class Signal extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,7 +49,7 @@ public abstract class Semantic extends Model {
 	protected long id;
 	protected String description;
 
-	public Semantic(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, Class<?> clazz,
+	public Signal(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, Class<?> clazz,
 			String description) {
 		this.fields = fields;
 		this.clazz = clazz;
