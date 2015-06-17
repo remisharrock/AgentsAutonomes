@@ -1,0 +1,28 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Présentation des concepts}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Le niveau des modèles}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Le\040niveau\040des\040acteurs}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Relation de génération entre les deux niveaux}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Présentation technique}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Conception générale}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Manipuler facilement le système d'acteurs avec SystemProxy}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.3}{Construire à la volée un message avec MessageMap}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{Etablir à la volée une ligne téléphonique entre deux acteurs avec Commutator}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.5}{Définir un envoi de message automatique avec RandomScheduler}{section.3}% 11
+\BOOKMARK [1][-]{section.4}{Formalisation des recettes : vers une généralisation ?}{}% 12
+\BOOKMARK [2][-]{subsection.4.1}{Rappels mathématiques}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.2}{Définitions}{section.4}% 14
+\BOOKMARK [1][-]{section.5}{Quelques\040explications\040techniques\040et\040fonctionnelles}{}% 15
+\BOOKMARK [2][-]{subsection.5.1}{Vers un système d'acteurs auto-organisé ?}{section.5}% 16
+\BOOKMARK [2][-]{subsection.5.2}{Un défaut conceptuel : le serpent qui se mord la queue}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.3}{Groupe d'objets et de propriétaire : la notion d'étiquette}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.4}{Afficher le graphe des relations de causalité}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.5}{Mécompréhension de Play}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.6}{Distribuer\040les\040acteurs\040sur\040plusieurs\040machines\040virtuelles\040Java}{section.5}% 21
+\BOOKMARK [2][-]{subsection.5.7}{Prévenir les situations aberrantes}{section.5}% 22
+\BOOKMARK [2][-]{subsection.5.8}{What « Model \(in mvc\) is an abstraction of Actor » means and how we could implement it}{section.5}% 23
+\BOOKMARK [2][-]{subsection.5.9}{Lien entre une recette et une relation de causalité}{section.5}% 24
+\BOOKMARK [2][-]{subsection.5.10}{Quelques\040utilisations\040de\040l'interface}{section.5}% 25
+\BOOKMARK [2][-]{subsection.5.11}{Reste à faire}{section.5}% 26
+\BOOKMARK [1][-]{section.6}{Utilisation}{}% 27
+\BOOKMARK [1][-]{section.7}{Dernière soutenance}{}% 28
