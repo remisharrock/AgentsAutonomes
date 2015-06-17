@@ -23,9 +23,11 @@ import messages.AllMessages.MessageEnvelope;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import play.Logger;
 import play.db.ebean.Model;
 import scala.Array;
 import actors.AllActors;
+import actors.AllActors.DetectorActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
@@ -387,23 +389,21 @@ public class Recipe extends Model {
 	}
 
 	private ActorRef createActorFromClassName(String className, String type) {
+		String classNameFull = WordUtils.capitalize(className).replace(" ", "") + "Actor";
+		Class classActor = null;
+		try {
+			classActor = Class.forName("actors.AllActors$" + classNameFull);
+		} catch (ClassNotFoundException e) {
+			Logger.info("grave: class not found");
+			e.printStackTrace();
+		}
 		if (type.equals("Trigger")) {
-			String classNameFull = WordUtils.capitalize(className).replace(" ", "") + "Actor";
 			System.out.println("classNameTrigger: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(classNameFull);
-			/**
-			 * TO DO replace class.forname => to remove hashmap
-			 */
-			// Class.forName(classNameFull)
-
-			System.out.println("classActorTrigger: " + classActor);
+			System.out.println("classActorTrigger: " + classNameFull);
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor), "actorTrigger" + getId());
 			return actor;
 		} else if (type.equals("Action")) {
-			String classNameFull = WordUtils.capitalize(className).replace(" ", "") + "Actor";
 			System.out.println("classNameAction: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(classNameFull);
-
 			System.out.println("classActorActionr: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor), "actorAction" + getId());
 			return actor;

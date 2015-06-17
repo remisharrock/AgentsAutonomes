@@ -38,7 +38,7 @@ public class SystemController {
 	}
 
 	public void setUserGroupActorRouterMap(HashMap<String, ActorRef> userGroupActorRouterMap) {
-		this.userGroupActorRouterMap = userGroupActorRouterMap;
+		userGroupActorRouterMap = userGroupActorRouterMap;
 	}
 
 }
