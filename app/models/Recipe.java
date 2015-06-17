@@ -11,18 +11,13 @@ import play.db.ebean.Model;
 
 import com.avaje.ebean.Ebean;
 
-@Entity
 public class Recipe extends Model {
 
 	private static final long serialVersionUID = 1L;
-
-	@ManyToOne
+	
 	private Channel triggerChannel;
-	@ManyToOne
 	private Trigger trigger;
-	@ManyToOne
 	private Channel actionChannel;
-	@ManyToOne
 	private Action action;
 	/**
 	 * Very important to be unique
@@ -32,9 +27,7 @@ public class Recipe extends Model {
 	private String description;
 	private boolean active;
 	private List<String> log;
-	@ManyToOne
 	private User user;
-	@Id
 	private long id;
 
 	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(Long.class, Recipe.class);

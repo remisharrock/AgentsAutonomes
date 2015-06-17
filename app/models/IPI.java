@@ -53,7 +53,7 @@ public class IPI implements InterfaceProxy {
 	 */
 	public Actor registerActorForUser(User user, String actorName, Class<? extends UntypedActor> clazz, Channel channel) {
 		Actor actor = new Actor(actorName, channel, user);
-		actor.save();
+		//actor.save();
 		LogicController.getSystemProxy().createActorOf(channel, actorName);
 		return actor;
 	}

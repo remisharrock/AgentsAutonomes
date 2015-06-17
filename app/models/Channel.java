@@ -20,19 +20,17 @@ import akka.actor.UntypedActor;
  * this idea is an actor only receive message by onReceive() and the message
  * sending protocol doesn't imply any other method.
  */
-@Entity
+//@Entity
 public class Channel extends Model {
 
 	private static final long serialVersionUID = 1L;
 
-	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+//	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
 	private List<Trigger> triggers;
-	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+//	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
 	private List<Action> actions;
-	@OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
-	private List<Actor> actors;
-
-	@Id
+	
+//	@Id
 	private long id;
 	/**
 	 * Actor class

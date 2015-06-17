@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import play.db.ebean.Model;
 
-@Entity
+//@Entity
 public class Trigger extends Model {
 
 	private static final long serialVersionUID = 1L;
@@ -22,10 +22,10 @@ public class Trigger extends Model {
 	 * Important to be able to get it from this class because it can simplify
 	 * Recipe contructor.
 	 */
-	@ManyToOne(cascade = CascadeType.ALL)
+	// @ManyToOne(cascade = CascadeType.ALL)
 	protected Channel channel;
-	@SuppressWarnings("rawtypes")
-	@OneToMany(mappedBy = "trigger", cascade = CascadeType.ALL)
+	// @SuppressWarnings("rawtypes")
+	// @OneToMany(mappedBy = "trigger", cascade = CascadeType.ALL)
 	protected List<Modality> fields;
 
 	@Id

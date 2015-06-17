@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 import play.db.ebean.Model;
 
-@Entity
+//@Entity
 public class User extends Model {
 
 	private static final long serialVersionUID = 1L;

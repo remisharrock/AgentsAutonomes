@@ -15,13 +15,13 @@ import play.db.ebean.Model;
  * 
  * TODO Implementation to be finished
  */
-@Entity
+//@Entity
 public class Actor extends Model {
 	/**
 	 * Must be unique in the local database.
 	 */
 	private final String actorName;
-	@ManyToOne(cascade = CascadeType.ALL)
+//	@ManyToOne(cascade = CascadeType.ALL)
 	private final Channel channel;
 	private final User user;
 

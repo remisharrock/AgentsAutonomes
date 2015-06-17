@@ -13,13 +13,13 @@ import play.db.ebean.Model;
  * @param <T>
  *            BUG you should
  */
-@Entity
+// @Entity
 public class Modality extends Model {
 	private static final long serialVersionUID = 1L;
 
 	private String value;
 
-	@Id
+	// @Id
 	private long id;
 	private String name;
 	private String description;
@@ -28,9 +28,9 @@ public class Modality extends Model {
 	 * modalités qui ne dépendent d'aucune sémantique : les modalités
 	 * Température de deux sémantiques sont strictement les mêmes.
 	 */
-	@ManyToOne(cascade = CascadeType.ALL)
+	// @ManyToOne(cascade = CascadeType.ALL)
 	private Trigger trigger;
-	@ManyToOne(cascade = CascadeType.ALL)
+	// @ManyToOne(cascade = CascadeType.ALL)
 	private Action action;
 
 	public Modality(String value, String name, String description) {

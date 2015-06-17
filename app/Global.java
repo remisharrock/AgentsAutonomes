@@ -79,8 +79,8 @@ public class Global extends GlobalSettings {
 		// 7).map(multiplyByTwo0).reduce(Integer::sum).get();
 		// boolean thisWillBeTrue = (result == 2 * (8 + 9));
 		//
-		// generateStaticCausalityFromRecipes();
-		// generateCausalityFromRecipes();
+		 generateStaticCausalityFromRecipes();
+		 generateCausalityFromRecipes();
 	}
 
 	public void onStop(Application app) {

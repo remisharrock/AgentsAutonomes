@@ -1,7 +1,13 @@
 package models;
 
-public class ActivatedRecipe {
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
+import play.db.ebean.Model;
+
+public class ActivatedRecipe extends Model {
+
+	private static final long serialVersionUID = 1L;
 	private final Recipe recipe;
 	private final Actor triggerActor;
 	private final Actor actionActor;
