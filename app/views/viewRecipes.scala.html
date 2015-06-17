@@ -58,7 +58,7 @@
 										style="display: none"> </span> <span
 										class='create_recipe_inline_text_block'> <a
 										href='# id='ind_t_channel_ID'
-										ifttt-trigger-channel-button='1' title="@recipe.getTriggerChannel().getName()"> <img
+										ifttt-trigger-channel-button='1' title="@recipe.getRecipe().getTrigger().getName()"> <img
 											alt="NAME" class="channel-list_icon_img"
 											id="channel_1172726678"
 											src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" /></a>
@@ -67,7 +67,7 @@
 									<span
 										style="display: none"> </span> 
 										<span class='create_recipe_inline_text_block'> 
-										<a href='#' id='ind_t_channel_ID'  title="@recipe.getActionChannel().getName()"> 
+										<a href='#' id='ind_t_channel_ID'  title="@recipe.getRecipe().getAction().getName()"> 
 										<img
 											alt="NAME" class="channel-list_icon_img"
 											id="channel_1172726678"
@@ -79,7 +79,7 @@
 						</div>
 						<br>
 						<a class='personal-recipe-manage_description'>
-							@recipe.getTitle() </a>
+							@recipe.getRecipe().getName() </a>
 					</div>
 					<br> 
 
@@ -156,7 +156,7 @@
 					</div>
 				</div>
 			</div>
-			<br> } } else{ You don't have any recipe }
+			<br> } } else{ <p>You don't have any recipe</p> }
 
 
 		</div>
