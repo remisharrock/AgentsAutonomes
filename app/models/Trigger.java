@@ -17,7 +17,7 @@ public class Trigger extends Model {
 
 	public static Model.Finder<Long, Trigger> find = new Finder<Long, Trigger>(Long.class, Trigger.class);
 
-	protected Class<?> clazz;
+	private final Class<?> clazz;
 	/**
 	 * Important to be able to get it from this class because it can simplify
 	 * Recipe contructor.
@@ -58,10 +58,6 @@ public class Trigger extends Model {
 		return clazz;
 	}
 
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
-	}
-
 	public Channel getChannel() {
 		return channel;
 	}
@@ -78,15 +74,7 @@ public class Trigger extends Model {
 		this.description = description;
 	}
 
-	public long getId() {
-		return id;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public List<Modality> getFields() {
+	public List<Modality> getModalities() {
 		return fields;
 	}
 

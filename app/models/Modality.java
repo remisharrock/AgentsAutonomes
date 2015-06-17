@@ -10,6 +10,8 @@ import play.db.ebean.Model;
 /**
  * Can be used in multiple Trigger or Action
  * 
+ * Here we can talk about reified generics.
+ * 
  * @param <T>
  *            BUG you should
  */
@@ -17,12 +19,13 @@ import play.db.ebean.Model;
 public class Modality extends Model {
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private Object value;
 
 	// @Id
 	private long id;
-	private String name;
-	private String description;
+	private final String name;
+	private final Class<?> clazz;
+	private final String description;
 	/**
 	 * Entre nous soit dit c'est très dommage qu'on ne puisse pas avoir des
 	 * modalités qui ne dépendent d'aucune sémantique : les modalités
@@ -33,9 +36,18 @@ public class Modality extends Model {
 	// @ManyToOne(cascade = CascadeType.ALL)
 	private Action action;
 
-	public Modality(String value, String name, String description) {
+	/**
+	 * 
+	 * @param value
+	 * @param clazz
+	 *            should be primitive type
+	 * @param name
+	 * @param description
+	 */
+	public Modality(String value, Class<?> clazz, String name, String description) {
 		this.value = value;
 		this.name = name;
+		this.clazz = clazz;
 		this.description = description;
 	}
 
@@ -43,36 +55,20 @@ public class Modality extends Model {
 	private void setId(long id) {
 	}
 
-	/*
-	 * From here, generated methods.
-	 */
-
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public Class<?> getClazz() {
+		return this.clazz;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getDescription() {
 		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public long getId() {
@@ -83,15 +79,7 @@ public class Modality extends Model {
 		return trigger;
 	}
 
-	public void setTrigger(Trigger trigger) {
-		this.trigger = trigger;
-	}
-
 	public Action getAction() {
 		return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
 	}
 }
