@@ -1,5 +1,4 @@
-@(recipe: Recipe)
-@import java.math.BigInteger; var counter=0; 
+@(recipe: Recipe) @import java.math.BigInteger; var counter=0;
 @main("Validate your recipe") {
 
 <header class='l-header'>
@@ -28,24 +27,21 @@
 			<button type="submit" class="btn">Sign in</button>
 		 -->
 			<!-- Main hero unit for a primary marketing message or call to action -->
-			<br/>
+			<br />
 			<div class="hero-unit">
 				<h1>Validate recipe</h1>
 				<p>Agents Autonomes</p>
 			</div>
-			
-			<div class="step_parent" id="test_and_activate" style="display; block;">
-				<h2 class="composer_section_header">
-				Create and connect
-				</h2>
+
+			<div class="step_parent" id="test_and_activate" style="">
+				<h2 class="composer_section_header">Create and connect</h2>
 				<span class="composer_section_step">step 7 of 7</span>
 			</div>
-			
+
 			<div id=final_statement_here>
 				<div class="statement is-dimmable">
-					<span class="recipe recipe-personal recipe-big is-labeled fittext" style="font-size: 100px;">
-					if
-		<!-- 				<span style="display: none"> </span>
+					<span class="recipe recipe-personal recipe-big is-labeled fittext"
+						style="font-size: 100px;"> if <!-- 				<span style="display: none"> </span>
 						<span style="display: none"> </span>
 						<span class="recipe_trigger">
 							<span class="recipe_component-icon">
@@ -55,12 +51,12 @@
 								<source srcset="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/medium.png"
 								media="(min-width: 720px)">
 								<img src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/regular.png"
-								alt="@recipe.getTriggerChannel().getName()"
+								alt="@recipe.getTriggerChannel().getClazz().getSimpleName()"
 								class="channel-icon">
 								</picture>
 							</span> -->
 							<span class="recipe_coponent-name" style="font-size: 18px;">
-								@recipe.getTriggerChannel().getName()
+								@recipe.getTrigger().getName()
 							</span>
 						
 						
@@ -76,48 +72,43 @@
 								<source srcset="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/medium.png"
 								media="(min-width: 720px)">
 								<img src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/regular.png"
-								alt="@recipe.getActionChannel().getName()"
+								alt="@recipe.getActionChannel().getClazz().getSimpleName()"
 								class="channel-icon">
 								</picture>
 							</span> -->
 							<span class="recipe_coponent-name" style="font-size: 18px;">
-								@recipe.getActionChannel().getName()
+								@recipe.getAction().getName()
 							</span>
 						<!-- </span> -->
 					</span>
 				</div>
 			</div>
-			
+
 			<div class="form-primary">
 				<div class="description_edit">
 					<label class="recipe-edit-label" for="statement_description">
-					Recipe Title
-					</label>
-					<br>
-<!-- 					<textarea class="elastic recipe-edit-desc" cols="40" id="statement_description"
+						Recipe Title </label> <br>
+					<!-- 					<textarea class="elastic recipe-edit-desc" cols="40" id="statement_description"
 					name="statement_description" rows="2" style="overflow: hidden; height: 77px;">
-					If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName()
+					If @recipe.getTriggerChannel().getClazz().getSimpleName(), Then @recipe.getActionChannel().getClazz().getSimpleName()
 					</textarea> -->
-					
-					<input class="span2" type="text" style="width:200px" name="recipeTitle" value="If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName()">
+					<input class="span2" type="text" style="width:500px; height: 50px;" name="recipeTitle" value="If @recipe.getTrigger().getName(), Then @recipe.getAction().getName()">
 					
 <!-- 					<div class="jq-elastic-twin" style="position: absolute; display: none; word-wrap: break-word; white-space: pre-wrap; line-height: 34.560001373291px; padding: 4px 9.88875007629395px; width: 83.0985870361328%; max-width: 579px; left: auto; top: auto; right: auto; bottom: auto; font-size: 23.0400009155273px; font-family: AvenirNextLTW01-Regular, helvetica, arial, sans-serif; font-weight: 400; box-sizing: border-box; border-width: 1px; border-style: solid; border-color: rgb(124, 124, 124) rgb(195, 195, 195) rgb(221, 221, 221);"
 					> If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName() </div>
 					<br> -->
-					
+
 					<div class="clear"></div>
 				</div>
 			</div>
-			
+
 			<p>
 				<input class="btn-primary" data-disable-with="Creating..."
-				id="statement_create_task_submit"
-				name="commit"
-				type="submit"
-				value="Create Recipe">
+					id="statement_create_task_submit" name="commit" type="submit"
+					value="Create Recipe">
 			</p>
-			
-			</form>
-		</div>
+
+		</form>
+	</div>
 </article>
 }

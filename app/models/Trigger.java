@@ -2,86 +2,72 @@ package models;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
-
-
 
 @Entity
 public class Trigger extends Model {
 
 	private static final long serialVersionUID = 1L;
 
+	public static Model.Finder<Long, Trigger> find = new Finder<Long, Trigger>(Long.class, Trigger.class);
+
+	@Column
+	private final Class<?> clazz;
+	/**
+	 * Important to be able to get it from this class because it can simplify
+	 * Recipe contructor.
+	 */
+	@ManyToOne
+	protected Channel channel;
+	@SuppressWarnings("rawtypes")
+	@OneToMany(mappedBy = "trigger")
+	protected List<Modality> fields;
+
 	@Id
 	private long id;
-	
-	@Required
-	private String name;
-	
-	private String description;
-	
-	//private final Class messageRef;
-	
-	
-	@ManyToOne
-	private Channel channel;
-	
-	@OneToOne
-	private String fieldName;
-	
+
+	private final String description;
+
+	private final String name;
+
 	@OneToMany
 	private List<Recipe> recipes;
-	
-	public static Model.Finder<Long, Trigger> find = new Model.Finder<Long, Trigger>(
-			Long.class, Trigger.class);
-	
-//	public Trigger(String name, String description, Class messageRef) {
-//		this.name = name;
-//		this.description = description;
-//		this.messageRef = messageRef;
-//	}
-	
-	public Trigger(String name, String description) {
-		this.name = name;
+
+	public Trigger(@SuppressWarnings("rawtypes") List<Modality> fields, Channel channel, Class<?> clazz, String name,
+			String description) {
+		this.fields = fields;
+		this.clazz = clazz;
+		this.channel = channel;
 		this.description = description;
-	}
-	
-//	public Trigger(String name, Class messageRef) {
-//		this.name = name;
-//		this.messageRef = messageRef;
-//	}
-	
-	public Trigger(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * id should be final, but if so the constructor should set it. This trick
+	 * avoids it.
+	 * 
+	 * @param id
+	 */
+	@SuppressWarnings("unused")
+	private void setId(long id) {
+	}
+
+	/*
+	 * Below, generated methods.
+	 */
+
+	public Class<?> getClazz() {
+		return clazz;
+	}
+
 	public long getId() {
 		return this.id;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-	
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public Channel getChannel() {
@@ -91,17 +77,13 @@ public class Trigger extends Model {
 	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
-	
-//	public Class getMessageRef(){
-//		return messageRef;
-//	}
-	
-	public String getFieldName() {
-		return fieldName;
+
+	public String getDescription() {
+		return description;
 	}
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
+	public List<Modality> getModalities() {
+		return fields;
 	}
 
 	public List<Recipe> getRecipes() {
@@ -112,13 +94,16 @@ public class Trigger extends Model {
 		this.recipes = recipes;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String getFieldName() {
+		return "NYI, method added for compatibility";
+	}
+
 	@Override
 	public String toString() {
-		return "Trigger [id=" + id + ", name=" + name + ", description="
-				+ description + ", channel=" + channel + "]";
+		return "Trigger [id=" + id + ", name=" + name + ", description=" + description + ", channel=" + channel + "]";
 	}
-	
-	
-	
-	
 }

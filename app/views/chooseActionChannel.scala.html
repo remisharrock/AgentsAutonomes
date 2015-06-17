@@ -72,11 +72,11 @@
       channelsSearch["channels_action_search_channels_field"] = [
 		@for(channel <- channels) { 
 			@if(channel.getActions()!=null && channel.getActions().size() > 0){
-				{"value":"@channel.getName()",
-				 "name":"@channel.getName()",
+				{"value":"@channel.getClazz().getSimpleName()",
+				 "name":"@channel.getClazz().getSimpleName()",
 				 "id":@channel.getId(),
 				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
-				 "url":"/@channel.getName()"},
+				 "url":"/@channel.getClazz().getSimpleName()"},
 				}
 			}
 		 ]
@@ -191,7 +191,7 @@
 					<a
 						class="channel-list_icon mod-index-@counter"
 						data-channel_id='@channel.getId()'
-						data-channel_module_name='@channel.getName()' 
+						data-channel_module_name='@channel.getClazz().getSimpleName()' 
 						data-remote
 						data-track-data='{"controller":"statements",
 				   								"action":"new",
@@ -202,11 +202,11 @@
 						href='@routes.Application.chooseAction(channel.getId())'
 						id='ind_t_channel_@channel.getId()'
 						ifttt-action-channel-button='1' title="@channel.getDescription()">
-						<img alt="@channel.getName()" 
+						<img alt="@channel.getClazz().getSimpleName()" 
 						class="channel-list_icon_img"
 						id="channel_1172726678"
 						src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-						@channel.getName() 
+						@channel.getClazz().getSimpleName() 
 						@{counter += 1}
 					</a> 
 					}
