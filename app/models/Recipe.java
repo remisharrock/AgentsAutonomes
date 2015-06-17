@@ -263,7 +263,11 @@ public class Recipe extends Model {
 
 	public void setActionField(Field actionField) {
 		this.actionField = actionField;
-		recipeAkka.getActionMessage().setField(actionField);
+		if (recipeAkka.getActionMessage() != null) {
+			recipeAkka.getActionMessage().setField(actionField);
+		} else {
+			Logger.info("grave: recipe action message null");
+		}
 	}
 
 	public User getUser() {
@@ -416,40 +420,20 @@ public class Recipe extends Model {
 	private MessageEnvelope createMessageFromClassName(String className, RecipeAkka recipe) {
 		String classNameMessage = WordUtils.capitalize(className).replace(" ", "") + "Message";
 		System.out.println("classNameMessage: " + classNameMessage);
-		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage().get(classNameMessage);
-		System.out.println("classtriggerMessage: " + classTriggerMessage);
-		MessageEnvelope message = null;
+		Class<?> classTriggerMessage = null;
 		try {
-			Class<?>[] types = new Class[] { messages.AllMessages.class, RecipeAkka.class };
-			Constructor<?> cst = classTriggerMessage.getConstructor(types);
-			// Constructor c[] = classTriggerMessage.getConstructors();
-			// for(int i = 0; i < c.length; i++) {
-			// System.out.println(c[i]);
-			// }
-			message = (MessageEnvelope) cst.newInstance(messages.AllMessages.getInstance(), recipe);
-			// message = (MessageEnvelope)
-			// classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
+			classTriggerMessage = Class.forName("messages.AllMessages$" + classNameMessage);
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return message;
+		System.out.println("classtriggerMessage: " + classTriggerMessage);
+		try {
+			return (MessageEnvelope) (classTriggerMessage.newInstance());
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override

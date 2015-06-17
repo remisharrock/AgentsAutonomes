@@ -52,7 +52,7 @@ public class AllActors {
 
 		@Override
 		public void onReceive(Object message) throws Exception {
-			System.out.println(AllMessages.getMapClassNameMessage().containsValue(message));
+			System.out.println(message.getClass());
 			System.out.println("class: " + message);
 			MessageEnvelope me = (MessageEnvelope) message;
 			RecipeAkka ra = me.getRecipeAkka();
