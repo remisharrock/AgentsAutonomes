@@ -233,7 +233,7 @@ public class Global extends GlobalSettings {
 			}
 
 			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
-			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+//			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 			// List<User> allUsersFromSameGroup = User
 			// .getAllUsersFromSameGroup(controllers.Application
 			// .getUserLoggedIn().getUserGroup());
