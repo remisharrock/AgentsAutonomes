@@ -162,6 +162,7 @@ public class Recipe extends Model {
 								.getId()) {
 							// it means that there is an actor that exists for
 							// this group of users and this channel
+							System.out.println(RecipeAkka.recipesMap);
 							ActorRef existingActor = RecipeAkka.recipesMap.get(
 									r.getId()).getTriggerChannelActor();
 							recipeAkka.setTriggerChannelActor(existingActor);

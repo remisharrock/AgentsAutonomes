@@ -343,3 +343,26 @@ org.h2.message.DbException: The connection was not closed by the application and
 Caused by: org.h2.jdbc.JdbcSQLException: The connection was not closed by the application and is garbage collected [90018-175]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:332)
 	... 39 more
+06-18 16:54:51 database: close
+org.h2.message.DbException: IO Exception: "java.io.EOFException"; "/Users/mbpr/Desktop/Telecom ParisTech/S2P4/Projet libre/Eclipse/AgentsAutonomes/data/AgentsAutonomes.h2.db" [90031-175]
+	at org.h2.message.DbException.get(DbException.java:161)
+	at org.h2.message.DbException.convertIOException(DbException.java:318)
+	at org.h2.store.FileStore.readFully(FileStore.java:268)
+	at org.h2.store.PageStore.readPage(PageStore.java:1291)
+	at org.h2.store.PageStore.getPage(PageStore.java:738)
+	at org.h2.store.PageStreamTrunk$Iterator.next(PageStreamTrunk.java:250)
+	at org.h2.store.PageLog.free(PageLog.java:209)
+	at org.h2.store.PageStore.compact(PageStore.java:491)
+	at org.h2.engine.Database.closeOpenFilesAndUnlock(Database.java:1257)
+	at org.h2.engine.Database.close(Database.java:1207)
+	at org.h2.engine.DatabaseCloser.run(DatabaseCloser.java:64)
+Caused by: org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.EOFException"; "/Users/mbpr/Desktop/Telecom ParisTech/S2P4/Projet libre/Eclipse/AgentsAutonomes/data/AgentsAutonomes.h2.db" [90031-175]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:332)
+	... 11 more
+Caused by: java.io.EOFException
+	at org.h2.store.fs.FileUtils.readFully(FileUtils.java:343)
+	at org.h2.store.FileStore.readFully(FileStore.java:266)
+	... 8 more
+06-18 16:55:37 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLException: Table "PLAY_EVOLUTIONS" not found; SQL statement:
+select id, hash, apply_script, revert_script, state, last_problem from play_evolutions where state like 'applying_%' [42102-175]
