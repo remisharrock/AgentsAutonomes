@@ -441,7 +441,7 @@ public class Recipe extends Model {
 
 			System.out.println("classActorTrigger: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor), "actorTrigger" + getId());
+					Props.create(classActor, null), "actorTrigger" + getId());
 			return actor;
 		} else if (type.equals("Action")) {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
@@ -453,7 +453,7 @@ public class Recipe extends Model {
 
 			System.out.println("classActorActionr: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor), "actorAction" + getId());
+					Props.create(classActor, null), "actorAction" + getId());
 			return actor;
 		}
 
