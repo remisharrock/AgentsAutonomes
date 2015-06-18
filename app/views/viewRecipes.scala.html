@@ -105,13 +105,8 @@
 					<div class='personal-recipe-manage_meta'>
 						<div class='personal-recipe-manage_buttons'>
 							<span>
-							<div id="statement_create">
+							<div id="statement_create" style="padding-right: 50px">
 									@if(recipe.getActive()){ <a> Recipe ACTIVE </a> 
-<!-- 										<div>
-										<span type="submit" style="float:left; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/toggleImage.png")'); background-size: cover; display: block;"></span>
-										<span style="float:right; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/logImage.png")'); background-size: cover; display: block;"></span>
-										</div> -->
-								
 									<div style="width:130px">
 									<form action="@routes.Application.activateRecipe()">
 
