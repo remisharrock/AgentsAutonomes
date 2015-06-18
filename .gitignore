@@ -7,7 +7,7 @@ activator
 .settings/
 /.sbtserver/
 /logs/
-/data/
+data/
 /project/
 /target/
 export.txt
