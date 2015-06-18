@@ -43,7 +43,7 @@ public class Application extends Controller {
 	public static Result loginForm() {
 		
 		if (userLoggedIn != null) {
-			if (userLoggedIn.getRole() == "administrator")
+			if (userLoggedIn.getRole().equals("administrator"))
 				return administratorView();
 			else
 				return ok(chooseView.render(userLoggedIn));

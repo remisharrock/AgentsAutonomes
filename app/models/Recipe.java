@@ -31,7 +31,6 @@ import akka.actor.Props;
 
 import com.avaje.ebean.Ebean;
 
-@SuppressWarnings("unused")
 @Entity
 public class Recipe extends Model {
 
@@ -53,7 +52,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Trigger trigger;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Field triggerField;
 
 	@ManyToOne
@@ -69,13 +68,12 @@ public class Recipe extends Model {
 	private User user;
 
 	private RecipeAkka recipeAkka;
-	
+
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Log> log;
-	
+
 	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
 			Long.class, Recipe.class);
-	
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
@@ -137,8 +135,8 @@ public class Recipe extends Model {
 		List<User> allUsersFromSameGroup;
 		if (controllers.Application.getUserLoggedIn() == null) {
 			System.out.println("this user: " + this.getUser());
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(this.getUser().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(this
+					.getUser().getUserGroup());
 		} else {
 			allUsersFromSameGroup = User
 					.getAllUsersFromSameGroup(controllers.Application
@@ -223,11 +221,11 @@ public class Recipe extends Model {
 		 * if there isn't => we create our actor if there is => we use the
 		 * created actor
 		 */
-		
+
 		List<User> allUsersFromSameGroup;
 		if (controllers.Application.getUserLoggedIn() == null) {
-			allUsersFromSameGroup = User
-					.getAllUsersFromSameGroup(this.getUser().getUserGroup());
+			allUsersFromSameGroup = User.getAllUsersFromSameGroup(this
+					.getUser().getUserGroup());
 		} else {
 			allUsersFromSameGroup = User
 					.getAllUsersFromSameGroup(controllers.Application
@@ -331,7 +329,8 @@ public class Recipe extends Model {
 
 	public void setTrigger(Trigger trigger) {
 		this.trigger = trigger;
-		MessageEnvelope msg = createMessageFromClassName(trigger.getName(), recipeAkka);
+		MessageEnvelope msg = createMessageFromClassName(trigger.getName(),
+				recipeAkka);
 		System.out.println("msg: " + msg);
 		recipeAkka.setTriggerMessage(msg);
 	}
@@ -342,7 +341,8 @@ public class Recipe extends Model {
 
 	public void setAction(Action action) {
 		this.action = action;
-		recipeAkka.setActionMessage(createMessageFromClassName(action.getName(), recipeAkka));
+		recipeAkka.setActionMessage(createMessageFromClassName(
+				action.getName(), recipeAkka));
 	}
 
 	public RecipeAkka createRecipeAkkaFromRecipe() {
@@ -412,14 +412,12 @@ public class Recipe extends Model {
 
 		System.out.println("Recipe akka action:" + ra.getActionChannelActor());
 
-		
-		
 		ra.setTriggerMessage(createMessageFromClassName(this.getTrigger()
 				.getName(), ra));
-		
+
 		ra.setActionMessage(createMessageFromClassName(this.getAction()
 				.getName(), ra));
-		
+
 		System.out.println("Message: " + ra.getTriggerMessage());
 
 		return ra;
@@ -440,8 +438,8 @@ public class Recipe extends Model {
 			// Class.forName(classNameFull)
 
 			System.out.println("classActorTrigger: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor, null), "actorTrigger" + getId());
+			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
+					"actorTrigger" + getId());
 			return actor;
 		} else if (type.equals("Action")) {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
@@ -452,8 +450,8 @@ public class Recipe extends Model {
 					classNameFull);
 
 			System.out.println("classActorActionr: " + classActor);
-			ActorRef actor = AllActors.system.actorOf(
-					Props.create(classActor, null), "actorAction" + getId());
+			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
+					"actorAction" + getId());
 			return actor;
 		}
 
@@ -461,7 +459,8 @@ public class Recipe extends Model {
 
 	}
 
-	private MessageEnvelope createMessageFromClassName(String className, RecipeAkka recipe) {
+	private MessageEnvelope createMessageFromClassName(String className,
+			RecipeAkka recipe) {
 		String classNameMessage = WordUtils.capitalize(className).replace(" ",
 				"")
 				+ "Message";
@@ -471,14 +470,17 @@ public class Recipe extends Model {
 		System.out.println("classtriggerMessage: " + classTriggerMessage);
 		MessageEnvelope message = null;
 		try {
-			Class<?>[] types = new Class[] { messages.AllMessages.class, RecipeAkka.class };
+			Class<?>[] types = new Class[] { messages.AllMessages.class,
+					RecipeAkka.class };
 			Constructor<?> cst = classTriggerMessage.getConstructor(types);
-//			Constructor c[] = classTriggerMessage.getConstructors();
-//	        for(int i = 0; i < c.length; i++) {
-//	           System.out.println(c[i]);
-//	        }
-			message = (MessageEnvelope) cst.newInstance(messages.AllMessages.getInstance(), recipe);
-//			message = (MessageEnvelope) classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
+			// Constructor c[] = classTriggerMessage.getConstructors();
+			// for(int i = 0; i < c.length; i++) {
+			// System.out.println(c[i]);
+			// }
+			message = (MessageEnvelope) cst.newInstance(
+					messages.AllMessages.getInstance(), recipe);
+			// message = (MessageEnvelope)
+			// classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -498,7 +500,7 @@ public class Recipe extends Model {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return message;
 	}
 
@@ -506,9 +508,8 @@ public class Recipe extends Model {
 	public String toString() {
 		return "Recipe [Id=" + Id + ", title=" + title + ", active=" + active
 				+ ", triggerChannel=" + triggerChannel + ", triggerField="
-				+ triggerField + ", actionChannel=" + actionChannel
-				+ ", "
-//				+ "actionField=" + actionField 
+				+ triggerField + ", actionChannel=" + actionChannel + ", "
+				// + "actionField=" + actionField
 				+ ", user=" + user + "]";
 	}
 
@@ -519,16 +520,16 @@ public class Recipe extends Model {
 	public void setLog(ArrayList<Log> log) {
 		this.log = log;
 	}
-	
+
 	public List<String> getLogReverseOrder() {
 		List<String> logReverse = new LinkedList<String>();
 		for (int i = log.size() - 1; i >= 0; i--) {
 			logReverse.add(log.get(i).getLogInfo());
 		}
-			
+
 		return logReverse;
 	}
-	
+
 	public static Recipe getRecipeById(Long id) {
 		return Recipe.find.byId(id);
 	}
