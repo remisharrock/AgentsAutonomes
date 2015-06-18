@@ -433,10 +433,6 @@ public class Recipe extends Model {
 			System.out.println("classNameTrigger: " + classNameFull);
 			Class<?> classActor = AllActors.getMapClassNameActor().get(
 					classNameFull);
-			/**
-			 * TO DO replace class.forname => to remove hashmap
-			 */
-			// Class.forName(classNameFull)
 
 			System.out.println("classActorTrigger: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
