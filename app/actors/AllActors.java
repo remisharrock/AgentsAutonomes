@@ -7,11 +7,7 @@ import models.RecipeAkka;
 import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;
 
-public class AllActors {
-	private AllActors() {
-    }
-
-	
+public class AllActors {	
 	
 	public final static ActorSystem system = ActorSystem.create("helloakka");
     
@@ -21,8 +17,12 @@ public class AllActors {
 //    public final static ActorRef luminosityDetectorActor = system.actorOf(Props.create(LuminosityDetectorActor.class), "luminosityDetector");
 
 	
-	public class ActorRouter extends UntypedActor {
+	public static class ActorRouter extends UntypedActor {
 		String userGroup = "";
+		
+		public ActorRouter() {
+			
+		}
 		
 		public ActorRouter(String userGroup) {
 			this.userGroup = userGroup;
@@ -32,8 +32,6 @@ public class AllActors {
 			this.userGroup = userGroup;
 		}
 		
-		public ActorRouter() {
-		}
 			
 		@Override
 		public void onReceive(Object message) throws Exception {
@@ -46,7 +44,7 @@ public class AllActors {
 		
 	}
 	
-	public class HumanActor extends UntypedActor {
+	public static class HumanActor extends UntypedActor {
         String state = "";
         String id;
         public HumanActor(String id) {
@@ -61,7 +59,7 @@ public class AllActors {
         }
     }
 	
-	public class DetectorActor extends UntypedActor {
+	public static class DetectorActor extends UntypedActor {
 	
 			
 		String state = "";
@@ -98,7 +96,7 @@ public class AllActors {
 		}
 	}
 	
-	public class LampActor extends UntypedActor {
+	public static class LampActor extends UntypedActor {
         public String state = "OFF";
         
 
@@ -135,7 +133,7 @@ public class AllActors {
         }
     }
 	
-	public class LuminosityDetectorActor extends UntypedActor {
+	public static class LuminosityDetectorActor extends UntypedActor {
 
 		String id;
 		public LuminosityDetectorActor(String id) {
