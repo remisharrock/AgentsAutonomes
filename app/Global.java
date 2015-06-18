@@ -6,6 +6,7 @@ import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
+import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
 import models.Trigger;
@@ -17,6 +18,8 @@ import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
+import controllers.SystemController;
+
 public class Global extends GlobalSettings {
 
 	public void onStart(Application app) {
@@ -26,7 +29,7 @@ public class Global extends GlobalSettings {
 		System.out.println("test");
 		System.out.println("TESTING THE DATABASE LOAD");
 
-		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
 			List<Field> fieldsList = Ebean.find(Field.class).findList();
 			// channelsList.removeAll(channelsList);
@@ -84,6 +87,7 @@ public class Global extends GlobalSettings {
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
+			human.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png");
 			human.save();
 
 			Action humanEnterRoomAction = new Action("Enter room");
@@ -100,11 +104,12 @@ public class Global extends GlobalSettings {
 
 			// PRESENCE DETECTOR CHANNEL
 			Channel detector = new Channel("Detector", "Detects humans");
+			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
 			// "Trigger description", AllMessages.DetectionOn.class);
-			Trigger detectorTrigger1 = new Trigger("Presence Trigger",
+			Trigger detectorTrigger1 = new Trigger("Detection On",
 					"Trigger description");
 			// detector.getTriggers().add(detectorTrigger1);
 			detectorTrigger1.setChannel(detector);
@@ -127,6 +132,7 @@ public class Global extends GlobalSettings {
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector",
 					"Detects luminosity");
+			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
 			// Keep in mind to change null pointer for messages
@@ -137,22 +143,11 @@ public class Global extends GlobalSettings {
 			detectorTrigger12.setChannel(luminosityDetector);
 			detectorTrigger12.save();
 
-//			Field field = new Field((new String("Field name " + 0)),
-//					new String("Field description " + 0123));
-//			field.setTrigger(detectorTrigger12);
-//			field.save();
+
 
 			detectorTrigger12.save();
 
-			// List<Field> fields = new ArrayList<Field>();
-			// for (int i = 0; i < 2; i++) {
-			// Field field = new Field((new String("Field name " + i)), new
-			// String("Field description " + i));
-			// field.setTrigger(detectorTrigger12);
-			// field.save();
-			// fields.add(field);
-			//
-			// }
+
 
 			Trigger detectorTrigger13 = new Trigger("Non light Trigger", null);
 			// luminosityDetector.getTriggers().add(detectorTrigger13);
@@ -205,9 +200,11 @@ public class Global extends GlobalSettings {
 
 			// LAMP CHANNEL
 			Channel lamp = new Channel("Lamp", "I am a Lamp");
+			lamp.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/637201122/icons/regular.png");
 			lamp.save();
 
 			Action lampAction1 = new Action("Turn on lamp");
+			lampAction1.setFieldName("Lamp Color");
 			lamp.getActions().add(lampAction1);
 			lampAction1.setChannel(lamp);
 			lampAction1.save();
@@ -225,17 +222,23 @@ public class Global extends GlobalSettings {
 			rec.setUser(user1);
 			rec.setTriggerChannel(detector);
 			rec.setTrigger(detectorTrigger1);
-			rec.setTriggerField(new Field("toto","tata"));
+			Field f1 = new Field("toto","tata");
+			f1.save();
+			rec.setTriggerField(f1);
+			
 			rec.setActionChannel(lamp);
 			rec.setAction(lampAction2);
-			rec.setActionField(null);
+			Field f2 = new Field("lamp color","red");
+			f2.save();
+			rec.setActionField(f2);
 			rec.setActive(true);
+			rec.setLog(new ArrayList<Log>());
 			rec.save();
-
+			
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
-		} else {
+//		} else {
 			/**
 			 * In this case we already have recipes on our database But those
 			 * recipes won't have their equivalent in akka So we should iterate
@@ -243,13 +246,18 @@ public class Global extends GlobalSettings {
 			 * recipeAkka for each
 			 */
 
+			// Create actor router for all the user groups that we have
+			//SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+			//System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+			
 			// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 			for (Recipe r : Ebean.find(Recipe.class).findList()) {
 				System.out.println("Creating akka recipe from recipe...");
-				RecipeAkka.recipesMap.put(r.getId(),
-						r.createRecipeAkkaFromRecipe());
+				RecipeAkka.recipesMap.put(r.getId(), r.createRecipeAkkaFromRecipe());
 			}
 
+			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
+			//SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 			// List<User> allUsersFromSameGroup = User
 			// .getAllUsersFromSameGroup(controllers.Application
 			// .getUserLoggedIn().getUserGroup());
@@ -261,7 +269,7 @@ public class Global extends GlobalSettings {
 //test
 		}
 
-	}
+//	}
 
 	public void onStop(Application app) {
 		Logger.info("Application shutdown...");

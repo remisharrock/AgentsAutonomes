@@ -28,6 +28,8 @@ public class Channel extends Model {
 	
 	private String description;
 	
+	private String logo;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Trigger> triggers;
 	
@@ -35,11 +37,11 @@ public class Channel extends Model {
 	private List<Action> actions;
 	
 	//RECIPES WHERE THE CHANNEL IS A TRIGGER
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="triggerChannel")
 	private List<Recipe> triggerRecipes;
 	
 	//RECIPES WHERE THE CHANNEL IS AN ACTION
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="actionChannel")
 	private List<Recipe> actionRecipes;
 	
 	public static Model.Finder<Long, Channel> find = new Model.Finder<Long, Channel>(
@@ -81,6 +83,13 @@ public class Channel extends Model {
 		this.description = description;
 	}
 	
+	public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
 
 	public List<Trigger> getTriggers() {
 		return triggers;
@@ -116,6 +125,14 @@ public class Channel extends Model {
 
 	public Channel getChannelFromId(long id){
 		return Ebean.find(Channel.class, id);
+	}
+	
+	public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
 	}
 
 	@Override

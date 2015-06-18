@@ -565,3 +565,17 @@ body {
 	{
 	width: 100%
 }
+
+
+
+.buttonsContainer {
+	height:100%;
+}
+.myButtonView {
+	float:left;
+	height: 200px;
+}
+.myButtonCreate {
+	float:right;
+	height: 200px;
+}

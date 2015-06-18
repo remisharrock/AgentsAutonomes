@@ -1,5 +1,7 @@
 package models;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import messages.AllMessages;
+import messages.AllMessages.MessageEnvelope;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -50,7 +53,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Trigger trigger;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
 	private Field triggerField;
 
 	@ManyToOne
@@ -59,7 +62,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Action action;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Field actionField;
 
 	@ManyToOne
@@ -67,12 +70,15 @@ public class Recipe extends Model {
 
 	private RecipeAkka recipeAkka;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Log> log;
 	
-	private List<String> log;
+	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
+			Long.class, Recipe.class);
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
-		log = new ArrayList<String>();
+		log = new ArrayList<Log>();
 		recipeAkka = new RecipeAkka();
 	}
 
@@ -191,6 +197,9 @@ public class Recipe extends Model {
 
 	public void setTriggerField(Field triggerField) {
 		this.triggerField = triggerField;
+
+		System.out.println("im here: " + recipeAkka.getTriggerMessage());
+		recipeAkka.getTriggerMessage().setField(triggerField);
 	}
 
 	public Channel getActionChannel() {
@@ -276,6 +285,7 @@ public class Recipe extends Model {
 
 	public void setActionField(Field actionField) {
 		this.actionField = actionField;
+		recipeAkka.getActionMessage().setField(actionField);
 	}
 
 	public User getUser() {
@@ -320,6 +330,9 @@ public class Recipe extends Model {
 
 	public void setTrigger(Trigger trigger) {
 		this.trigger = trigger;
+		MessageEnvelope msg = createMessageFromClassName(trigger.getName(), recipeAkka);
+		System.out.println("msg: " + msg);
+		recipeAkka.setTriggerMessage(msg);
 	}
 
 	public Action getAction() {
@@ -328,6 +341,7 @@ public class Recipe extends Model {
 
 	public void setAction(Action action) {
 		this.action = action;
+		recipeAkka.setActionMessage(createMessageFromClassName(action.getName(), recipeAkka));
 	}
 
 	public RecipeAkka createRecipeAkkaFromRecipe() {
@@ -397,8 +411,14 @@ public class Recipe extends Model {
 
 		System.out.println("Recipe akka action:" + ra.getActionChannelActor());
 
+		
+		
 		ra.setTriggerMessage(createMessageFromClassName(this.getTrigger()
-				.getName()));
+				.getName(), ra));
+		
+		ra.setActionMessage(createMessageFromClassName(this.getAction()
+				.getName(), ra));
+		
 		System.out.println("Message: " + ra.getTriggerMessage());
 
 		return ra;
@@ -421,7 +441,9 @@ public class Recipe extends Model {
 			System.out.println("classActorTrigger: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(
 					Props.create(classActor, null), "actorTrigger" + getId());
+
 			return actor;
+
 		} else if (type.equals("Action")) {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
 					"")
@@ -433,6 +455,7 @@ public class Recipe extends Model {
 			System.out.println("classActorActionr: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(
 					Props.create(classActor, null), "actorAction" + getId());
+
 			return actor;
 		}
 
@@ -440,14 +463,45 @@ public class Recipe extends Model {
 
 	}
 
-	private Object createMessageFromClassName(String className) {
+	private MessageEnvelope createMessageFromClassName(String className, RecipeAkka recipe) {
 		String classNameMessage = WordUtils.capitalize(className).replace(" ",
 				"")
 				+ "Message";
 		System.out.println("classNameMessage: " + classNameMessage);
 		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage()
 				.get(classNameMessage);
-		return classTriggerMessage;
+		System.out.println("classtriggerMessage: " + classTriggerMessage);
+		MessageEnvelope message = null;
+		try {
+			Class<?>[] types = new Class[] { messages.AllMessages.class, RecipeAkka.class };
+			Constructor<?> cst = classTriggerMessage.getConstructor(types);
+//			Constructor c[] = classTriggerMessage.getConstructors();
+//	        for(int i = 0; i < c.length; i++) {
+//	           System.out.println(c[i]);
+//	        }
+			message = (MessageEnvelope) cst.newInstance(messages.AllMessages.getInstance(), recipe);
+//			message = (MessageEnvelope) classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return message;
 	}
 
 	@Override
@@ -455,23 +509,30 @@ public class Recipe extends Model {
 		return "Recipe [Id=" + Id + ", title=" + title + ", active=" + active
 				+ ", triggerChannel=" + triggerChannel + ", triggerField="
 				+ triggerField + ", actionChannel=" + actionChannel
-				+ ", actionField=" + actionField + ", user=" + user + "]";
+				+ ", "
+//				+ "actionField=" + actionField 
+				+ ", user=" + user + "]";
 	}
 
-	public List<String> getLog() {
+	public List<Log> getLog() {
 		return log;
 	}
 
-	public void setLog(List<String> log) {
+	public void setLog(ArrayList<Log> log) {
 		this.log = log;
 	}
 	
 	public List<String> getLogReverseOrder() {
 		List<String> logReverse = new LinkedList<String>();
-		ListIterator<String> i = log.listIterator(log.size());
-		while(i.hasPrevious())
-			logReverse.add(i.previous());
+		for (int i = log.size() - 1; i >= 0; i--) {
+			logReverse.add(log.get(i).getLogInfo());
+		}
+			
 		return logReverse;
+	}
+	
+	public static Recipe getRecipeById(Long id) {
+		return Recipe.find.byId(id);
 	}
 
 }

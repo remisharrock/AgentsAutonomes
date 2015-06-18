@@ -15,6 +15,7 @@ create table channel (
   id                        bigint not null,
   name                      varchar(255),
   description               varchar(255),
+  logo               		varchar(255),
   constraint pk_channel primary key (id))
 ;
 
