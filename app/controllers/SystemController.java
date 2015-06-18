@@ -24,13 +24,16 @@ public class SystemController {
 		return instance;
 	}
 	
-	public void createActorRouterMap(ArrayList<String> userGroups) {
+	/*public void createActorRouterMap(ArrayList<String> userGroups) {
 		for (String groupName: userGroups) {
+			
 			ActorRef actor = AllActors.system.actorOf(
 					Props.create(AllActors.ActorRouter.class), groupName);
 			userGroupActorRouterMap.put(groupName, actor);
+			
+			
 		}
-	}
+	}*/
 
 	public HashMap<String, ActorRef> getUserGroupActorRouterMap() {
 		return userGroupActorRouterMap;

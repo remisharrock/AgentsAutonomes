@@ -2,39 +2,40 @@
 @import java.math.BigInteger; var counter=0; 
 @main("Choose your action") {
 
-
 <header class='l-header'>
-	<div class='l-site-header'>
-		<div class='l-site-header-menus is-closed' id='site-header-menus'>
-			<div class='l-site-header-menus-inner'>
-				<nav class='l-site-header-flexible-nav'>
-				<ul class='nav nav-site is-authenticated'>
-					<form class="navbar-form pull-right"
-						action="@routes.Application.userLogOut()"> 
-						<button type="submit" class="btn" name="HomeButton"class="btn"> Home </button>
-						<button type="submit" class="btn" name="LogOutButton"> Log out </button>
-					</form> <br>
-				</ul></nav>
+	<!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
+		rel="stylesheet" type="text/css"> -->
+	<div class="row1">
+		<div class="small-12 medium-4 large-6 columns namelogo">
+			<h2 font-family= "Times New Roman">Agents Autonomes</h2>
+		</div>
+		<div class="small-12 medium-8 large-6 columns">
+			<div class="nav-bar">
+				<ul class="button-group">
+					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
+					<li><a href="@routes.Application.userLogOut()" class="button">Log out</a></li>
+				</ul>
 			</div>
 		</div>
 	</div>
 </header>
 
-<article class="l-page-content">
-	<div id="statement_create">
-		<form class="navbar-form pull-right"
-			action="@routes.Application.submitForm()">
-			<!-- <input class="span2" type="text" placeholder="Email"> <input
-				class="span2" type="password" placeholder="Password">
-			<button type="submit" class="btn">Sign in</button>
-		 -->
-			<!-- Main hero unit for a primary marketing message or call to action -->
-			<br/>
-			<div class="hero-unit">
-				<h1>Choose your action</h1>
-				<p>Agents Autonomes</p>
-			</div>
-			
+	<article class="l-page-content">
+		<div id="statement_create">
+			<form class="navbar-form pull-right">
+				<!-- Main hero unit for a primary marketing message or call to action -->
+				<br />
+				<div class="hero">
+					<div class="row">
+
+						 <div class="large-12 columns intro-text">
+						 <!-- <p>What do you want to do?</p> -->
+							<h2>Create your recipe</h2>
+						</div> 
+					</div>
+				</div>
+			</form>
+
 			
 			<div class='is-dimmable'> 
 			<h2 class='composer_section_header'>

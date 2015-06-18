@@ -10638,14 +10638,12 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 @media ( min-width : 720px) {
 	.non-forced-fullwidth .personal-recipe-manage_buttons {
 		float: right;
-		clear: both;
-		padding-right:70px;
+		clear: both
 	}
 	.non-forced-fullwidth .personal-recipe-manage_buttons:after {
 		content: "";
 		display: table;
-		clear: both;
-		padding-right:70px;
+		clear: both
 	}
 }
 

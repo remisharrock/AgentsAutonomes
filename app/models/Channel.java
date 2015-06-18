@@ -126,6 +126,14 @@ public class Channel extends Model {
 	public Channel getChannelFromId(long id){
 		return Ebean.find(Channel.class, id);
 	}
+	
+	public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
 
 	@Override
 	public String toString() {
