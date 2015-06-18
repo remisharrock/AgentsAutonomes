@@ -1,4 +1,5 @@
-@(user: User) @main("Agents autonomes") {
+@(user: User) 
+@main("Agents autonomes") {
 
 
 
@@ -14,81 +15,18 @@
 				<div class='l-site-header-menus-inner'>
 					<nav class='l-site-header-flexible-nav'>
 						<ul class='nav nav-site is-authenticated'>
-							<form class="navbar-form pull-right"
-								action="@routes.Application.userLogOut()">
+							<form class="navbar-form pull-right" action="@routes.Application.userLogOut()">
 								<button type="submit" class="btn" name="HomeButton" class="btn">
 									Home</button>
 								<button type="submit" class="btn" name="LogOutButton">
 									Log out</button>
 							</form>
-							<br>
+							<br/>
 						</ul>
 					</nav>
 				</div>
 			</div>
 		</div>
-<<<<<<< HEAD
-	</div>
-
-	<div class='l-page-header'>
-		<div class='l-page-header-inner'>
-			<div class='is-alone l-page-title-unit'>
-				<div class="hero-unit">
-				<h1>Your Recipes</h1>
-				<p>Hello @user.getUsername()</p>
-			</div>
-			</div>
-		</div>
-	</div>
-</header>
-
-<br>
-<article class='l-page-content'>
-<div id='statements'>
-
-@if(user.getRecipes()!=null && user.getRecipes().size() > 0){
-	@for(recipe <- user.getRecipes()) { 
-		
-	<div class='page-item'><div class='personal-recipe-manage' id='statement_24079820'>
-		<div class='build_size' id='start'>
-			<div class='is-dimmable'>
-				<span class='create_recipe_inline_text_block'>if</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
-						data-channel_id='ID'
-						data-channel_module_name='NAME'
-						data-remote
-						data-track-data='{"controller":"statements",
-				   								"action":"new",
-				   								"channel_id":ID,
-				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
-				   								"channel_type":"trigger"}'
-						data-track-event='scr_choose_channel'
-						href='choose_trigger?channel_id=ID'
-						id='ind_t_channel_ID'
-						ifttt-trigger-channel-button='1' 
-						title=@recipe.getTriggerChannel.getName()>
-						<img alt=@recipe.getTriggerChannel.getName() 
-						class="channel-list_icon_img"
-						id="channel_1172726678"
-						src=@recipe.getTriggerChannel().getLogo() /></a> <span style="display: none"> </span> </span></span><span class='create_recipe_inline_text_block'>then</span><span style="display: none"> </span> <span class='create_recipe_inline_text_block'><a
-						data-channel_id='ID'
-						data-channel_module_name=@recipe.getActionChannel.getName()
-						data-remote
-						data-track-data='{"controller":"statements",
-				   								"action":"new",
-				   								"channel_id":ID,
-				   								"funnel":{"primary":"new_statement","primary_id":"db36321c68cac267d854ea41f669ea7d"},
-				   								"channel_type":"trigger"}'
-						data-track-event='scr_choose_channel'
-						href='choose_trigger?channel_id=ID'
-						id='ind_t_channel_ID'
-						ifttt-trigger-channel-button='1' 
-						title=@recipe.getActionChannel.getName()>
-						<img alt=@recipe.getActionChannel.getName()
-						class="channel-list_icon_img"
-						id="channel_1172726678"
-						src=@recipe.getActionChannel().getLogo() />
-					</a></span>		
-=======
 
 		<div class='l-page-header'>
 			<div class='l-page-header-inner'>
@@ -98,7 +36,6 @@
 						<p>Hello @user.getUsername()</p>
 					</div>
 				</div>
->>>>>>> cf9258c2ae7336078ed1851370a9c6523a3dbed3
 			</div>
 		</div>
 	</header>
@@ -219,7 +156,9 @@
 					</div>
 				</div>
 			</div>
-			<br> } } else{ You don't have any recipe }
+			<br> 
+			} 
+			} else{ You don't have any recipe }
 
 
 		</div>
