@@ -1,10 +1,13 @@
 bin/
 .classpath
 .project
+activator-launch-1.2.10.jar
+activator
 /.sbtserver/
 .settings/
 /.sbtserver/
 /logs/
+/data/
 /project/
 /target/
 export.txt
