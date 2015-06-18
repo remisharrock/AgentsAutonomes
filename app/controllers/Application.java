@@ -254,6 +254,7 @@ public class Application extends Controller {
 		// actionChannel.setActionRecipes(actionChannel.getActionRecipes());
 		// actionChannel.save();
 
+		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 		recipe.save();
