@@ -86,6 +86,7 @@ public class Global extends GlobalSettings {
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
+			human.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png");
 			human.save();
 
 			Action humanEnterRoomAction = new Action("Enter room");
@@ -102,6 +103,7 @@ public class Global extends GlobalSettings {
 
 			// PRESENCE DETECTOR CHANNEL
 			Channel detector = new Channel("Detector", "Detects humans");
+			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
@@ -129,6 +131,7 @@ public class Global extends GlobalSettings {
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector",
 					"Detects luminosity");
+			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
 			// Keep in mind to change null pointer for messages
@@ -196,6 +199,7 @@ public class Global extends GlobalSettings {
 
 			// LAMP CHANNEL
 			Channel lamp = new Channel("Lamp", "I am a Lamp");
+			lamp.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/637201122/icons/regular.png");
 			lamp.save();
 
 			Action lampAction1 = new Action("Turn on lamp");

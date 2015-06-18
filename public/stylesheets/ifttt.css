@@ -10638,14 +10638,12 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 @media ( min-width : 720px) {
 	.non-forced-fullwidth .personal-recipe-manage_buttons {
 		float: right;
-		clear: both;
-		padding-right:70px;
+		clear: both
 	}
 	.non-forced-fullwidth .personal-recipe-manage_buttons:after {
 		content: "";
 		display: table;
-		clear: both;
-		padding-right:70px;
+		clear: both
 	}
 }
 
@@ -11907,7 +11905,6 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 }
 
 #start a, .fittext a {
-	color: #3cf;
 	cursor: pointer;
 	position: relative;
 	text-decoration: none;
@@ -11917,7 +11914,6 @@ html .tf-checkbox-with-label .tf-checkbox-label {
 #start a:after, .fittext a:after {
 	content: "";
 	display: block;
-	background-color: #3cf;
 	position: absolute;
 	bottom: 10%;
 	height: 7%;
