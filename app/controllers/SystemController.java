@@ -26,9 +26,12 @@ public class SystemController {
 	
 	public void createActorRouterMap(ArrayList<String> userGroups) {
 		for (String groupName: userGroups) {
+			
 			ActorRef actor = AllActors.system.actorOf(
 					Props.create(AllActors.ActorRouter.class, groupName), groupName);
 			userGroupActorRouterMap.put(groupName, actor);
+			
+			
 		}
 	}
 

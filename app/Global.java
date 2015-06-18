@@ -87,6 +87,7 @@ public class Global extends GlobalSettings {
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
+			human.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png");
 			human.save();
 
 			Action humanEnterRoomAction = new Action("Enter room");
@@ -103,6 +104,7 @@ public class Global extends GlobalSettings {
 
 			// PRESENCE DETECTOR CHANNEL
 			Channel detector = new Channel("Detector", "Detects humans");
+			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
@@ -130,6 +132,7 @@ public class Global extends GlobalSettings {
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector",
 					"Detects luminosity");
+			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
 			// Keep in mind to change null pointer for messages
@@ -197,6 +200,7 @@ public class Global extends GlobalSettings {
 
 			// LAMP CHANNEL
 			Channel lamp = new Channel("Lamp", "I am a Lamp");
+			lamp.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/637201122/icons/regular.png");
 			lamp.save();
 
 			Action lampAction1 = new Action("Turn on lamp");
@@ -244,8 +248,8 @@ public class Global extends GlobalSettings {
 			 */
 
 			// Create actor router for all the user groups that we have
-			SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-			System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+			//SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+			//System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
 			
 			// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 			for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -253,8 +257,8 @@ public class Global extends GlobalSettings {
 				RecipeAkka.recipesMap.put(r.getId(), r.createRecipeAkkaFromRecipe());
 			}
 
-			Recipe r = Ebean.find(Recipe.class).findList().get(0);
-			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
+			//SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 			// List<User> allUsersFromSameGroup = User
 			// .getAllUsersFromSameGroup(controllers.Application
 			// .getUserLoggedIn().getUserGroup());
