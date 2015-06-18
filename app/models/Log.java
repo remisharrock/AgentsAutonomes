@@ -12,14 +12,15 @@ public class Log extends Model {
 
 	@Id
 	private long id;
-
+	
 	private String logInfo;
-
+	
 	@ManyToOne
-	private BindedRecipe bindedRecipe;
-
-	public static Model.Finder<Long, Log> find = new Model.Finder<Long, Log>(Long.class, Log.class);
-
+	private Recipe recipe;
+	
+	public static Model.Finder<Long, Log> find = new Model.Finder<Long, Log>(
+			Long.class, Log.class);
+	
 	public Log(String logInfo) {
 		this.logInfo = logInfo;
 	}
@@ -40,12 +41,14 @@ public class Log extends Model {
 		this.logInfo = logInfo;
 	}
 
-	public BindedRecipe getRecipe() {
-		return bindedRecipe;
+	public Recipe getRecipe() {
+		return recipe;
 	}
 
-	public void setRecipe(BindedRecipe recipe) {
-		this.bindedRecipe = recipe;
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
 	}
+	
+	
 
 }

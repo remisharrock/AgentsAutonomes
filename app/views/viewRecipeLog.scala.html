@@ -1,4 +1,4 @@
-@(user: User, recipe: BindedRecipe)
+@(user: User, recipe: Recipe)
 @main("Agents autonomes") {
 
 <!DOCTYPE html>
@@ -26,7 +26,7 @@
 		<div class='l-page-header-inner'>
 			<div class='is-alone l-page-title-unit'>
 				<div class="hero-unit">
-				<h1>Log for recipe: @recipe.getRecipe().getName() </h1>
+				<h1>Log for recipe: @recipe.getTitle() </h1>
 				<p>Hello @user.getUsername()</p>
 			</div>
 			</div>

@@ -80,11 +80,11 @@
       channelsSearch["channels_trigger_search_channels_field"] = [
 		@for(channel <- channels) {   
 			@if(channel.getTriggers().size() > 0){
-				{"value":"@channel.getClazz().getSimpleName()",
-				 "name":"@channel.getClazz().getSimpleName()",
+				{"value":"@channel.getName()",
+				 "name":"@channel.getName()",
 				 "id":@channel.getId(),
 				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
-				 "url":"/@channel.getClazz().getSimpleName()"},
+				 "url":"/@channel.getName()"},
 				}
 			}
 		 ]
@@ -232,7 +232,7 @@
 						@if(channel.getTriggers().size() > 0){ <a
 							class="mod-index-@counter channel-list_icon"
 							data-channel_id='@channel.getId()'
-							data-channel_module_name='@channel.getClazz().getSimpleName()' data-remote
+							data-channel_module_name='@channel.getName()' data-remote
 							data-track-data='{"controller":"statements",
 				   								"action":"new",
 				   								"channel_id":@channel.getId(),
@@ -243,10 +243,10 @@
 							id='ind_t_channel_@channel.getId()'
 							ifttt-trigger-channel-button='1'
 							title="@channel.getDescription()"> <img
-							alt="@channel.getClazz().getSimpleName()" class="channel-list_icon_img"
+							alt="@channel.getName()" class="channel-list_icon_img"
 							id="channel_1172726678"
 							src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/28/icons/regular.png" />
-							@channel.getClazz().getSimpleName()
+							@channel.getName()
 							@{counter += 1}
 						</a> } }
 					</div>
