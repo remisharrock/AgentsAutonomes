@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 import messages.AllMessages;
 import models.Action;
 import models.Channel;
@@ -29,20 +30,23 @@ public class Global extends GlobalSettings {
 		System.out.println("test");
 		System.out.println("TESTING THE DATABASE LOAD");
 
-		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+		
 
-			List<Field> fieldsList = Ebean.find(Field.class).findList();
-			// channelsList.removeAll(channelsList);
-			for (Field f : fieldsList) {
-				System.out.println("deleting field...: " + f);
-				f.delete();
-			}
+			
 			
 			List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 			// channelsList.removeAll(channelsList);
 			for (Recipe r : recipesList) {
 				System.out.println(r);
 				r.delete();
+			}
+			
+			List<Field> fieldsList = Ebean.find(Field.class).findList();
+			// channelsList.removeAll(channelsList);
+			for (Field f : fieldsList) {
+				System.out.println("deleting field...: " + f);
+				f.delete();
 			}
 
 			List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
@@ -81,9 +85,31 @@ public class Global extends GlobalSettings {
 			// Users
 			User user1 = new User("1", "1", "user", "home1");
 			user1.save();
-
-			User user2 = new User("2", "2", "administrator", "home1");
+			
+			User user11 = new User("11", "11", "user", "home1");
+			user11.save();
+			
+			User user111 = new User("11", "11", "user", "home1");
+			user111.save();
+			
+			
+			User user2 = new User("2", "2", "user", "home2");
 			user2.save();
+			
+			User user22 = new User("22", "22", "user", "home2");
+			user22.save();
+			
+			User user222 = new User("222", "222", "user", "home2");
+			user222.save();
+			
+			
+			
+			
+
+			User admin = new User("admin", "admin", "administrator", "admin1");
+			admin.save();
+			
+			
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
@@ -107,27 +133,12 @@ public class Global extends GlobalSettings {
 			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
-			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
-			// "Trigger description", AllMessages.DetectionOn.class);
+			
 			Trigger detectorTrigger1 = new Trigger("Detection On",
 					"Trigger description");
-			// detector.getTriggers().add(detectorTrigger1);
 			detectorTrigger1.setChannel(detector);
 			detectorTrigger1.save();
-//			Field f = new Field("My Field", "My description");
-//			f.setTrigger(detectorTrigger1);
-//			f.save();
-//			detectorTrigger1.setField(f);
-			detectorTrigger1.save();
-
-			// // Trigger detectorTrigger2 = new Trigger("Non presence Trigger",
-			// AllMessages.DetectionOff.class);
-			// Trigger detectorTrigger2 = new Trigger("Non presence Trigger");
-			// // detector.getTriggers().add(detectorTrigger2);
-			// detectorTrigger2.setChannel(detector);
-			// detectorTrigger2.save();
-			//
-			// detector.save();
+		
 
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector",
@@ -135,9 +146,7 @@ public class Global extends GlobalSettings {
 			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
-			// Keep in mind to change null pointer for messages
-			// Trigger detectorTrigger12 = new Trigger("Light Trigger",
-			// "Trigger description 00000", null);
+
 			Trigger detectorTrigger12 = new Trigger("Light Trigger",
 					"Trigger description 00000");
 			detectorTrigger12.setChannel(luminosityDetector);
@@ -145,53 +154,20 @@ public class Global extends GlobalSettings {
 
 
 
-			detectorTrigger12.save();
-
-
-
 			Trigger detectorTrigger13 = new Trigger("Non light Trigger", null);
-			// luminosityDetector.getTriggers().add(detectorTrigger13);
 			detectorTrigger13.setChannel(luminosityDetector);
 			detectorTrigger13.save();
 
-			// Trigger detectorTrigger14 = new Trigger("Light Trigger1",
-			// "Trigger description", null);
+			
 			Trigger detectorTrigger14 = new Trigger("Light Trigger1",
 					"Trigger description");
-			// luminosityDetector.getTriggers().add(detectorTrigger14);
 			detectorTrigger14.setChannel(detector);
 			detectorTrigger14.save();
 
-			// Trigger detectorTrigger15 = new Trigger("Light Trigger2",
-			// "Trigger description", null);
 			Trigger detectorTrigger15 = new Trigger("Light Trigger2",
 					"Trigger description");
-			// luminosityDetector.getTriggers().add(detectorTrigger15);
 			detectorTrigger15.setChannel(detector);
 			detectorTrigger15.save();
-
-			// Trigger detectorTrigger16 = new Trigger("Light Trigger3",
-			// "Trigger description", null);
-			Trigger detectorTrigger16 = new Trigger("Light Trigger3",
-					"Trigger description");
-			// luminosityDetector.getTriggers().add(detectorTrigger16);
-			detectorTrigger16.setChannel(detector);
-			detectorTrigger16.save();
-
-			// Trigger detectorTrigger17 = new Trigger("Light Trigger",
-			// "Trigger description", null);
-			Trigger detectorTrigger17 = new Trigger("Light Trigger4",
-					"Trigger description");
-			// luminosityDetector.getTriggers().add(detectorTrigger17);
-			detectorTrigger17.setChannel(detector);
-			detectorTrigger17.save();
-
-			//
-			Trigger detectorTrigger18 = new Trigger("Light Trigger5",
-					"Trigger description");
-			// luminosityDetector.getTriggers().add(detectorTrigger18);
-			detectorTrigger18.setChannel(detector);
-			detectorTrigger18.save();
 
 			detector.save();
 			luminosityDetector.save();
@@ -238,7 +214,7 @@ public class Global extends GlobalSettings {
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
-		} else {
+//		} else {
 			/**
 			 * In this case we already have recipes on our database But those
 			 * recipes won't have their equivalent in akka So we should iterate
@@ -257,7 +233,7 @@ public class Global extends GlobalSettings {
 			}
 
 			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
-			//SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 			// List<User> allUsersFromSameGroup = User
 			// .getAllUsersFromSameGroup(controllers.Application
 			// .getUserLoggedIn().getUserGroup());
@@ -269,7 +245,7 @@ public class Global extends GlobalSettings {
 //test
 		}
 
-	}
+//	}
 
 	public void onStop(Application app) {
 		Logger.info("Application shutdown...");

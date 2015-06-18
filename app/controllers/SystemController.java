@@ -34,16 +34,6 @@ public class SystemController {
 			
 		}
 	}
-
-	public HashMap<String, ActorRef> getUserGroupActorRouterMap() {
-		return userGroupActorRouterMap;
-	}
-
-	public void setUserGroupActorRouterMap(
-			HashMap<String, ActorRef> userGroupActorRouterMap) {
-		this.userGroupActorRouterMap = userGroupActorRouterMap;
-	}
-	
 	
 	
 	
