@@ -66,7 +66,7 @@
 								</picture>
 							</span> -->
 							<span class="recipe_coponent-name" style="font-size: 18px;">
-								@recipe.getTriggerChannel().getName()
+								@recipe.getTrigger().getName()
 							</span>
 						
 						
@@ -87,7 +87,7 @@
 								</picture>
 							</span> -->
 							<span class="recipe_coponent-name" style="font-size: 18px;">
-								@recipe.getActionChannel().getName()
+								@recipe.getAction().getName()
 							</span>
 						<!-- </span> -->
 					</span>
@@ -105,7 +105,7 @@
 					If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName()
 					</textarea> -->
 					
-					<input class="span2" type="text" style="width:200px" name="recipeTitle" value="If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName()">
+					<input class="span2" type="text" style="width:500px; height: 50px;" name="recipeTitle" value="If @recipe.getTrigger().getName(), Then @recipe.getAction().getName()">
 					
 <!-- 					<div class="jq-elastic-twin" style="position: absolute; display: none; word-wrap: break-word; white-space: pre-wrap; line-height: 34.560001373291px; padding: 4px 9.88875007629395px; width: 83.0985870361328%; max-width: 579px; left: auto; top: auto; right: auto; bottom: auto; font-size: 23.0400009155273px; font-family: AvenirNextLTW01-Regular, helvetica, arial, sans-serif; font-weight: 400; box-sizing: border-box; border-width: 1px; border-style: solid; border-color: rgb(124, 124, 124) rgb(195, 195, 195) rgb(221, 221, 221);"
 					> If @recipe.getTriggerChannel().getName(), Then @recipe.getActionChannel().getName() </div>

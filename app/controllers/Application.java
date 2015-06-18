@@ -13,6 +13,7 @@ import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
+import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
 import models.Trigger;
@@ -61,7 +62,8 @@ public class Application extends Controller {
 
 		else {
 			userLoggedIn = user;
-			if (userLoggedIn.getRole() == "administrator") {
+			System.out.println("MY USER:" + user);
+			if (userLoggedIn.getRole().equals("administrator")) {
 
 				List<Channel> channelsList = Channel.getAllChannels();
 //				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
@@ -69,9 +71,10 @@ public class Application extends Controller {
 //					triggersDic.put(channelsList.get(i), channelsList.get(i)
 //							.getTriggers());
 //				}
-
+				System.out.println("Im here");
 				return ok(administratorView.render(channelsList));
 			} else {
+				System.out.println("Im not here");
 				return ok(chooseView.render(userLoggedIn));
 
 			}
@@ -356,7 +359,7 @@ public class Application extends Controller {
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
 				if(r.getActive()){
 					r.setActive(false);
-					r.getLog().add("Recipe turned off.");
+					r.getLog().add(new Log("Recipe turned off."));
 					r.save();
 				}
 			}else if (requestData.get("RecipeOn") != null) {	
@@ -364,7 +367,7 @@ public class Application extends Controller {
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
 				if(r.getActive()==false){
 					r.setActive(true);
-					r.getLog().add("Recipe turned on.");
+					r.getLog().add(new Log("Recipe turned on."));
 					r.save();
 				}
 			}

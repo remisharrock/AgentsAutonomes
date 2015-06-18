@@ -53,7 +53,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Trigger trigger;
 
-//	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
 	private Field triggerField;
 
 	@ManyToOne
@@ -62,7 +62,7 @@ public class Recipe extends Model {
 	@ManyToOne
 	private Action action;
 
-//	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Field actionField;
 
 	@ManyToOne
@@ -70,8 +70,8 @@ public class Recipe extends Model {
 
 	private RecipeAkka recipeAkka;
 	
-	
-	private List<String> log;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Log> log;
 	
 	public static Model.Finder<Long, Recipe> find = new Model.Finder<Long, Recipe>(
 			Long.class, Recipe.class);
@@ -79,7 +79,7 @@ public class Recipe extends Model {
 
 	public Recipe() {
 		// TODO Auto-generated constructor stub
-		log = new ArrayList<String>();
+		log = new ArrayList<Log>();
 		recipeAkka = new RecipeAkka();
 	}
 
@@ -512,19 +512,20 @@ public class Recipe extends Model {
 				+ ", user=" + user + "]";
 	}
 
-	public List<String> getLog() {
+	public List<Log> getLog() {
 		return log;
 	}
 
-	public void setLog(List<String> log) {
+	public void setLog(ArrayList<Log> log) {
 		this.log = log;
 	}
 	
 	public List<String> getLogReverseOrder() {
 		List<String> logReverse = new LinkedList<String>();
-		ListIterator<String> i = log.listIterator(log.size());
-		while(i.hasPrevious())
-			logReverse.add(i.previous());
+		for (int i = log.size() - 1; i >= 0; i--) {
+			logReverse.add(log.get(i).getLogInfo());
+		}
+			
 		return logReverse;
 	}
 	

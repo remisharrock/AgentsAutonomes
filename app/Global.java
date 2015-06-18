@@ -6,6 +6,7 @@ import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
+import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
 import models.Trigger;
@@ -203,6 +204,7 @@ public class Global extends GlobalSettings {
 			lamp.save();
 
 			Action lampAction1 = new Action("Turn on lamp");
+			lampAction1.setFieldName("Lamp Color");
 			lamp.getActions().add(lampAction1);
 			lampAction1.setChannel(lamp);
 			lampAction1.save();
@@ -230,6 +232,7 @@ public class Global extends GlobalSettings {
 			f2.save();
 			rec.setActionField(f2);
 			rec.setActive(true);
+			rec.setLog(new ArrayList<Log>());
 			rec.save();
 			
 			
@@ -265,9 +268,9 @@ public class Global extends GlobalSettings {
 			// courses.find.where().eq("student_id", student_id).findList();
 
 //test
-//		}
+		}
 
-	}
+//	}
 
 	public void onStop(Application app) {
 		Logger.info("Application shutdown...");
