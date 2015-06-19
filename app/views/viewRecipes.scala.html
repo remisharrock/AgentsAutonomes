@@ -101,16 +101,17 @@
 					<br> 
 
 					<div class='personal-recipe-manage_meta'>
-						<div class='personal-recipe-manage_buttons'>
+						<div class='personal-recipe-manage_buttons' style="float:left;">
 							<span>
 							<div id="statement_create" style="padding-right: 50px">
 									@if(recipe.getActive()){ <a> Recipe ACTIVE </a> 
-									<div style="width:130px">
+									<div style="width:250px">
 									<form action="@routes.Application.activateRecipe()">
 
 											<button 
 											style="
 											float:left;
+											margin-right: 15px;
 											width: 55px; 
 											height: 55px;
 											display: block;
@@ -123,13 +124,12 @@
 											value=@recipe.getId()>
 											</button>
 										</form>
-										</div>
 										}else{ <a> Recipe NOT ACTIVE </a>
-										<div style="width:130px">
 										<form action="@routes.Application.activateRecipe()">
 											<button 
 											style="
 											float:left;
+											margin-right: 15px;
 											width: 55px; 
 											height: 55px;
 											display: block;
@@ -148,7 +148,8 @@
 											action="@routes.Application.viewRecipeLog()">
 											<button 
 											style="
-											float:right;
+											float:left;
+											margin-right: 15px;
 										width: 55px; 
 										height: 55px;
 										display: block;
@@ -158,7 +159,23 @@
 										title="View Recipe Log"
 											type="submit" class="btn" name="viewRecipesLog"
 												value=@recipe.getId()></button>
-										</form></span>
+										</form>
+										<form 
+											action="@routes.Application.deleteRecipe()">
+											<button 
+											style="
+											float:left;
+											margin-right: 15px;
+										width: 55px; 
+										height: 55px;
+										display: block;
+										background: url('@routes.Assets.at("images/deleteIcon.png")') no-repeat;
+										background-size: 90%;
+										"
+										title="Delete Recipe "
+											type="submit" class="btn" name="deleteRecipe"
+												value=@recipe.getId()></button>
+										</form></div></span>
 										</div>
 										</div>
 										</div>

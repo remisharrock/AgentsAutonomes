@@ -34,7 +34,7 @@ public class Global extends GlobalSettings {
 		System.out.println("test");
 		System.out.println("TESTING THE DATABASE LOAD");
 
-		// if (Ebean.find(Recipe.class).findRowCount() == 0) {
+		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
 		List<Field> fieldsList = Ebean.find(Field.class).findList();
 		// channelsList.removeAll(channelsList);
@@ -241,7 +241,7 @@ public class Global extends GlobalSettings {
 		for (Channel c : Ebean.find(Channel.class).findList()) {
 			System.out.println(c);
 		}
-		// } else {
+		 } else {
 		/**
 		 * In this case we already have recipes on our database But those
 		 * recipes won't have their equivalent in akka So we should iterate on
@@ -250,9 +250,9 @@ public class Global extends GlobalSettings {
 		 */
 
 		// Create actor router for all the user groups that we have
-		// SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-		// System.out.println("UserGroup - Router Map: " +
-		// SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+		SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+		System.out.println("UserGroup - Router Map: " +
+		SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -264,9 +264,10 @@ public class Global extends GlobalSettings {
 		 * This is how we send a message.
 		 */
 		Recipe recipe = Ebean.find(Recipe.class).findList().get(0);
-		SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
-				RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
-				RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
+		SystemController.userGroupActorRouterMap.get(
+				recipe.getUser().getUserGroup()).tell(
+						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
+						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
 
 		/*
 		 * This is the simple way to set up a random message issue. Activate it
@@ -302,7 +303,8 @@ public class Global extends GlobalSettings {
 		 * So we are having two ways to activate a recipe. Let's cancel the
 		 * never finishing first one:
 		 */
-		cancellableRef.cancel();
+		//cancellableRef.cancel();
+		 }
 	}
 
 	public void onStop(Application app) {

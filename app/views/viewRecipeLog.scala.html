@@ -49,17 +49,14 @@
 				</div>
 				</form>
 
-
-<article class='l-page-content'>
-<ul>
 @if(recipe.getLog().size()>0 ) {
 	@for(log <- recipe.getLogReverseOrder() ){
-		
+	<!--	
 
 <li class='log-item log-item_alt'>
 	<div class='log-item' id='log-f8ef0fa00a7611e5ad8922000a2180da'>
 	
-<!--	<div class='log-item_icons'>
+	<div class='log-item_icons'>
 		<div class='personal_recipe_manage_visual'>
 			<a href="/myrecipes/personal/24079820" class="recipe recipe-personal  recipe-tiny  is-contained " data-color="background-image: -ms-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -moz-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -o-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #78DBFF), color-stop(0.5, #78DBFF), color-stop(0.5, #A4C739), color-stop(1, #A4C739)); background-image: -webkit-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: linear-gradient(to right, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%);" data-gray="background-image: -ms-linear-gradient(left, #c9c9c9 0%, #c9c9c9 50%, #b5b5b5 50%, #b5b5b5 100%); background-image: -moz-linear-gradient(left, #c9c9c9 0%, #c9c9c9 50%, #b5b5b5 50%, #b5b5b5 100%); background-image: -o-linear-gradient(left, #c9c9c9 0%, #c9c9c9 50%, #b5b5b5 50%, #b5b5b5 100%); background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #c9c9c9), color-stop(0.5, #c9c9c9), color-stop(0.5, #b5b5b5), color-stop(1, #b5b5b5)); background-image: -webkit-linear-gradient(left, #c9c9c9 0%, #c9c9c9 50%, #b5b5b5 50%, #b5b5b5 100%); background-image: linear-gradient(to right, #c9c9c9 0%, #c9c9c9 50%, #b5b5b5 50%, #b5b5b5 100%);" style="background-image: -ms-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -moz-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -o-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #78DBFF), color-stop(0.5, #78DBFF), color-stop(0.5, #A4C739), color-stop(1, #A4C739)); background-image: -webkit-linear-gradient(left, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%); background-image: linear-gradient(to right, #78DBFF 0%, #78DBFF 50%, #A4C739 50%, #A4C739 100%);"><span class='recipe_if' data-color='#78DBFF' data-gray='#c9c9c9' style='background-color: #78DBFF'>if</span><span class='recipe_trigger' data-color='#78DBFF' data-gray='#c9c9c9' style='background-color: #78DBFF' title='Weather'>
 			<span class='recipe_component-icon'><picture><source srcset='https://ifttt.com/channels/image/weather?type=variant' media='(min-width: 980px)'> <source srcset='https://ifttt.com/channels/image/weather?type=variant' media='(min-width: 720px)'> <img src='https://ifttt.com/channels/image/weather?type=variant' alt=Weather class='channel-icon -js_use_variant'></picture></span></span><span class='recipe_then' data-color='#A4C739' data-gray='#b5b5b5' style='background-color: #A4C739'>then</span><span class='recipe_action' data-color='#A4C739' data-gray='#b5b5b5' style='background-color: #A4C739' title='Android SMS'>
@@ -67,18 +64,36 @@
 			</span></a>
 		</div>
 	</div>
--->
+
 	<div class='log-item_body'>
-		<div class='log-item_type'>@log</div></div>
+		<div class='log-item_type'>@log</div>
 		<div class='log-item_message'></div>
-	</div>
+	</div> 
+	
 </div>
-</li>	
-<br>	
+</li>	-->
+	<div class='is-dimmable'> 
+			<a class='focus-here' href='#'></a>
+			<h2 class='composer_section_header' style="font-size: 1rem; padding: 10px 120px 0px 0;">
+				@log 
+			<!--  <span class='composer_section_step'>step 1 of 7</span> -->
+			</h2>
+			<p class='composer_section_description' style="font-size: 90%; margin-button: 0px">
+				Showing Channels that provide at least one Trigger.
+			</p>
+	</div>
+
+	
 	}
 } else {
 The log is empty 
 }
+ <!-- last line -->
+<div class='is-dimmable'> 
+	<a class='focus-here' href='#'></a>
+	<h2 class='composer_section_header'> </h2>
+	<p class='composer_section_description'></p>
+</div>
 
 
 
