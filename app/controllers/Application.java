@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -349,7 +350,7 @@ public class Application extends Controller {
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
 				if(r.getActive()){
 					r.setActive(false);
-					r.getLog().add(new Log("Recipe turned off."));
+					r.getLog().add(new Log("Recipe turned off.", new Date()));
 					r.save();
 				}
 			}else if (requestData.get("RecipeOn") != null) {	
@@ -357,7 +358,7 @@ public class Application extends Controller {
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
 				if(r.getActive()==false){
 					r.setActive(true);
-					r.getLog().add(new Log("Recipe turned on."));
+					r.getLog().add(new Log("Recipe turned on.", new Date()));
 					r.save();
 				}
 			}

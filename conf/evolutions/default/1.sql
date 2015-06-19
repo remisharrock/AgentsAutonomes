@@ -30,6 +30,7 @@ create table field (
 create table log (
   id                        bigint not null,
   log_info                  varchar(255),
+  done_at                   timestamp,
   recipe_id                 bigint,
   constraint pk_log primary key (id))
 ;

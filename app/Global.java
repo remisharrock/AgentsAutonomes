@@ -335,7 +335,7 @@ public class Global extends GlobalSettings {
 		 * So we are having two ways to activate a recipe. Let's cancel the
 		 * never finishing first one:
 		 */
-		if (recipe != null)
+		if (cancellableRef != null)
 			cancellableRef.cancel();
 	}
 
