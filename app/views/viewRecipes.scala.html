@@ -1,4 +1,5 @@
-@(user: User) @main("Agents autonomes") {
+@(user: User) 
+@main("Agents autonomes") {
 
 
 
@@ -27,7 +28,6 @@
 </header>
 
 	<article class="l-page-content">
-		<div id="statement_create">
 			<form class="navbar-form pull-right">
 				<!-- <input class="span2" type="text" placeholder="Email"> <input
 				class="span2" type="password" placeholder="Password">
@@ -45,8 +45,7 @@
 					<p>Hello @user.getUsername()</p> -->
 						 <div class="large-12 columns intro-text">
 						 <!-- <p>What do you want to do?</p> -->
-							<h2>Your recipes</h2>
-							<p>Hello @user.getUsername()</p>
+							<h2>@user.getUsername()'s recipes</h2>
 						</div> 
 					</div>
 				</div>
@@ -104,13 +103,8 @@
 					<div class='personal-recipe-manage_meta'>
 						<div class='personal-recipe-manage_buttons'>
 							<span>
-							<div id="statement_create">
+							<div id="statement_create" style="padding-right: 50px">
 									@if(recipe.getActive()){ <a> Recipe ACTIVE </a> 
-<!-- 										<div>
-										<span type="submit" style="float:left; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/toggleImage.png")'); background-size: cover; display: block;"></span>
-										<span style="float:right; display: block; width: 55px; height: 55px; background-image: url('@routes.Assets.at("images/logImage.png")'); background-size: cover; display: block;"></span>
-										</div> -->
-								
 									<div style="width:130px">
 									<form action="@routes.Application.activateRecipe()">
 
@@ -173,6 +167,7 @@
 				</div>
 			<br> } } else{ You don't have any recipe }
 
+
 	</article>
 </body>
 </html>
@@ -191,6 +186,22 @@ Android watch: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/197274
 Home: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1571567306/icons/regular.png"
 Human: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png"
 
+<!-- Logos: 
 
+<<<<<<< HEAD
+Light switch: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png"
+Lamp: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/637201122/icons/regular.png"
+Shortcuts: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1080092097/icons/regular.png"
+Android device: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1089090894/icons/regular.png"
+Android location: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/819446830/icons/regular.png"
+Android notification: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/364301748/icons/regular.png"
+Android call: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/405156688/icons/regular.png"
+Android message: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1322033008/icons/regular.png"
+Android watch: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1972740002/icons/regular.png"
+Home: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1571567306/icons/regular.png"
+Human: src="https://d3rnbxvnd0hlox.cloudfront.net/images/channels/1845421835/icons/regular.png"
+
+
+-->
 
 }

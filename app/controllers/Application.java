@@ -244,25 +244,15 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		// Channel triggerChannel = recipe.getTriggerChannel();
-		// triggerChannel.getTriggerRecipes().add(recipe);
-		// triggerChannel.setTriggerRecipes(triggerChannel.getTriggerRecipes());
-		// triggerChannel.save();
-		//
-		// Channel actionChannel = recipe.getActionChannel();
-		// actionChannel.getActionRecipes().add(recipe);
-		// actionChannel.setActionRecipes(actionChannel.getActionRecipes());
-		// actionChannel.save();
-
+		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 		recipe.save();
 
+		System.out.println("User's list size: " + userLoggedIn.getRecipes().size());
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
-//		for (RecipeAkka rec : RecipeAkka.recipesMap.values()) {
-//			System.out.println(rec);
-//		}
+		
 
 		// System.out.println("Recipe created: " + recipe);
 
