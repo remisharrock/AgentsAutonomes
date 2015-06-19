@@ -3,6 +3,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
+=======
+
+import messages.AllMessages;
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 import models.Action;
 import models.Channel;
 import models.Field;
@@ -34,8 +39,10 @@ public class Global extends GlobalSettings {
 		System.out.println("test");
 		System.out.println("TESTING THE DATABASE LOAD");
 
-		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+		
 
+<<<<<<< HEAD
 			List<Field> fieldsList = Ebean.find(Field.class).findList();
 			// channelsList.removeAll(channelsList);
 			for (Field f : fieldsList) {
@@ -43,11 +50,22 @@ public class Global extends GlobalSettings {
 				f.delete();
 			}
 
+=======
+			
+			
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 			List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 			// channelsList.removeAll(channelsList);
 			for (Recipe r : recipesList) {
 				System.out.println(r);
 				r.delete();
+			}
+			
+			List<Field> fieldsList = Ebean.find(Field.class).findList();
+			// channelsList.removeAll(channelsList);
+			for (Field f : fieldsList) {
+				System.out.println("deleting field...: " + f);
+				f.delete();
 			}
 
 			List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
@@ -83,9 +101,31 @@ public class Global extends GlobalSettings {
 			// Users
 			User user1 = new User("1", "1", "user", "home1");
 			user1.save();
-
-			User user2 = new User("2", "2", "administrator", "home1");
+			
+			User user11 = new User("11", "11", "user", "home1");
+			user11.save();
+			
+			User user111 = new User("11", "11", "user", "home1");
+			user111.save();
+			
+			
+			User user2 = new User("2", "2", "user", "home2");
 			user2.save();
+			
+			User user22 = new User("22", "22", "user", "home2");
+			user22.save();
+			
+			User user222 = new User("222", "222", "user", "home2");
+			user222.save();
+			
+			
+			
+			
+
+			User admin = new User("admin", "admin", "administrator", "admin1");
+			admin.save();
+			
+			
 
 			// HUMAN CHANNEL
 			Channel human = new Channel("Human", "Can enter or exit room");
@@ -109,6 +149,7 @@ public class Global extends GlobalSettings {
 			detector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			detector.save();
 
+<<<<<<< HEAD
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
 			// "Trigger description", AllMessages.DetectionOn.class);
 			Trigger detectorTrigger1 = new Trigger("Detection On", "Trigger description");
@@ -129,12 +170,21 @@ public class Global extends GlobalSettings {
 			// detectorTrigger2.save();
 			//
 			// detector.save();
+=======
+			
+			Trigger detectorTrigger1 = new Trigger("Detection On",
+					"Trigger description");
+			detectorTrigger1.setChannel(detector);
+			detectorTrigger1.save();
+		
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 
 			// LUMINOSITY DETECTOR CHANNEL
 			Channel luminosityDetector = new Channel("Luminosity detector", "Detects luminosity");
 			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
+<<<<<<< HEAD
 			// Keep in mind to change null pointer for messages
 			// Trigger detectorTrigger12 = new Trigger("Light Trigger",
 			// "Trigger description 00000", null);
@@ -143,12 +193,21 @@ public class Global extends GlobalSettings {
 			detectorTrigger12.save();
 
 			detectorTrigger12.save();
+=======
+
+			Trigger detectorTrigger12 = new Trigger("Light Trigger",
+					"Trigger description 00000");
+			detectorTrigger12.setChannel(luminosityDetector);
+			detectorTrigger12.save();
+
+
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 
 			Trigger detectorTrigger13 = new Trigger("Non light Trigger", null);
-			// luminosityDetector.getTriggers().add(detectorTrigger13);
 			detectorTrigger13.setChannel(luminosityDetector);
 			detectorTrigger13.save();
 
+<<<<<<< HEAD
 			// Trigger detectorTrigger14 = new Trigger("Light Trigger1",
 			// "Trigger description", null);
 			Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description");
@@ -183,6 +242,19 @@ public class Global extends GlobalSettings {
 			detectorTrigger18.setChannel(detector);
 			detectorTrigger18.save();
 
+=======
+			
+			Trigger detectorTrigger14 = new Trigger("Light Trigger1",
+					"Trigger description");
+			detectorTrigger14.setChannel(detector);
+			detectorTrigger14.save();
+
+			Trigger detectorTrigger15 = new Trigger("Light Trigger2",
+					"Trigger description");
+			detectorTrigger15.setChannel(detector);
+			detectorTrigger15.save();
+
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 			detector.save();
 			luminosityDetector.save();
 
@@ -228,7 +300,7 @@ public class Global extends GlobalSettings {
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
-		} else {
+//		} else {
 			/**
 			 * In this case we already have recipes on our database But those
 			 * recipes won't have their equivalent in akka So we should iterate
@@ -246,6 +318,7 @@ public class Global extends GlobalSettings {
 				System.out.println("Creating akka recipe from recipe...");
 				RecipeAkka.recipesMap.put(r.getId(), r.createRecipeAkkaFromRecipe());
 			}
+<<<<<<< HEAD
 		}
 
 		/*
@@ -292,6 +365,23 @@ public class Global extends GlobalSettings {
 		 */
 		cancellableRef.cancel();
 	}
+=======
+
+			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
+//			SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+			// List<User> allUsersFromSameGroup = User
+			// .getAllUsersFromSameGroup(controllers.Application
+			// .getUserLoggedIn().getUserGroup());
+			//
+			// for (User u : allUsersFromSameGroup) {
+
+			// courses.find.where().eq("student_id", student_id).findList();
+
+//test
+		}
+
+//	}
+>>>>>>> dc5b5a1d12c3b9977b7ea14c7acc9a62c57681f1
 
 	public void onStop(Application app) {
 		Logger.info("Application shutdown...");

@@ -23,6 +23,10 @@ public class AllMessages {
 		return instance;
 	}
 	
+	public static enum MessageType {
+		Trigger, Action
+	} 
+	
 	
 	public class MessageEnvelope {
 		// we have to send the recipe with the message to know who are the actors that are in the recipe
@@ -61,6 +65,7 @@ public class AllMessages {
 	public class EnterRoomMessage extends MessageEnvelope implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private Boolean changeState;
+		private MessageType type = MessageType.Trigger;
 		
 		public EnterRoomMessage(Boolean changeState) {
 			this.changeState = changeState;
@@ -72,6 +77,10 @@ public class AllMessages {
 		
 		public Boolean getChangeState() {
 			return changeState;
+		}
+		
+		public MessageType getMessageType() {
+			return type;
 		}
 		
 	}
