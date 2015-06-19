@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -15,14 +17,17 @@ public class Log extends Model {
 	
 	private String logInfo;
 	
+	private Date doneAt;
+	
 	@ManyToOne
 	private Recipe recipe;
 	
 	public static Model.Finder<Long, Log> find = new Model.Finder<Long, Log>(
 			Long.class, Log.class);
 	
-	public Log(String logInfo) {
+	public Log(String logInfo, Date doneAt) {
 		this.logInfo = logInfo;
+		this.doneAt = doneAt;
 	}
 
 	public long getId() {
@@ -48,6 +53,16 @@ public class Log extends Model {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
+
+	public Date getDoneAt() {
+		return doneAt;
+	}
+
+	public void setDoneAt(Date doneAt) {
+		this.doneAt = doneAt;
+	}
+	
+	
 	
 	
 

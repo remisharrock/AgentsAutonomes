@@ -9,10 +9,6 @@ import models.Field;
 import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
-import models.Scheduler;
-import models.Scheduler.CancellableRef;
-import models.Scheduler.StopCriteria;
-import models.StdRandom;
 import models.Trigger;
 import models.User;
 import play.Application;
@@ -23,7 +19,12 @@ import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
+import controllers.Scheduler;
+import controllers.StdRandom;
 import controllers.SystemController;
+import controllers.Scheduler.CancellableRef;
+import controllers.Scheduler.RandomPeriodFactory;
+import controllers.Scheduler.StopCriteria;
 
 public class Global extends GlobalSettings {
 
@@ -36,17 +37,18 @@ public class Global extends GlobalSettings {
 
 		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
-		List<Field> fieldsList = Ebean.find(Field.class).findList();
-		// channelsList.removeAll(channelsList);
-		for (Field f : fieldsList) {
-			System.out.println("deleting field...: " + f);
-			f.delete();
-		}
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 		// channelsList.removeAll(channelsList);
 		for (Recipe r : recipesList) {
 			System.out.println(r);
 			r.delete();
+		}
+
+		List<Field> fieldsList = Ebean.find(Field.class).findList();
+		// channelsList.removeAll(channelsList);
+		for (Field f : fieldsList) {
+			System.out.println("deleting field...: " + f);
+			f.delete();
 		}
 
 		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
@@ -251,8 +253,13 @@ public class Global extends GlobalSettings {
 
 		// Create actor router for all the user groups that we have
 		SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+<<<<<<< HEAD
 		System.out.println("UserGroup - Router Map: " +
 		SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+=======
+		System.out.println("UserGroup - Router Map: "
+				+ SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+>>>>>>> branch 'master' of https://github.com/2marcn/AgentsAutonomes.git
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -264,47 +271,81 @@ public class Global extends GlobalSettings {
 		 * This is how we send a message.
 		 */
 		Recipe recipe = Ebean.find(Recipe.class).findList().get(0);
-		SystemController.userGroupActorRouterMap.get(
-				recipe.getUser().getUserGroup()).tell(
-						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
-						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
 
-		/*
-		 * This is the simple way to set up a random message issue. Activate it
-		 * every random period between 10 and 15 seconds, and never stops.
-		 */
-		CancellableRef cancellableRef = AllActors.scheduler.periodicallyActivate(
-				() -> Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS),
-				Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
+		// We just declare something well use later on.
+		CancellableRef cancellableRef = null;
+		if (recipe == null) {
+			Logger.info("No recipes are available.");
+		} else {
+			SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
+					RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
+					RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
+
+			/*
+			 * This is the simple way to set up a random message issue. Activate
+			 * it every random period between 10 and 15 seconds, and never
+			 * stops. First we implement an object whose method will give us a
+			 * new random duration each time it's invoked. Then, we pass this
+			 * implementation to the scheduler.
+			 */
+			RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+				@Override
+				public Duration getPeriod() {
+					return Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS);
+				}
+			};
+			cancellableRef = SystemController.scheduler.periodicallyActivate(randomPeriodFactory,
+					Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
+		}
 
 		/*
 		 * We can do anything we want upon a trigger raising. Here, at most 5
 		 * seconds after the previous event we'll do something. We've chosen to
 		 * activate a random recipe and to say hello to the logger. After 15
 		 * times, we stop it and go to sleep.
+		 * 
+		 * The object eventRunnable is an anonymous implementation of the
+		 * interface Runnable. We pass this object to the scheduler. Thus, each
+		 * time a issue is raised, we start this thread.
 		 */
-		AllActors.scheduler.addRandomIssue(Duration.Zero(),
-				() -> Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS),
-				StopCriteria.set(StopCriteria.OCCURENCE, 15),//
-				() -> {
-					// Get all the recipes.
+		RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+			@Override
+			public Duration getPeriod() {
+				return Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS);
+			}
+		};
+		Runnable eventRunnable = new Runnable() {
+			@Override
+			public void run() {
+				// Get all the recipes.
 				List<Recipe> recipes = Ebean.find(Recipe.class).findList();
 				// Randomly pick one of them up.
-				Recipe r = recipes.get(StdRandom.uniform(recipes.size() - 1));
+				Recipe r = recipes.get(StdRandom.uniform(recipes.size()));
+				// If the recipe is null, do nothing but warn.
+				if (r == null) {
+					Logger.info("I've been willing to activate a random recipe but unfortunately there are no available one.");
+					return;
+				}
 				// Activate it.
 				SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(
 						RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(),
 						RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 				// Say hello to beloved logger.
 				Logger.info("Hi, I'm a random event, giving you a random number: " + StdRandom.uniform());
-			});
+			}
+		};
+		SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
+				StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
 
 		/*
 		 * So we are having two ways to activate a recipe. Let's cancel the
 		 * never finishing first one:
 		 */
-		//cancellableRef.cancel();
+
 		 }
+
+		if (cancellableRef != null)
+			cancellableRef.cancel();
 	}
 
 	public void onStop(Application app) {

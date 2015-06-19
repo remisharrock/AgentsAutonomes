@@ -1,16 +1,16 @@
-package models;
+package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.function.Supplier;
 
+import models.Recipe;
+import models.RecipeAkka;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 import actors.AllActors;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
-import controllers.SystemController;
 
 public class Scheduler {
 
@@ -19,7 +19,9 @@ public class Scheduler {
 	ActorSystem system;
 
 	public boolean cancelAll() {
-		ticks.forEach(CancellableRef::cancel);
+		for (CancellableRef c : ticks) {
+			c.cancel();
+		}
 		ticks.clear();
 		return true;
 	}
@@ -32,15 +34,15 @@ public class Scheduler {
 	 * This allow you to do anything you want, this is called freedom.
 	 * 
 	 * @param init
-	 * @param randomFunction
+	 * @param randomPeriodFactory
 	 * @param stopCriteria
 	 * @param eventRunnable
 	 *            What to do when the event happen.
 	 * @return
 	 */
-	public CancellableRef addRandomIssue(Duration init, Supplier<Duration> randomFunction, StopCriteria stopCriteria,
-			Runnable eventRunnable) {
-		CancellableRef cr = new CancellableRef(init, randomFunction, stopCriteria, eventRunnable);
+	public CancellableRef addRandomIssue(Duration init, RandomPeriodFactory randomPeriodFactory,
+			StopCriteria stopCriteria, Runnable eventRunnable) {
+		CancellableRef cr = new CancellableRef(init, randomPeriodFactory, stopCriteria, eventRunnable);
 		ticks.add(cr);
 		return cr;
 	}
@@ -49,7 +51,7 @@ public class Scheduler {
 	 * 
 	 * This is much more tuned for our needs.
 	 * 
-	 * @param randomSupplier
+	 * @param randomPeriodFactory
 	 *            The random function. Can be anything but must return a long
 	 *            value each time it's invoked.
 	 * @param stopCriterion
@@ -58,19 +60,24 @@ public class Scheduler {
 	 *            The recipe we want to activate periodically.
 	 * @return The cancellable reference created.
 	 */
-	public CancellableRef periodicallyActivate(Supplier<Duration> randomSupplier, StopCriteria stopCriterion, Recipe recipe) {
-		CancellableRef cr = new CancellableRef(FiniteDuration.Zero(), randomSupplier, stopCriterion, () -> {
-			SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
-					RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
-					RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
-		});
+	public CancellableRef periodicallyActivate(RandomPeriodFactory randomPeriodFactory, StopCriteria stopCriterion,
+			final Recipe recipe) {
+		CancellableRef cr = new CancellableRef(FiniteDuration.Zero(), randomPeriodFactory, stopCriterion,
+				new Runnable() {
+					@Override
+					public void run() {
+						SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
+								RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
+								RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
+					}
+				});
 		ticks.add(cr);
 		return cr;
 	}
 
-	public CancellableRef addRandomIssue(FiniteDuration init, Supplier<Duration> randomSupplier,
+	public CancellableRef addRandomIssue(FiniteDuration init, RandomPeriodFactory randomPeriodFactory,
 			StopCriteria stopCriteria, Runnable eventRunnable) {
-		CancellableRef cr = new CancellableRef(init, randomSupplier, stopCriteria, eventRunnable);
+		CancellableRef cr = new CancellableRef(init, randomPeriodFactory, stopCriteria, eventRunnable);
 		ticks.add(cr);
 		return cr;
 	}
@@ -125,20 +132,31 @@ public class Scheduler {
 		}
 	}
 
+	public static interface RandomPeriodFactory {
+		/**
+		 * Each time it's called, return a new different period. The random law
+		 * is defined in the bodybut you're likely to get some help from
+		 * StdRandom.
+		 * 
+		 * @return
+		 */
+		public scala.concurrent.duration.Duration getPeriod();
+	}
+
 	public static class CancellableRef implements Cancellable, Runnable {
 
 		private Cancellable cancellable;
 		private final Duration init;
-		private final Supplier<Duration> randomFunction;
+		private final RandomPeriodFactory randomPeriodFactory;
 		private final Runnable eventFunction;
 		private final StopCriteria stopCriteria;
 		private boolean isCancelled;
 		private final Thread thread;
 
-		public CancellableRef(Duration init, Supplier<Duration> randomFunction, StopCriteria stopCriteria,
+		public CancellableRef(Duration init, RandomPeriodFactory randomPeriodFactory, StopCriteria stopCriteria,
 				Runnable eventFunction) {
 			this.init = init;
-			this.randomFunction = randomFunction;
+			this.randomPeriodFactory = randomPeriodFactory;
 			this.stopCriteria = stopCriteria;
 			this.eventFunction = eventFunction;
 			thread = new Thread(this);
@@ -184,15 +202,18 @@ public class Scheduler {
 			}
 
 			while (!this.isCancelled && stopCriteria.getCriteria()) {
-				cancellable = AllActors.system.scheduler().scheduleOnce(FiniteDuration.Zero(), () -> {
-					// Logger.info("CancellableRef " + thread.getName()
-					// +
-					// ": eventFunction "
-					// + eventFunction.toString() + " executed");
+				cancellable = AllActors.system.scheduler().scheduleOnce(FiniteDuration.Zero(), new Runnable() {
+					@Override
+					public void run() {
+						// Logger.info("CancellableRef " + thread.getName()
+						// +
+						// ": eventFunction "
+						// + eventFunction.toString() + " executed");
 						eventFunction.run();
-					}, AllActors.system.dispatcher());
+					}
+				}, AllActors.system.dispatcher());
 				try {
-					long timeInMillis = randomFunction.get().toMillis();
+					long timeInMillis = randomPeriodFactory.getPeriod().toMillis();
 					// Logger.info("CancellableRef " + thread.getName() +
 					// " current issue scheduled, will now wait for "
 					// + (int) timeInMillis / 1000 + " seconds.");
@@ -200,9 +221,7 @@ public class Scheduler {
 				} catch (InterruptedException e) {
 				}
 			}
-			if (!stopCriteria.getCriteria()) {
-				ticks.remove(this);
-			}
+			ticks.remove(this);
 		}
 
 		public Cancellable getCancellable() {
@@ -213,8 +232,8 @@ public class Scheduler {
 			return init;
 		}
 
-		public Supplier<Duration> getRandomFunction() {
-			return randomFunction;
+		public RandomPeriodFactory getRandomPeriodFactory() {
+			return randomPeriodFactory;
 		}
 
 		public Runnable getEventFunction() {
