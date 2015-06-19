@@ -2,9 +2,9 @@ package actors;
 
 import java.util.HashMap;
 
+import controllers.Scheduler;
 import messages.AllMessages;
 import messages.AllMessages.MessageEnvelope;
-import models.Scheduler;
 import models.RecipeAkka;
 import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;

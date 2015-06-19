@@ -1,18 +1,16 @@
-package models;
+package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+import models.Recipe;
+import models.RecipeAkka;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 import actors.AllActors;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
-
-import com.google.common.base.Supplier;
-
-import controllers.SystemController;
 
 public class Scheduler {
 

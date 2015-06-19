@@ -9,11 +9,6 @@ import models.Field;
 import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
-import models.Scheduler;
-import models.Scheduler.CancellableRef;
-import models.Scheduler.RandomPeriodFactory;
-import models.Scheduler.StopCriteria;
-import models.StdRandom;
 import models.Trigger;
 import models.User;
 import play.Application;
@@ -24,7 +19,12 @@ import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
+import controllers.Scheduler;
+import controllers.StdRandom;
 import controllers.SystemController;
+import controllers.Scheduler.CancellableRef;
+import controllers.Scheduler.RandomPeriodFactory;
+import controllers.Scheduler.StopCriteria;
 
 public class Global extends GlobalSettings {
 
@@ -335,7 +335,8 @@ public class Global extends GlobalSettings {
 		 * So we are having two ways to activate a recipe. Let's cancel the
 		 * never finishing first one:
 		 */
-		cancellableRef.cancel();
+		if (recipe != null)
+			cancellableRef.cancel();
 	}
 
 	public void onStop(Application app) {
