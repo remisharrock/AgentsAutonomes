@@ -11,6 +11,7 @@ import models.Recipe;
 import models.RecipeAkka;
 import models.Scheduler;
 import models.Scheduler.CancellableRef;
+import models.Scheduler.RandomPeriodFactory;
 import models.Scheduler.StopCriteria;
 import models.StdRandom;
 import models.Trigger;
@@ -270,10 +271,18 @@ public class Global extends GlobalSettings {
 
 		/*
 		 * This is the simple way to set up a random message issue. Activate it
-		 * every random period between 10 and 15 seconds, and never stops.
+		 * every random period between 10 and 15 seconds, and never stops. First
+		 * we implement an object whose method will give us a new random
+		 * duration each time it's invoked. Then, we pass this implementation to
+		 * the scheduler.
 		 */
-		CancellableRef cancellableRef = AllActors.scheduler.periodicallyActivate(
-				() -> Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS),
+		RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+			@Override
+			public Duration getPeriod() {
+				return Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS);
+			}
+		};
+		CancellableRef cancellableRef = AllActors.scheduler.periodicallyActivate(randomPeriodFactory,
 				Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
 
 		/*
@@ -281,12 +290,21 @@ public class Global extends GlobalSettings {
 		 * seconds after the previous event we'll do something. We've chosen to
 		 * activate a random recipe and to say hello to the logger. After 15
 		 * times, we stop it and go to sleep.
+		 * 
+		 * The object eventRunnable is an anonymous implementation of the
+		 * interface Runnable. We pass this object to the scheduler. Thus, each
+		 * time a issue is raised, we start this thread.
 		 */
-		AllActors.scheduler.addRandomIssue(Duration.Zero(),
-				() -> Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS),
-				StopCriteria.set(StopCriteria.OCCURENCE, 15),//
-				() -> {
-					// Get all the recipes.
+		randomPeriodFactory = new RandomPeriodFactory() {
+			@Override
+			public Duration getPeriod() {
+				return Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS);
+			}
+		};
+		Runnable eventRunnable = new Runnable() {
+			@Override
+			public void run() {
+				// Get all the recipes.
 				List<Recipe> recipes = Ebean.find(Recipe.class).findList();
 				// Randomly pick one of them up.
 				Recipe r = recipes.get(StdRandom.uniform(recipes.size() - 1));
@@ -296,7 +314,10 @@ public class Global extends GlobalSettings {
 						RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 				// Say hello to beloved logger.
 				Logger.info("Hi, I'm a random event, giving you a random number: " + StdRandom.uniform());
-			});
+			}
+		};
+		AllActors.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
+				StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
 
 		/*
 		 * So we are having two ways to activate a recipe. Let's cancel the
