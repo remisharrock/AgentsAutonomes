@@ -3,12 +3,14 @@ package controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import models.Recipe;
+import models.Scheduler;
 import actors.AllActors;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 
 public class SystemController {
+
+	public final static Scheduler scheduler = new Scheduler(AllActors.system);
 	private static SystemController instance = null;
 	/**
 	 * This hashmap links an actorRouter to a user group. This actor will play
@@ -44,7 +46,4 @@ public class SystemController {
 		this.userGroupActorRouterMap = userGroupActorRouterMap;
 	}
 
-	
-	
-	
 }

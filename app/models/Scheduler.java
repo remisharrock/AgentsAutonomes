@@ -9,9 +9,6 @@ import scala.concurrent.duration.FiniteDuration;
 import actors.AllActors;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
-
-import com.google.common.base.Supplier;
-
 import controllers.SystemController;
 
 public class Scheduler {
@@ -207,10 +204,8 @@ public class Scheduler {
 				cancellable = AllActors.system.scheduler().scheduleOnce(FiniteDuration.Zero(), new Runnable() {
 					@Override
 					public void run() {
-						// Logger.info("CancellableRef " + thread.getName()
-						// +
-						// ": eventFunction "
-						// + eventFunction.toString() + " executed");
+						Logger.info("CancellableRef " + thread.getName() + ": eventFunction "
+								+ eventFunction.toString() + " executed");
 						eventFunction.run();
 					}
 				}, AllActors.system.dispatcher());

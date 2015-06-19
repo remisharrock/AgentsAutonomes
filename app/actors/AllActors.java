@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import messages.AllMessages;
 import messages.AllMessages.MessageEnvelope;
-import models.Scheduler;
 import models.RecipeAkka;
 import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;
@@ -12,7 +11,6 @@ import akka.actor.UntypedActor;
 public class AllActors {
 
 	public final static ActorSystem system = ActorSystem.create("helloakka");
-	public final static Scheduler scheduler = new Scheduler(system);
 
 	// public final static ActorRef humanActor =
 	// system.actorOf(Props.create(HumanActor.class), "human");
