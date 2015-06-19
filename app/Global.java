@@ -253,13 +253,9 @@ public class Global extends GlobalSettings {
 
 		// Create actor router for all the user groups that we have
 		SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-<<<<<<< HEAD
-		System.out.println("UserGroup - Router Map: " +
-		SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
-=======
 		System.out.println("UserGroup - Router Map: "
 				+ SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
->>>>>>> branch 'master' of https://github.com/2marcn/AgentsAutonomes.git
+
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -342,10 +338,11 @@ public class Global extends GlobalSettings {
 		 * never finishing first one:
 		 */
 
-		 }
+		 
 
 		if (cancellableRef != null)
 			cancellableRef.cancel();
+		 }
 	}
 
 	public void onStop(Application app) {

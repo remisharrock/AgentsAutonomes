@@ -1,5 +1,7 @@
 package models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -60,6 +62,13 @@ public class Log extends Model {
 
 	public void setDoneAt(Date doneAt) {
 		this.doneAt = doneAt;
+	}
+	
+	public String getDateString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		String dateString = df.format(doneAt);
+		System.out.println("my date: " + dateString);
+		return dateString;
 	}
 	
 	

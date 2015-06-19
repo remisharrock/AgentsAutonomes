@@ -51,6 +51,7 @@
 
 @if(recipe.getLog().size()>0 ) {
 	@for(log <- recipe.getLogReverseOrder() ){
+	@if(log!=null){
 	<!--	
 
 <li class='log-item log-item_alt'>
@@ -75,15 +76,16 @@
 	<div class='is-dimmable'> 
 			<a class='focus-here' href='#'></a>
 			<h2 class='composer_section_header' style="font-size: 1rem; padding: 10px 120px 0px 0;">
-				@log 
+				@log.getLogInfo()
 			<!--  <span class='composer_section_step'>step 1 of 7</span> -->
 			</h2>
 			<p class='composer_section_description' style="font-size: 90%; margin-button: 0px">
-				Showing Channels that provide at least one Trigger.
+				@log.getDateString()
 			</p>
 	</div>
 
 	
+	}
 	}
 } else {
 The log is empty 
