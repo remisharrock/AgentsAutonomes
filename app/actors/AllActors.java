@@ -12,7 +12,6 @@ import akka.actor.UntypedActor;
 public class AllActors {
 
 	public final static ActorSystem system = ActorSystem.create("helloakka");
-	public final static Scheduler scheduler = new Scheduler(system);
 
 	// public final static ActorRef humanActor =
 	// system.actorOf(Props.create(HumanActor.class), "human");

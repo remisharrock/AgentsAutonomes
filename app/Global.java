@@ -288,7 +288,7 @@ public class Global extends GlobalSettings {
 					return Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS);
 				}
 			};
-			cancellableRef = AllActors.scheduler.periodicallyActivate(randomPeriodFactory,
+			cancellableRef = SystemController.scheduler.periodicallyActivate(randomPeriodFactory,
 					Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
 		}
 
@@ -328,7 +328,7 @@ public class Global extends GlobalSettings {
 				Logger.info("Hi, I'm a random event, giving you a random number: " + StdRandom.uniform());
 			}
 		};
-		AllActors.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
+		SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
 				StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
 
 		/*
