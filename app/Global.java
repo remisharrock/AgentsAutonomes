@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +23,6 @@ import play.Application;
 import play.GlobalSettings;
 import play.Logger;
 import scala.concurrent.duration.Duration;
-import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
@@ -28,6 +30,7 @@ import controllers.SystemController;
 
 public class Global extends GlobalSettings {
 
+	@SuppressWarnings("deprecation")
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
@@ -331,11 +334,32 @@ public class Global extends GlobalSettings {
 		SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
 				StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
 
-		/*
-		 * So we are having two ways to activate a recipe. Let's cancel the
-		 * never finishing first one:
-		 */
-		cancellableRef.cancel();
+		if (cancellableRef != null)
+			/*
+			 * So we are having two ways to activate a recipe. Let's cancel the
+			 * never finishing first one:
+			 */
+			cancellableRef.cancel();
+
+		String filepath = "./export.txt";
+		File file = new File(filepath);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, false);
+
+			fw.write(Double.toString(StdRandom.random()));
+			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
+				fw.write(/**/
+				r.getTriggerChannelActor().path().name().toString() + "\t" + /**/
+				r.getTriggerChannelActor().path().toStringWithoutAddress() + "\t" + /**/
+				r.getActionChannelActor().path().name().toString() + "\t" + /**/
+				r.getActionChannelActor().path().toStringWithoutAddress() + "\n");
+			}
+			fw.close();
+			Runtime.getRuntime().exec("java -jar lib/visual.jar " + filepath);
+			Runtime.getRuntime().exec("touch imhere");
+		} catch (IOException e) {
+		}
 	}
 
 	public void onStop(Application app) {

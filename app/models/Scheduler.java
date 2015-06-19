@@ -168,7 +168,9 @@ public class Scheduler {
 		public boolean cancel() {
 			Logger.info("CancellableRef thread " + thread.getName() + " cancelled.");
 			this.isCancelled = true;
-			this.cancellable.cancel();
+			if (this.cancellable != null) {
+				this.cancellable.cancel();
+			}
 			return true;
 		}
 
