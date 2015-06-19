@@ -1,19 +1,24 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import messages.AllMessages;
 import models.Action;
 import models.Channel;
 import models.Field;
 import models.Log;
 import models.Recipe;
 import models.RecipeAkka;
+import models.Scheduler;
+import models.Scheduler.CancellableRef;
+import models.Scheduler.StopCriteria;
+import models.StdRandom;
 import models.Trigger;
 import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
+import scala.concurrent.duration.Duration;
 import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
@@ -37,7 +42,7 @@ public class Global extends GlobalSettings {
 				System.out.println("deleting field...: " + f);
 				f.delete();
 			}
-			
+
 			List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 			// channelsList.removeAll(channelsList);
 			for (Recipe r : recipesList) {
@@ -58,9 +63,6 @@ public class Global extends GlobalSettings {
 				System.out.println(a.getName());
 				a.delete();
 			}
-
-
-
 
 			List<Channel> channelsList = Ebean.find(Channel.class).findList();
 			// channelsList.removeAll(channelsList);
@@ -109,15 +111,14 @@ public class Global extends GlobalSettings {
 
 			// Trigger detectorTrigger1 = new Trigger("Presence Trigger",
 			// "Trigger description", AllMessages.DetectionOn.class);
-			Trigger detectorTrigger1 = new Trigger("Detection On",
-					"Trigger description");
+			Trigger detectorTrigger1 = new Trigger("Detection On", "Trigger description");
 			// detector.getTriggers().add(detectorTrigger1);
 			detectorTrigger1.setChannel(detector);
 			detectorTrigger1.save();
-//			Field f = new Field("My Field", "My description");
-//			f.setTrigger(detectorTrigger1);
-//			f.save();
-//			detectorTrigger1.setField(f);
+			// Field f = new Field("My Field", "My description");
+			// f.setTrigger(detectorTrigger1);
+			// f.save();
+			// detectorTrigger1.setField(f);
 			detectorTrigger1.save();
 
 			// // Trigger detectorTrigger2 = new Trigger("Non presence Trigger",
@@ -130,24 +131,18 @@ public class Global extends GlobalSettings {
 			// detector.save();
 
 			// LUMINOSITY DETECTOR CHANNEL
-			Channel luminosityDetector = new Channel("Luminosity detector",
-					"Detects luminosity");
+			Channel luminosityDetector = new Channel("Luminosity detector", "Detects luminosity");
 			luminosityDetector.setLogo("https://d3rnbxvnd0hlox.cloudfront.net/images/channels/85/icons/regular.png");
 			luminosityDetector.save();
 
 			// Keep in mind to change null pointer for messages
 			// Trigger detectorTrigger12 = new Trigger("Light Trigger",
 			// "Trigger description 00000", null);
-			Trigger detectorTrigger12 = new Trigger("Light Trigger",
-					"Trigger description 00000");
+			Trigger detectorTrigger12 = new Trigger("Light Trigger", "Trigger description 00000");
 			detectorTrigger12.setChannel(luminosityDetector);
 			detectorTrigger12.save();
 
-
-
 			detectorTrigger12.save();
-
-
 
 			Trigger detectorTrigger13 = new Trigger("Non light Trigger", null);
 			// luminosityDetector.getTriggers().add(detectorTrigger13);
@@ -156,39 +151,34 @@ public class Global extends GlobalSettings {
 
 			// Trigger detectorTrigger14 = new Trigger("Light Trigger1",
 			// "Trigger description", null);
-			Trigger detectorTrigger14 = new Trigger("Light Trigger1",
-					"Trigger description");
+			Trigger detectorTrigger14 = new Trigger("Light Trigger1", "Trigger description");
 			// luminosityDetector.getTriggers().add(detectorTrigger14);
 			detectorTrigger14.setChannel(detector);
 			detectorTrigger14.save();
 
 			// Trigger detectorTrigger15 = new Trigger("Light Trigger2",
 			// "Trigger description", null);
-			Trigger detectorTrigger15 = new Trigger("Light Trigger2",
-					"Trigger description");
+			Trigger detectorTrigger15 = new Trigger("Light Trigger2", "Trigger description");
 			// luminosityDetector.getTriggers().add(detectorTrigger15);
 			detectorTrigger15.setChannel(detector);
 			detectorTrigger15.save();
 
 			// Trigger detectorTrigger16 = new Trigger("Light Trigger3",
 			// "Trigger description", null);
-			Trigger detectorTrigger16 = new Trigger("Light Trigger3",
-					"Trigger description");
+			Trigger detectorTrigger16 = new Trigger("Light Trigger3", "Trigger description");
 			// luminosityDetector.getTriggers().add(detectorTrigger16);
 			detectorTrigger16.setChannel(detector);
 			detectorTrigger16.save();
 
 			// Trigger detectorTrigger17 = new Trigger("Light Trigger",
 			// "Trigger description", null);
-			Trigger detectorTrigger17 = new Trigger("Light Trigger4",
-					"Trigger description");
+			Trigger detectorTrigger17 = new Trigger("Light Trigger4", "Trigger description");
 			// luminosityDetector.getTriggers().add(detectorTrigger17);
 			detectorTrigger17.setChannel(detector);
 			detectorTrigger17.save();
 
 			//
-			Trigger detectorTrigger18 = new Trigger("Light Trigger5",
-					"Trigger description");
+			Trigger detectorTrigger18 = new Trigger("Light Trigger5", "Trigger description");
 			// luminosityDetector.getTriggers().add(detectorTrigger18);
 			detectorTrigger18.setChannel(detector);
 			detectorTrigger18.save();
@@ -222,19 +212,19 @@ public class Global extends GlobalSettings {
 			rec.setUser(user1);
 			rec.setTriggerChannel(detector);
 			rec.setTrigger(detectorTrigger1);
-			Field f1 = new Field("toto","tata");
+			Field f1 = new Field("toto", "tata");
 			f1.save();
 			rec.setTriggerField(f1);
-			
+
 			rec.setActionChannel(lamp);
 			rec.setAction(lampAction2);
-			Field f2 = new Field("lamp color","red");
+			Field f2 = new Field("lamp color", "red");
 			f2.save();
 			rec.setActionField(f2);
 			rec.setActive(true);
 			rec.setLog(new ArrayList<Log>());
 			rec.save();
-			
+
 			for (Channel c : Ebean.find(Channel.class).findList()) {
 				System.out.println(c);
 			}
@@ -247,28 +237,60 @@ public class Global extends GlobalSettings {
 			 */
 
 			// Create actor router for all the user groups that we have
-			//SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-			//System.out.println("UserGroup - Router Map: " + SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
-			
+			// SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
+			// System.out.println("UserGroup - Router Map: " +
+			// SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
+
 			// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 			for (Recipe r : Ebean.find(Recipe.class).findList()) {
 				System.out.println("Creating akka recipe from recipe...");
 				RecipeAkka.recipesMap.put(r.getId(), r.createRecipeAkkaFromRecipe());
 			}
-
-			//Recipe r = Ebean.find(Recipe.class).findList().get(0);
-			//SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(), RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
-			// List<User> allUsersFromSameGroup = User
-			// .getAllUsersFromSameGroup(controllers.Application
-			// .getUserLoggedIn().getUserGroup());
-			//
-			// for (User u : allUsersFromSameGroup) {
-
-			// courses.find.where().eq("student_id", student_id).findList();
-
-//test
 		}
 
+		/*
+		 * This is how we send a message.
+		 */
+		Recipe recipe = Ebean.find(Recipe.class).findList().get(0);
+		SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
+				RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
+				RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
+
+		/*
+		 * This is the simple way to set up a random message issue. Activate it
+		 * every random period between 10 and 15 seconds, and never stops.
+		 */
+		CancellableRef cancellableRef = AllActors.scheduler.periodicallyActivate(
+				() -> Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS),
+				Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
+
+		/*
+		 * We can do anything we want upon a trigger raising. Here, at most 5
+		 * seconds after the previous event we'll do something. We've chosen to
+		 * activate a random recipe and to say hello to the logger. After 15
+		 * times, we stop it and go to sleep.
+		 */
+		AllActors.scheduler.addRandomIssue(Duration.Zero(),
+				() -> Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS),
+				StopCriteria.set(StopCriteria.OCCURENCE, 15),//
+				() -> {
+					// Get all the recipes.
+				List<Recipe> recipes = Ebean.find(Recipe.class).findList();
+				// Randomly pick one of them up.
+				Recipe r = recipes.get(StdRandom.uniform(recipes.size() - 1));
+				// Activate it.
+				SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(
+						RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(),
+						RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
+				// Say hello to beloved logger.
+				Logger.info("Hi, I'm a random event, giving you a random number: " + StdRandom.uniform());
+			});
+
+		/*
+		 * So we are having two ways to activate a recipe. Let's cancel the
+		 * never finishing first one:
+		 */
+		cancellableRef.cancel();
 	}
 
 	public void onStop(Application app) {
