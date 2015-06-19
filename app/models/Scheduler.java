@@ -223,9 +223,7 @@ public class Scheduler {
 				} catch (InterruptedException e) {
 				}
 			}
-			if (!stopCriteria.getCriteria()) {
-				ticks.remove(this);
-			}
+			ticks.remove(this);
 		}
 
 		public Cancellable getCancellable() {
