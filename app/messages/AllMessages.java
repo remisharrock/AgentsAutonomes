@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import models.Field;
 import models.RecipeAkka;
+import models.RecipeAkka;
 import actors.AllActors.DetectorActor;
 import actors.AllActors.HumanActor;
 import actors.AllActors.LampActor;
@@ -29,7 +30,7 @@ public class AllMessages {
 	
 	
 	public class MessageEnvelope {
-		// we have to send the recipe with the message to know who are the actors that are in the recipe
+		// we have to send the recipeAkka with the message to know who are the actors that are in the recipeAkka
 		private RecipeAkka recipeAkka;
 		
 		private Field field;
@@ -40,8 +41,6 @@ public class AllMessages {
 		public MessageEnvelope(RecipeAkka recipeAkka) {
 			this.recipeAkka = recipeAkka;
 		}
-		
-		
 		
 		public Field getField() {
 			return field;

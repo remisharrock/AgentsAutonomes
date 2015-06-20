@@ -1,10 +1,16 @@
 package actors;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 import controllers.Scheduler;
 import messages.AllMessages;
 import messages.AllMessages.MessageEnvelope;
+import models.AdminLog;
+import models.Recipe;
 import models.RecipeAkka;
 import akka.actor.ActorSystem;
 import akka.actor.UntypedActor;
@@ -22,6 +28,14 @@ public class AllActors {
 	// public final static ActorRef luminosityDetectorActor =
 	// system.actorOf(Props.create(LuminosityDetectorActor.class),
 	// "luminosityDetector");
+	
+	public static void writeToLog(RecipeAkka ra, String state) {
+		Long recipeId = getKeyByValue(RecipeAkka.recipesMap, ra);
+		Recipe r = Recipe.getRecipeById(recipeId);
+		AdminLog log = new AdminLog(ra.getTitle(), r.getTriggerChannel().getName(), r.getTrigger().getName(), r.getActionChannel().getName(), r.getAction().getName(), state, ra.getUser(), new Date());
+		System.out.println(log.toString());
+		log.save();
+	}
 
 	public static class ActorRouter extends UntypedActor {
 		String userGroup = "";
@@ -101,6 +115,15 @@ public class AllActors {
 		}
 	}
 
+	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+	    for (Entry<T, E> entry : map.entrySet()) {
+	        if (Objects.equals(value, entry.getValue())) {
+	            return entry.getKey();
+	        }
+	    }
+	    return null;
+	}
+	
 	public static class LampActor extends UntypedActor {
 		public String state = "OFF";
 
@@ -110,7 +133,17 @@ public class AllActors {
 
 		public void onReceive(Object message) {
 			if (message instanceof AllMessages.TurnOffLampMessage) {
-				state = "OFF";
+				AllMessages.TurnOffLampMessage lampMessage = (AllMessages.TurnOffLampMessage) message;
+				if (lampMessage.getField() != null) {
+					state = "OFF with" + lampMessage.getField().getName() + " is " + lampMessage.getField().getValue();
+				} else {
+					state = "OFF";
+				}
+				
+				AllActors.writeToLog(lampMessage.getRecipeAkka(), state);
+				
+				
+				
 			} else if (message instanceof AllMessages.TurnOnLampMessage) {
 				AllMessages.TurnOnLampMessage lampMessage = (AllMessages.TurnOnLampMessage) message;
 				if (lampMessage.getField() != null) {
@@ -118,8 +151,13 @@ public class AllActors {
 				} else {
 					state = "ON";
 				}
+				
+				AllActors.writeToLog(lampMessage.getRecipeAkka(), state);
 			}
 
+			
+			
+			
 			System.out.println("Lamp is now of state: " + state);
 			//
 			// else if (message instanceof DetectionOff) {

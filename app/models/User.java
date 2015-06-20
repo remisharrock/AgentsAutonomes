@@ -39,6 +39,9 @@ public class User extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Recipe> recipes;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<AdminLog> adminLog;
+	
 	
 	public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(
 			Long.class, User.class);
@@ -139,7 +142,15 @@ public class User extends Model {
 		return Ebean.find(User.class).where().eq("userGroup", userGroup).findList();
 	}
 	
-	
+	public List<AdminLog> getAdminLog() {
+		return adminLog;
+	}
+
+	public void setAdminLog(List<AdminLog> adminLog) {
+		this.adminLog = adminLog;
+	}
+
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password="
