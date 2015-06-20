@@ -519,10 +519,10 @@ public class Recipe extends Model {
 		this.log = log;
 	}
 
-	public List<String> getLogReverseOrder() {
-		List<String> logReverse = new LinkedList<String>();
+	public List<Log> getLogReverseOrder() {
+		List<Log> logReverse = new LinkedList<Log>();
 		for (int i = log.size() - 1; i >= 0; i--) {
-			logReverse.add(log.get(i).getLogInfo());
+			logReverse.add(log.get(i));
 		}
 
 		return logReverse;

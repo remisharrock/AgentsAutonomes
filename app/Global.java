@@ -34,13 +34,12 @@ public class Global extends GlobalSettings {
 		DatabaseEngine.deleteDB();
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
 
-		// if (Ebean.find(Recipe.class).findRowCount() == 0) {
+//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
 		DatabaseEngine.populateDB();
 
 		Logger.info("Init Data");
 
-		// } else {
 		/**
 		 * In this case we already have recipes on our database But those
 		 * recipes won't have their equivalent in akka So we should iterate on
@@ -55,6 +54,7 @@ public class Global extends GlobalSettings {
 				+ SystemController.getSystemControllerInstance()
 						.getUserGroupActorRouterMap());
 
+
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
 			System.out.println("Creating akka recipe from recipe...");
@@ -62,7 +62,9 @@ public class Global extends GlobalSettings {
 					.put(r.getId(), r.createRecipeAkkaFromRecipe());
 		}
 
+
 		Script.randomScript();
+
 	}
 
 	public void onStop(Application app) {

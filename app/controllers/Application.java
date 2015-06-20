@@ -42,7 +42,7 @@ public class Application extends Controller {
 	}
 
 	public static Result loginForm() {
-		
+		// recipe=null;
 		if (userLoggedIn != null) {
 			if (userLoggedIn.getRole().equals("administrator"))
 				return administratorView();
@@ -248,12 +248,22 @@ public class Application extends Controller {
 		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
+		
+		Log l1 = new Log("Recipe creation", new Date());
+		l1.setRecipe(recipe);
+		//l1.save();
+		//Log l2 = new Log("Recipe activated on creation");
+		//l2.setRecipe(recipe);
+		//l2.save();
+		recipe.getLog().add(l1);
+		//recipe.getLog().add(l2);
+		
 		recipe.save();
-
+		userLoggedIn.getRecipes().add(recipe);
+		//recipe.setUser(userLoggedIn);
+		
 		System.out.println("User's list size: " + userLoggedIn.getRecipes().size());
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
-
-		
 
 		// System.out.println("Recipe created: " + recipe);
 
@@ -340,6 +350,20 @@ public class Application extends Controller {
 			return ok(viewRecipeLog.render(userLoggedIn, r));
 		} else
 			return ok(index.render());
+	}
+	
+	public static Result deleteRecipe() {
+		DynamicForm requestData = Form.form().bindFromRequest();
+		if (userLoggedIn != null && requestData.get("deleteRecipe") != null) {
+			long recipeId = Long.parseLong(requestData.get("deleteRecipe"));
+			System.out.println("Delete recipe: " + recipeId);
+			Recipe r = userLoggedIn.getRecipesById(recipeId);
+			userLoggedIn.getRecipes().remove(r);
+			r.delete();
+			RecipeAkka.recipesMap.remove(r.getId()); 
+		}
+		
+		return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result activateRecipe() {
