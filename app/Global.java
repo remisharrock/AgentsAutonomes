@@ -357,7 +357,6 @@ public class Global extends GlobalSettings {
 			}
 			fw.close();
 			Runtime.getRuntime().exec("java -jar lib/visual.jar " + filepath);
-			Runtime.getRuntime().exec("touch imhere");
 		} catch (IOException e) {
 		}
 	}
