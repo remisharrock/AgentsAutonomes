@@ -12,6 +12,7 @@ import com.avaje.ebean.Ebean;
 
 import messages.AllMessages;
 import models.Action;
+import models.AdminLog;
 import models.Channel;
 import models.Field;
 import models.Log;
@@ -106,10 +107,7 @@ public class Application extends Controller {
 	}
 
 	public static Result viewAdministratorLog() {
-		ArrayList<String> logs = new ArrayList<String>();
-		logs.add("test0");
-		logs.add("test1");
-		logs.add("test2");
+		List<AdminLog> logs = AdminLog.getAllAdminLogs();
 		return ok(administratorLog.render(logs));
 	}
 

@@ -1,11 +1,16 @@
 package models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.avaje.ebean.Ebean;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -116,9 +121,20 @@ public class AdminLog extends Model {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
+	public String getDateString() {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		String dateString = df.format(date);
+		System.out.println("my date: " + dateString);
+		return dateString;
+	}
 
 	public long getId() {
 		return id;
+	}
+	
+	public static List<AdminLog> getAllAdminLogs() {
+		return Ebean.find(AdminLog.class).findList();
 	}
 
 	@Override

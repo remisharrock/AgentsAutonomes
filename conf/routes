@@ -16,7 +16,7 @@ GET		/completeActionFields			controllers.Application.completeActionFields(action
 GET		/createRecipe					controllers.Application.createRecipe()
 GET		/viewRecipes					controllers.Application.viewRecipes()
 GET		/viewRecipesAfterCreate			controllers.Application.viewRecipesAfterCreate()
-GET		/aviewAdministratorLog			controllers.Application.viewAdministratorLog()
+GET		/viewAdministratorLog			controllers.Application.viewAdministratorLog()
 GET		/administratorView				controllers.Application.administratorView()
 GET		/chooseActivationType			controllers.Application.chooseActivationType()
 GET		/viewRecipeLog					controllers.Application.viewRecipeLog()

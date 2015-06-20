@@ -1,4 +1,4 @@
-@(logs: List[String])
+@(logs: List[AdminLog])
 @main("Administrator Log") {
 
 <!DOCTYPE html>
@@ -40,16 +40,52 @@ if(recipe.getLog().size()>0 ) {
 	for(log <- recipe.getLogReverseOrder() ){
 	if(log!=null){-->
 
-	<div class='is-dimmable'> 
-			<a class='focus-here' href='#'></a>
+	<div class='is-dimmable'>
+			<!-- <a class='focus-here' href='#'></a>
 			<h2 class='composer_section_header' style="font-size: 1rem; padding: 10px 120px 0px 0;">
 				Log description
-			<!--  <span class='composer_section_step'>step 1 of 7</span> -->
+			 <span class='composer_section_step'>step 1 of 7</span>
 			</h2>
 			<p class='composer_section_description' style="font-size: 90%; margin-bottom: 0px">
 				Date
-			</p>
+			</p> -->
+			<div id="wrapper">
+ <div class="adminLog"> 
+  <table id="keywords" cellspacing="0" cellpadding="0">
+    <thead>
+      <tr>
+        <th><span>ID</span></th>
+        <th><span>Date & Time</span></th>
+        <th><span>Recipe Name</span></th>
+        <th><span>Trigger Channel Name</span></th>
+        <th><span>Trigger Message</span></th>
+        <th><span>Action Channel Name</span></th>
+        <th><span>Action Message</span></th>
+        <th><span>State</span></th>
+        <th><span>Username</span></th>
+      </tr>
+    </thead>
+    <tbody>
+    @for(log <- logs){
+    	<tr>
+        <td class="lalign">@log.getId()</td>
+        <td>@log.getDateString()</td>
+        <td>@log.getRecipeName()</td>
+        <td>@log.getTriggerChannelName()</td>
+        <td>@log.getTriggerMessage()</td>
+        <td>@log.getActionChannelName()</td>
+        <td>@log.getActionMessage()</td>
+        <td>@log.getStateOfActionActor()</td>
+        <td>@log.getUser().getUsername()</td>
+      </tr>
+    }
+
+    </tbody>
+  </table>
+ </div>
+ </div> 
 	</div>
+	
 
 	
 <!-- }
