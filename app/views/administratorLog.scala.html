@@ -25,7 +25,7 @@
 <article class="l-page-content">
 		<div id="statement_create">
 			<form class="navbar-form pull-right">
-				<br />
+				<br/>
 				<div class="hero">
 					<div class="row">
 						 <div class="large-12 columns intro-text">
@@ -49,7 +49,13 @@ if(recipe.getLog().size()>0 ) {
 			<p class='composer_section_description' style="font-size: 90%; margin-bottom: 0px">
 				Date
 			</p> -->
-			<div id="wrapper">
+			<form class="navbar-form pull-right"
+				action="@routes.Application.viewAdministratorLog()">
+			<div class="buttonContainer">
+				<button type="submit" name="viewRecipesButton" value="View Recipes" class="refreshButton" style="display: block; width: 100%;">Refresh Log</button>
+			</div>
+			</form>
+<div id="wrapper">
  <div class="adminLog"> 
   <table id="keywords" cellspacing="0" cellpadding="0">
     <thead>

@@ -30,9 +30,13 @@ public class RecipeAkka {
 	
 	private MessageEnvelope triggerMessage; // is the message
 	
+	private Field triggerField;
+	
 	private ActorRef actionChannelActor;
 	
 	private MessageEnvelope actionMessage;
+	
+	private Field actionField;
 	
 	private User user;
 	
@@ -98,6 +102,8 @@ public class RecipeAkka {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	
 
 //	public Recipe getRecipe() {
 //		return recipe;
@@ -106,6 +112,22 @@ public class RecipeAkka {
 //	public void setRecipe(Recipe recipe) {
 //		this.recipe = recipe;
 //	}
+
+	public Field getTriggerField() {
+		return triggerField;
+	}
+
+	public void setTriggerField(Field triggerField) {
+		this.triggerField = triggerField;
+	}
+
+	public Field getActionField() {
+		return actionField;
+	}
+
+	public void setActionField(Field actionField) {
+		this.actionField = actionField;
+	}
 
 	public long getId() {
 		return Id;

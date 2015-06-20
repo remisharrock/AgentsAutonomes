@@ -222,7 +222,7 @@ public class DatabaseEngine {
 				rec.setTriggerField(f1);
 
 				rec.setActionChannel(lamp);
-				rec.setAction(lampAction2);
+				rec.setAction(lampAction1);
 				Field f2 = new Field("lamp color", "red");
 				f2.save();
 				rec.setActionField(f2);

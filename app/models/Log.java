@@ -67,7 +67,6 @@ public class Log extends Model {
 	public String getDateString() {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String dateString = df.format(doneAt);
-		System.out.println("my date: " + dateString);
 		return dateString;
 	}
 	

@@ -10,6 +10,7 @@ import controllers.Scheduler;
 import messages.AllMessages;
 import messages.AllMessages.MessageEnvelope;
 import models.AdminLog;
+import models.Field;
 import models.Recipe;
 import models.RecipeAkka;
 import akka.actor.ActorSystem;
@@ -134,8 +135,9 @@ public class AllActors {
 		public void onReceive(Object message) {
 			if (message instanceof AllMessages.TurnOffLampMessage) {
 				AllMessages.TurnOffLampMessage lampMessage = (AllMessages.TurnOffLampMessage) message;
-				if (lampMessage.getField() != null) {
-					state = "OFF with" + lampMessage.getField().getName() + " is " + lampMessage.getField().getValue();
+				Field field = lampMessage.getRecipeAkka().getActionField();
+				if (field != null) {
+					state = "OFF / " + field.getName() + ": " + field.getValue().toUpperCase();
 				} else {
 					state = "OFF";
 				}
@@ -146,9 +148,11 @@ public class AllActors {
 				
 			} else if (message instanceof AllMessages.TurnOnLampMessage) {
 				AllMessages.TurnOnLampMessage lampMessage = (AllMessages.TurnOnLampMessage) message;
-				if (lampMessage.getField() != null) {
-					state = "ON with" + lampMessage.getField().getName() + " is " + lampMessage.getField().getValue();
+				Field field = lampMessage.getRecipeAkka().getActionField();
+				if (field != null) {
+					state = "ON / " + field.getName() + ": " + field.getValue().toUpperCase();
 				} else {
+					System.out.println("trigger field IS null");
 					state = "ON";
 				}
 				

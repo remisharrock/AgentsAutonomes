@@ -32,8 +32,8 @@ public class AllMessages {
 	public class MessageEnvelope {
 		// we have to send the recipeAkka with the message to know who are the actors that are in the recipeAkka
 		private RecipeAkka recipeAkka;
-		
-		private Field field;
+//		
+//		private Field field;
 		
 		public MessageEnvelope() {
 		}
@@ -42,13 +42,13 @@ public class AllMessages {
 			this.recipeAkka = recipeAkka;
 		}
 		
-		public Field getField() {
-			return field;
-		}
-
-		public void setField(Field field) {
-			this.field = field;
-		}
+//		public Field getField() {
+//			return field;
+//		}
+//
+//		public void setField(Field field) {
+//			this.field = field;
+//		}
 
 		public void setRecipeAkka(RecipeAkka recipeAkka) {
 			this.recipeAkka = recipeAkka;

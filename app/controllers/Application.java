@@ -50,7 +50,6 @@ public class Application extends Controller {
 			else
 				return ok(chooseView.render(userLoggedIn));
 		}
-		
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
@@ -68,11 +67,12 @@ public class Application extends Controller {
 			if (userLoggedIn.getRole().equals("administrator")) {
 
 				List<Channel> channelsList = Channel.getAllChannels();
-//				HashMap<Channel, List<Trigger>> triggersDic = new HashMap<Channel, List<Trigger>>();
-//				for (int i = 0; i < channelsList.size(); i++) {
-//					triggersDic.put(channelsList.get(i), channelsList.get(i)
-//							.getTriggers());
-//				}
+				// HashMap<Channel, List<Trigger>> triggersDic = new
+				// HashMap<Channel, List<Trigger>>();
+				// for (int i = 0; i < channelsList.size(); i++) {
+				// triggersDic.put(channelsList.get(i), channelsList.get(i)
+				// .getTriggers());
+				// }
 				System.out.println("Im here");
 				return ok(administratorView.render(channelsList));
 			} else {
@@ -243,24 +243,26 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
+		System.out
+				.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
-		
+
 		Log l1 = new Log("Recipe creation", new Date());
 		l1.setRecipe(recipe);
-		//l1.save();
-		//Log l2 = new Log("Recipe activated on creation");
-		//l2.setRecipe(recipe);
-		//l2.save();
+		// l1.save();
+		// Log l2 = new Log("Recipe activated on creation");
+		// l2.setRecipe(recipe);
+		// l2.save();
 		recipe.getLog().add(l1);
-		//recipe.getLog().add(l2);
-		
+		// recipe.getLog().add(l2);
+
 		recipe.save();
 		userLoggedIn.getRecipes().add(recipe);
-		//recipe.setUser(userLoggedIn);
-		
-		System.out.println("User's list size: " + userLoggedIn.getRecipes().size());
+		// recipe.setUser(userLoggedIn);
+
+		System.out.println("User's list size: "
+				+ userLoggedIn.getRecipes().size());
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
 		// System.out.println("Recipe created: " + recipe);
@@ -349,7 +351,7 @@ public class Application extends Controller {
 		} else
 			return ok(index.render());
 	}
-	
+
 	public static Result deleteRecipe() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 		if (userLoggedIn != null && requestData.get("deleteRecipe") != null) {
@@ -358,27 +360,27 @@ public class Application extends Controller {
 			Recipe r = userLoggedIn.getRecipesById(recipeId);
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
-			RecipeAkka.recipesMap.remove(r.getId()); 
+			RecipeAkka.recipesMap.remove(r.getId());
 		}
-		
+
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
 	public static Result activateRecipe() {
 		DynamicForm requestData = Form.form().bindFromRequest();
-		if (userLoggedIn != null){
-			if (requestData.get("RecipeOff") != null) {	
-				long recipeId = Long.parseLong( requestData.get("RecipeOff") );
+		if (userLoggedIn != null) {
+			if (requestData.get("RecipeOff") != null) {
+				long recipeId = Long.parseLong(requestData.get("RecipeOff"));
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
-				if(r.getActive()){
+				if (r.getActive()) {
 					r.setActive(false);
 					r.getLog().add(new Log("Recipe turned off.", new Date()));
 					r.save();
 				}
-			}else if (requestData.get("RecipeOn") != null) {	
-				long recipeId = Long.parseLong( requestData.get("RecipeOn") );
+			} else if (requestData.get("RecipeOn") != null) {
+				long recipeId = Long.parseLong(requestData.get("RecipeOn"));
 				Recipe r = userLoggedIn.getRecipesById(recipeId);
-				if(r.getActive()==false){
+				if (r.getActive() == false) {
 					r.setActive(true);
 					r.getLog().add(new Log("Recipe turned on.", new Date()));
 					r.save();
@@ -391,21 +393,21 @@ public class Application extends Controller {
 
 	public static Result userLogOut() {
 		DynamicForm requestData = Form.form().bindFromRequest();
-//		if (requestData.get("LogOutButton") != null) {
-			userLoggedIn = null;
-			recipe = null;
-			
-//		}
-//		if (requestData.get("HomeButton") != null) {
-//			recipe = null;
-//			if (userLoggedIn.getRole() == "administrator")
-//				return administratorView();
-//			else
-//				return ok(chooseView.render(userLoggedIn));
-//		}
+		// if (requestData.get("LogOutButton") != null) {
+		userLoggedIn = null;
+		recipe = null;
+
+		// }
+		// if (requestData.get("HomeButton") != null) {
+		// recipe = null;
+		// if (userLoggedIn.getRole() == "administrator")
+		// return administratorView();
+		// else
+		// return ok(chooseView.render(userLoggedIn));
+		// }
 		if (requestData.get("AdminLog") != null) {
 			return viewAdministratorLog();
-		} 
+		}
 		return index();
 	}
 
