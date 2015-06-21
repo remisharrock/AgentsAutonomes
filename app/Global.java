@@ -23,9 +23,9 @@ import scala.concurrent.duration.Duration;
 import com.avaje.ebean.Ebean;
 
 import controllers.Scheduler;
+import controllers.Scheduler.CancellableRef;
 import controllers.StdRandom;
 import controllers.SystemController;
-import controllers.Scheduler.CancellableRef;
 import controllers.Scheduler.RandomPeriodFactory;
 import controllers.Scheduler.StopCriteria;
 
@@ -66,33 +66,9 @@ public class Global extends GlobalSettings {
 		}
 
 
-		Script.randomScript();
+		Script.random();
 
-		if (cancellableRef != null)
-			/*
-			 * So we are having two ways to activate a recipe. Let's cancel the
-			 * never finishing first one:
-			 */
-			cancellableRef.cancel();
-
-		String filepath = "./export.txt";
-		File file = new File(filepath);
-		FileWriter fw;
-		try {
-			fw = new FileWriter(file, false);
-
-			fw.write(Double.toString(StdRandom.random()));
-			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
-				fw.write(/**/
-				r.getTriggerChannelActor().path().name().toString() + "\t" + /**/
-				r.getTriggerChannelActor().path().toStringWithoutAddress() + "\t" + /**/
-				r.getActionChannelActor().path().name().toString() + "\t" + /**/
-				r.getActionChannelActor().path().toStringWithoutAddress() + "\n");
-			}
-			fw.close();
-			Runtime.getRuntime().exec("java -jar lib/visual.jar " + filepath);
-		} catch (IOException e) {
-		}
+		
 	}
 
 	public void onStop(Application app) {

@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -15,9 +18,8 @@ import controllers.Scheduler.CancellableRef;
 import controllers.Scheduler.RandomPeriodFactory;
 import controllers.Scheduler.StopCriteria;
 
-
 public class Script {
-	public static void randomScript() {
+	public static void random() {
 		/*
 		 * This is how we send a message.
 		 */
@@ -93,5 +95,27 @@ public class Script {
 		 */
 		if (cancellableRef != null)
 			cancellableRef.cancel();
+
+	}
+
+	public static void export() {
+		String filepath = "./export.txt";
+		File file = new File(filepath);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, false);
+
+			fw.write(Double.toString(StdRandom.random()));
+			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
+				fw.write(/**/
+				r.getTriggerChannelActor().path().name().toString() + "\t" + /**/
+				r.getTriggerChannelActor().path().toStringWithoutAddress() + "\t" + /**/
+				r.getActionChannelActor().path().name().toString() + "\t" + /**/
+				r.getActionChannelActor().path().toStringWithoutAddress() + "\n");
+			}
+			fw.close();
+			Runtime.getRuntime().exec("java -jar lib/visual.jar " + filepath);
+		} catch (IOException e) {
+		}
 	}
 }
