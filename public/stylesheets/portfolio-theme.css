@@ -63,7 +63,7 @@ body {
 }
 
 .hero{
-	background: url("http://www.digitalbooktalk.net/wp-content/uploads/2014/02/Matrix-Binary-On-Blue-Background.jpg");
+	background: url(/images/Matrix-Binary-On-Blue-Background.jpg);
 	background-size: cover;
 	box-shadow: inset 0px 0px 0 2000px rgba(0,0,0,0.15);
 	height: 80%;
