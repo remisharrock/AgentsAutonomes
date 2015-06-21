@@ -579,3 +579,10 @@ body {
 	float:right;
 	height: 200px;
 }
+
+.refreshButton {
+	height: 40px;
+	padding: 0px;
+}
+
+

@@ -3,7 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import models.Scheduler;
+import controllers.Scheduler;
 import actors.AllActors;
 import akka.actor.ActorRef;
 import akka.actor.Props;

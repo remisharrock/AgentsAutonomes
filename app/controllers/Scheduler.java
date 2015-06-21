@@ -1,15 +1,16 @@
-package models;
+package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+import models.Recipe;
+import models.RecipeAkka;
 import play.Logger;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 import actors.AllActors;
 import akka.actor.ActorSystem;
 import akka.actor.Cancellable;
-import controllers.SystemController;
 
 public class Scheduler {
 
@@ -206,8 +207,10 @@ public class Scheduler {
 				cancellable = AllActors.system.scheduler().scheduleOnce(FiniteDuration.Zero(), new Runnable() {
 					@Override
 					public void run() {
-						Logger.info("CancellableRef " + thread.getName() + ": eventFunction "
-								+ eventFunction.toString() + " executed");
+						// Logger.info("CancellableRef " + thread.getName()
+						// +
+						// ": eventFunction "
+						// + eventFunction.toString() + " executed");
 						eventFunction.run();
 					}
 				}, AllActors.system.dispatcher());

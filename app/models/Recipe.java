@@ -199,7 +199,8 @@ public class Recipe extends Model {
 		this.triggerField = triggerField;
 
 		System.out.println("im here: " + recipeAkka.getTriggerMessage());
-		recipeAkka.getTriggerMessage().setField(triggerField);
+		recipeAkka.setTriggerField(triggerField);
+//		recipeAkka.getTriggerMessage().setField(triggerField);
 	}
 
 	public Channel getActionChannel() {
@@ -285,7 +286,8 @@ public class Recipe extends Model {
 
 	public void setActionField(Field actionField) {
 		this.actionField = actionField;
-		recipeAkka.getActionMessage().setField(actionField);
+		recipeAkka.setActionField(actionField);
+//		recipeAkka.getActionMessage().setField(actionField);
 	}
 
 	public User getUser() {
@@ -351,6 +353,8 @@ public class Recipe extends Model {
 		ra.setTitle(this.title);
 		ra.setActive(this.active);
 		ra.setUser(this.user);
+		ra.setTriggerField(this.triggerField);
+		ra.setActionField(this.actionField);
 
 		/**
 		 * I should check, for users of the same group, if there is already an
@@ -519,10 +523,10 @@ public class Recipe extends Model {
 		this.log = log;
 	}
 
-	public List<String> getLogReverseOrder() {
-		List<String> logReverse = new LinkedList<String>();
+	public List<Log> getLogReverseOrder() {
+		List<Log> logReverse = new LinkedList<Log>();
 		for (int i = log.size() - 1; i >= 0; i--) {
-			logReverse.add(log.get(i).getLogInfo());
+			logReverse.add(log.get(i));
 		}
 
 		return logReverse;
