@@ -69,6 +69,7 @@ if(recipe.getLog().size()>0 ) {
         <th><span>Action Channel Name</span></th>
         <th><span>Action Message</span></th>
         <th><span>State</span></th>
+        <th><span>User Group</span></th>
         <th><span>Username</span></th>
       </tr>
     </thead>
@@ -83,6 +84,7 @@ if(recipe.getLog().size()>0 ) {
         <td>@log.getActionChannelName()</td>
         <td>@log.getActionMessage()</td>
         <td>@log.getStateOfActionActor()</td>
+        <td>@log.getUserGroup()</td>
         <td>@log.getUser().getUsername()</td>
       </tr>
     }

@@ -27,7 +27,16 @@ public class AllMessages {
 		Trigger, Action
 	} 
 	
-	
+	/**
+	 * All the messages will inherit MessageEnvelope. Message Envelope contains
+	 * the most important part: RecipeAkka. With the message sent to the actor router,
+	 * we HAVE TO send the recipeAkka with it to be able to know what is the corresponding
+	 * Actor that will do the action, and what is the action to do.
+	 * It is also very important to know what to write in the log of the administrator
+	 * We have to know literally everything, the user, the user group, the sent message,
+	 * the receive message... and most importantly the state of the actor that received the message
+	 *
+	 */
 	public class MessageEnvelope {
 		// we have to send the recipeAkka with the message to know who are the actors that are in the recipeAkka
 		private RecipeAkka recipeAkka;

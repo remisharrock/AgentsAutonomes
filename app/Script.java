@@ -19,6 +19,10 @@ import controllers.Scheduler.RandomPeriodFactory;
 import controllers.Scheduler.StopCriteria;
 
 public class Script {
+	
+	/**
+	 * Iterates through all the recipes that we have and launch their triggers
+	 */
 	public static void random() {
 		/*
 		 * This is how we send a message.
@@ -38,7 +42,7 @@ public class Script {
 						RecipeAkka.recipesMap.get(recipe.getId())
 								.getTriggerChannelActor());
 
-				/*
+				/**
 				 * This is the simple way to set up a random message issue.
 				 * Activate it every random period between 10 and 15 seconds,
 				 * and never stops. First we implement an object whose method
@@ -58,7 +62,7 @@ public class Script {
 										null), recipe);
 			}
 
-			/*
+			/**
 			 * We can do anything we want upon a trigger raising. Here, at most
 			 * 5 seconds after the previous event we'll do something. We've
 			 * chosen to activate a random recipe and to say hello to the
@@ -120,6 +124,9 @@ public class Script {
 
 	}
 
+	/**
+	 * Used to display all the relations in a graph
+	 */
 	public static void export() {
 		String filepath = "./export.txt";
 		File file = new File(filepath);

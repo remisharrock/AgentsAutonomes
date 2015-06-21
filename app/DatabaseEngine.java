@@ -16,6 +16,13 @@ import com.avaje.ebean.Ebean;
 
 public class DatabaseEngine {
 	
+	/**
+	 * This function permits to erase all the data in the database. It is mainly
+	 * used for testing. To have all the data from scratch and test what exactly
+	 * what we want.
+	 * We have to follow a specific order when deleting because of some
+	 * foreign keys constraints
+	 */
 	public static void deleteDB() {
 		List<AdminLog> adminLogList = Ebean.find(AdminLog.class).findList();
 		for (AdminLog al : adminLogList) {
@@ -71,6 +78,15 @@ public class DatabaseEngine {
 		}
 	}
 	
+	/**
+	 * This function permits to populate the database
+	 * We begin first by creating the users
+	 * then the channels with their triggers and actions and fiels that we can see
+	 * then the recipes that will be by default in the database => also
+	 * used for testing and for simulating
+	 * All the created recipes will have a RecipeAkka created for each
+	 * and will be put in a hashmap to have easy access
+	 */
 	public static void populateDB() {
 		// Users
 				User user1 = new User("1", "1", "user", "home1");

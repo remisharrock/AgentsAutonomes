@@ -35,7 +35,14 @@ public class Global extends GlobalSettings {
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
 		Logger.info("Deleting Database");
+		/**
+		 * DatabaseEngine.deleteDB(); used to delete all the data in the database
+		 */
 		DatabaseEngine.deleteDB();
+		
+		/**
+		 * Instanciates the map that will contains the recipes and their corresponding RecipeAkka
+		 */
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
 
 //		if (Ebean.find(Recipe.class).findRowCount() == 0) {
@@ -54,6 +61,9 @@ public class Global extends GlobalSettings {
 		Logger.info("creating maps");
 
 		// Create actor router for all the user groups that we have
+		/**
+		 * Creating the Actor router for each UserGroup
+		 */
 		SystemController.getSystemControllerInstance().createActorRouterMap(
 				User.getAllUserGroups());
 		System.out.println("UserGroup - Router Map: "
@@ -62,6 +72,10 @@ public class Global extends GlobalSettings {
 
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
+		/**
+		 * For the recipes that already exist in the database
+		 * We create the corresponding Recipe Akka
+		 */
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
 			if (!RecipeAkka.recipesMap.containsKey(r.getId())) {
 				System.out.println("Creating akka recipe from recipe...");
@@ -74,6 +88,9 @@ public class Global extends GlobalSettings {
 		}
 
 
+		/**
+		 * Launching the recipes' triggers randomly for a certain amount of time
+		 */
 		Script.random();
 
 		
