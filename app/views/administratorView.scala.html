@@ -266,7 +266,7 @@
 							data-track-event="scr_choose_trigger"
 							data-channel_id="@trigger.getChannel().getId()"
 							data-trigger_id="@trigger.getId()"  id="trigger_607940575"
-							onclick='displayStep3of7(@trigger.getId())'>
+							href='@routes.Application.chooseActivationType(trigger.getId())'>
 								<h3 class="trigger-list_item_name">@trigger.getName()</h3>
 								<p class="trigger-list_item_desc">@trigger.getDescription()</p>
 								<p class="trigger-list_item_desc">@trigger.getId()</p>
@@ -274,34 +274,6 @@
 						}
 					}
 				}
-			</div>
-
-<div class='is-dimmable' id='step3of7' style='display: none'>
-				<form class="navbar-form pull-right"
-				action="@routes.Application.chooseActivationType()">
-					<input type="hidden" id="trigger_chosen_to_activate_id" name="trigger_chosen_to_activate_id" >
-					<h2 class='composer_section_header'>
-						Choose a Type of Activation <span class='composer_section_step'>step 3 of 7</span>
-					</h2>
-					<p class='composer_section_description' id="choose_type_activation_subtitle">...</p>
-					
-					
-					<a class="activation-list_item" id="activation-list_item_manual">
-						<h3 class="trigger-list_item_name">Manual</h3>
-						<p class="trigger-list_item_desc">Activate the trigger manually</p>
-						<button class="btn" type="submit" name="activateTriggerManuallyButton" value="Manual Activation">Manual</button>
-					</a>
-					<a class="activation-list_item">
-						<h3 class="trigger-list_item_name">Periodic</h3>
-						<p class="trigger-list_item_desc">Activate the trigger periodically</p>
-						<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Periodic</button>
-					</a>
-					<a class="activation-list_item">
-						<h3 class="trigger-list_item_name">Random</h3>
-						<p class="trigger-list_item_desc">Activate the trigger randomly</p>
-						<button class="btn" type="submit" name="activateTriggerRandomlyButton" value="Random Activation">Random</button>
-					</a>
-				</form>
 			</div>
 
 	</div>
