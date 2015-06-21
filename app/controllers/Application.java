@@ -73,7 +73,6 @@ public class Application extends Controller {
 				// triggersDic.put(channelsList.get(i), channelsList.get(i)
 				// .getTriggers());
 				// }
-				System.out.println("Im here");
 				return ok(administratorView.render(channelsList));
 			} else {
 				System.out.println("Im not here");
@@ -258,7 +257,7 @@ public class Application extends Controller {
 		// recipe.getLog().add(l2);
 
 		recipe.save();
-		userLoggedIn.getRecipes().add(recipe);
+//		userLoggedIn.getRecipes().add(recipe);
 		// recipe.setUser(userLoggedIn);
 
 		System.out.println("User's list size: "

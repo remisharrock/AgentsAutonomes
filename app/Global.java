@@ -31,14 +31,15 @@ public class Global extends GlobalSettings {
 
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
+		Logger.info("Deleting Database");
 		DatabaseEngine.deleteDB();
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
 
 //		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 
+		Logger.info("Populating database");
 		DatabaseEngine.populateDB();
 
-		Logger.info("Init Data");
 
 		/**
 		 * In this case we already have recipes on our database But those
@@ -46,6 +47,8 @@ public class Global extends GlobalSettings {
 		 * all the recipes that we have and create the equivalent recipeAkka for
 		 * each
 		 */
+		
+		Logger.info("creating maps");
 
 		// Create actor router for all the user groups that we have
 		SystemController.getSystemControllerInstance().createActorRouterMap(
@@ -57,9 +60,14 @@ public class Global extends GlobalSettings {
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
-			System.out.println("Creating akka recipe from recipe...");
-			RecipeAkka.recipesMap
-					.put(r.getId(), r.createRecipeAkkaFromRecipe());
+			if (!RecipeAkka.recipesMap.containsKey(r.getId())) {
+				System.out.println("Creating akka recipe from recipe...");
+				RecipeAkka ra = r.createRecipeAkkaFromRecipe();
+				r.setRecipeAkka(ra);
+				RecipeAkka.recipesMap.put(r.getId(), ra);
+			} else {
+				System.out.println("Recipe already exists in Map...");
+			}
 		}
 
 

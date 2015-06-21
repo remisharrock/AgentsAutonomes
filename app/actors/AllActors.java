@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import controllers.Scheduler;
 import messages.AllMessages;
+import messages.AllMessages.DetectionOffMessage;
 import messages.AllMessages.MessageEnvelope;
 import models.AdminLog;
 import models.Field;
@@ -30,11 +31,23 @@ public class AllActors {
 	// system.actorOf(Props.create(LuminosityDetectorActor.class),
 	// "luminosityDetector");
 	
+	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+		for (Entry<T, E> entry : map.entrySet()) {
+			if (Objects.equals(value, entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	
+
 	public static void writeToLog(RecipeAkka ra, String state) {
 		Long recipeId = getKeyByValue(RecipeAkka.recipesMap, ra);
 		Recipe r = Recipe.getRecipeById(recipeId);
-		AdminLog log = new AdminLog(ra.getTitle(), r.getTriggerChannel().getName(), r.getTrigger().getName(), r.getActionChannel().getName(), r.getAction().getName(), state, ra.getUser(), new Date());
-		System.out.println(log.toString());
+		AdminLog log = new AdminLog(ra.getTitle(), r.getTriggerChannel()
+				.getName(), r.getTrigger().getName(), r.getActionChannel()
+				.getName(), r.getAction().getName(), state, ra.getUser(),
+				new Date());
 		log.save();
 	}
 
@@ -55,142 +68,154 @@ public class AllActors {
 
 		@Override
 		public void onReceive(Object message) throws Exception {
-			System.out.println(AllMessages.getMapClassNameMessage().containsValue(message));
+			System.out.println(AllMessages.getMapClassNameMessage()
+					.containsValue(message));
 			System.out.println("class: " + message);
 			MessageEnvelope me = (MessageEnvelope) message;
 			RecipeAkka ra = me.getRecipeAkka();
 			ra.getActionChannelActor().tell(ra.getActionMessage(), getSelf());
 		}
+		
 
 	}
 
 	public static class HumanActor extends UntypedActor {
-		String state = "";
-		String id;
-
-		public HumanActor(String id) {
-			id = this.id;
-		}
-
+		public String state = "";
+		// This constructor is necessary
 		public HumanActor() {
-
 		}
 
 		public void onReceive(Object message) {
+			MessageEnvelope msg = (MessageEnvelope) message;
+			Field field = msg.getRecipeAkka().getActionField();
+			if (message instanceof AllMessages.ExitRoomMessage) {
+				state = "Exited room";
+				if (field != null) {
+					 state +=" / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				} else {
+					System.out.println("trigger field IS null");
+				}
+			} else if (message instanceof AllMessages.EnterRoomMessage) {
+				state = "Entered room";
+				if (field != null) {
+					 state += " / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			}
+			
+			writeToLog(msg.getRecipeAkka(), state);
 		}
 	}
 
 	public static class DetectorActor extends UntypedActor {
-
-		String state = "";
-		String id;
-
-		public DetectorActor(String id) {
-			id = this.id;
-		}
-
+		public String state = "";
+		// This constructor is necessary
 		public DetectorActor() {
-
 		}
 
-		@Override
-		public void onReceive(Object message) throws Exception {
-			// TODO Auto-generated method stub
-			// if (message instanceof EnterRoom) {
-			// System.out.println("Detector Actor: DETECTION ON");
-			// if (((EnterRoom) message).getChangeState())
-			// lampActor.tell(new DetectionOn(true), getSelf());
-			// else lampActor.tell(new DetectionOn(false), getSelf());
-			//
-			// state = "Detector: Someone entered the room";
-			// }
-			// else if (message instanceof ExitRoom) {
-			// // Send the current greeting back to the sender
-			// System.out.println("Detector Actor: DETECTION OFF");
-			// if (((ExitRoom) message).getChangeState())
-			// lampActor.tell(new DetectionOff(true), getSelf());
-			// else lampActor.tell(new DetectionOff(false), getSelf());
-			// state = "Detector: Someone left the room";
-			// }
-			// else unhandled(message);
+		public void onReceive(Object message) {
+			MessageEnvelope msg = (MessageEnvelope) message;
+			Field field = msg.getRecipeAkka().getActionField();
+			if (message instanceof AllMessages.DetectionOffMessage) {
+				state = "No Detection";
+				if (field != null) {
+					 state +=" / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				} else {
+					System.out.println("trigger field IS null");
+				}
+			} else if (message instanceof AllMessages.DetectionOnMessage) {
+				state = "Detection";
+				if (field != null) {
+					 state += " / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			}
+			
+			writeToLog(msg.getRecipeAkka(), state);
 		}
 	}
 
-	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-	    for (Entry<T, E> entry : map.entrySet()) {
-	        if (Objects.equals(value, entry.getValue())) {
-	            return entry.getKey();
-	        }
-	    }
-	    return null;
-	}
-	
+
 	public static class LampActor extends UntypedActor {
-		public String state = "OFF";
-
+		public String state = "";
 		// This constructor is necessary
 		public LampActor() {
 		}
 
 		public void onReceive(Object message) {
+			MessageEnvelope msg = (MessageEnvelope) message;
+			Field field = msg.getRecipeAkka().getActionField();
 			if (message instanceof AllMessages.TurnOffLampMessage) {
-				AllMessages.TurnOffLampMessage lampMessage = (AllMessages.TurnOffLampMessage) message;
-				Field field = lampMessage.getRecipeAkka().getActionField();
+				state = "OFF";
 				if (field != null) {
-					state = "OFF / " + field.getName() + ": " + field.getValue().toUpperCase();
-				} else {
-					state = "OFF";
+					 state +=" / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
 				}
-				
-				AllActors.writeToLog(lampMessage.getRecipeAkka(), state);
-				
-				
-				
 			} else if (message instanceof AllMessages.TurnOnLampMessage) {
-				AllMessages.TurnOnLampMessage lampMessage = (AllMessages.TurnOnLampMessage) message;
-				Field field = lampMessage.getRecipeAkka().getActionField();
+				state = "ON";
 				if (field != null) {
-					state = "ON / " + field.getName() + ": " + field.getValue().toUpperCase();
-				} else {
-					System.out.println("trigger field IS null");
-					state = "ON";
+					 state += " / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
 				}
-				
-				AllActors.writeToLog(lampMessage.getRecipeAkka(), state);
 			}
-
 			
-			
-			
-			System.out.println("Lamp is now of state: " + state);
-			//
-			// else if (message instanceof DetectionOff) {
-			// // Send the current greeting back to the sender
-			// if (((DetectionOff) message).getChangeState()) {
-			// System.out.println("Lamp Actor: LAMP OFF");
-			// state = "OFF";
-			// } else {
-			// System.out.println("Detection ok But LAMP state didn't change");
-			// }
-			// }
-			// else unhandled(message);
+			writeToLog(msg.getRecipeAkka(), state);
 		}
 	}
 
-	public static class LuminosityDetectorActor extends UntypedActor {
-
-		String id;
-
-		public LuminosityDetectorActor(String id) {
-			id = this.id;
-		}
-
-		public LuminosityDetectorActor() {
+	public static class TemperatureDetectorActor extends UntypedActor {
+		public String state = "";
+		// This constructor is necessary
+		public TemperatureDetectorActor() {
 		}
 
 		public void onReceive(Object message) {
+			MessageEnvelope msg = (MessageEnvelope) message;
+			Field field = msg.getRecipeAkka().getActionField();
+			if (message instanceof AllMessages.HotTemperatureMessage) {
+				state = "Room is Hot";
+				if (field != null) {
+					 state +=" / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			} else if (message instanceof AllMessages.ColdTemperatureMessage) {
+				state = "Room is Cold";
+				if (field != null) {
+					 state += " / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			}
+			
+			writeToLog(msg.getRecipeAkka(), state);
+		}
+	}
+	
+	public static class AirConditionerActor extends UntypedActor {
+		public String state = "";
+		// This constructor is necessary
+		public AirConditionerActor() {
+		}
 
-			unhandled(message);
+		public void onReceive(Object message) {
+			MessageEnvelope msg = (MessageEnvelope) message;
+			Field field = msg.getRecipeAkka().getActionField();
+			if (message instanceof AllMessages.TurnOnCoolerMessage) {
+				state = "Turned on Cooler";
+				if (field != null) {
+					 state +=" / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			} else if (message instanceof AllMessages.TurnOnHeaterMessage) {
+				state = "Turned on Heater";
+				if (field != null) {
+					 state += " / " + field.getName() + ": "
+							+ field.getValue().toUpperCase();
+				}
+			}
+			
+			writeToLog(msg.getRecipeAkka(), state);
 		}
 	}
 
@@ -209,7 +234,8 @@ public class AllActors {
 		mapClassNameActor.put("HumanActor", HumanActor.class);
 		mapClassNameActor.put("DetectorActor", DetectorActor.class);
 		mapClassNameActor.put("LampActor", LampActor.class);
-		mapClassNameActor.put("LuminosityDetectorActor", LuminosityDetectorActor.class);
+		mapClassNameActor.put("TemperatureDetectorActor", TemperatureDetectorActor.class);
+		mapClassNameActor.put("AirConditionerActor", AirConditionerActor.class);
 	}
 
 	public static HashMap<String, Class<?>> getMapClassNameActor() {

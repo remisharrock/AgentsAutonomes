@@ -28,6 +28,8 @@ public class AdminLog extends Model {
 	
 	private String triggerMessage;
 	
+	private String stateOfTriggerActor;
+	
 	private String actionChannelName;
 	
 	private String actionMessage;
@@ -97,6 +99,14 @@ public class AdminLog extends Model {
 	public void setActionMessage(String actionMessage) {
 		this.actionMessage = actionMessage;
 	}
+	
+	public String getStateOfTriggerActor() {
+		return stateOfTriggerActor;
+	}
+
+	public void setStateOfTriggerActor(String stateOfTriggerActor) {
+		this.stateOfTriggerActor = stateOfTriggerActor;
+	}
 
 	public String getStateOfActionActor() {
 		return stateOfActionActor;
@@ -125,7 +135,6 @@ public class AdminLog extends Model {
 	public String getDateString() {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String dateString = df.format(date);
-		System.out.println("my date: " + dateString);
 		return dateString;
 	}
 
