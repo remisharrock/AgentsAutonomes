@@ -1,10 +1,6 @@
-@(triggerId: Long)
+@()
+@import java.math.BigInteger; var counter=0; 
 @main("Agents autonomes") {
-
-
-<!DOCTYPE html>
-<html class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js' debug='true' lang='en'>
-<body>
 
 <header class='l-header'>
 	<!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
@@ -25,32 +21,29 @@
 	</div>
 </header>
 <article class="l-page-content">
-		<div id="statement_create" style="padding-bottom: 2em;">
-			<form class="navbar-form pull-right">
-				<br/>
+		<div id="statement_create">
+			<form class="navbar-form pull-right" action="@routes.Application.administratorView()">
 				<div class="hero">
 					<div class="row">
 						 <div class="large-12 columns intro-text">
-							<h2>Periodic Activation</h2>
+						 <!-- <p>What do you want to do?</p> -->
+							<h2>Choose a type of Activation</h2>
 							<p>Hello Administrator</p>
 						</div> 
 					</div>
 				</div>
-				</form>
-				</div>
-
-
-			<div class='is-dimmable'>
-				<a class='focus-here' href='#'></a>
-				<h2 class='composer_section_header'>
-					Trigger @triggerId 
-				</h2>
-				<input placeholder="Enter Period (in sec)" name="periodTriggerActivation" >
-				<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Activate</button>				 
+			
+			
+			<div class="buttonsContainer">
+					<button type="submit" name="manualActivationButton" value="Manual Activation" class="myButtonView" 
+						style="display: block; width: 34%;">Manual Activation</button>
+					<button type="submit" name="periodicActivationButton" value="Periodic Activation" class="myButtonCreate" 
+					style="display: block; width: 33%;">Periodic Activation</button>
+					<button type="submit" name="randomActivationButton" value="Random Activation" class="myButtonCreate" 
+					style="display: block; width: 33%;">Random Activation</button>
 			</div>
-
+			</form>
 
 	</div>
 </article>
-
 }

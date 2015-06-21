@@ -24,7 +24,6 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
 import actors.AllActors;
 import views.html.*;
 
@@ -37,6 +36,7 @@ public class Application extends Controller {
 	}
 
 	private static Recipe recipe;
+	private static String activationType;
 
 	public static Result index() {
 		return ok(index.render());
@@ -46,7 +46,8 @@ public class Application extends Controller {
 		// recipe=null;
 		if (userLoggedIn != null) {
 			if (userLoggedIn.getRole().equals("administrator"))
-				return administratorView();
+				//return administratorView();
+				return ok(administratorChooseView.render());
 			else
 				return ok(chooseView.render(userLoggedIn));
 		}
@@ -73,7 +74,9 @@ public class Application extends Controller {
 				// triggersDic.put(channelsList.get(i), channelsList.get(i)
 				// .getTriggers());
 				// }
-				return ok(administratorView.render(channelsList));
+
+				System.out.println("Im here");
+				return ok(administratorChooseView.render());
 			} else {
 				System.out.println("Im not here");
 				return ok(chooseView.render(userLoggedIn));
@@ -83,11 +86,26 @@ public class Application extends Controller {
 		}
 
 	}
-
+	
+	public static Result administratorView() {
+		DynamicForm requestData = Form.form().bindFromRequest();
+		List<Channel> channelsList = Channel.getAllChannels();
+		if (requestData.get("manualActivationButton") != null) 
+			activationType = "manualActivationButton";
+		else if (requestData.get("periodicActivationButton") != null) 
+			activationType = "periodicActivationButton";
+		else if (requestData.get("randomActivationButton") != null) 
+			activationType = "randomActivationButton";
+		return ok(administratorView.render(channelsList));
+	}
+	
+	/*
 	public static Result administratorView() {
 		List<Channel> channelsList = Channel.getAllChannels();
 		return ok(administratorView.render(channelsList));
 	}
+	*/
+	
 
 	public static Result chooseView() {
 
@@ -324,21 +342,28 @@ public class Application extends Controller {
 		return ok();
 	}
 
-	public static Result chooseActivationType() {
+	public static Result chooseActivationType(Long triggerId) {
 
-		DynamicForm requestData = Form.form().bindFromRequest();
+		//DynamicForm requestData = Form.form().bindFromRequest();
 
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 
-		Long triggerId = Long.parseLong(requestData
-				.get("trigger_chosen_to_activate_id"));
-
+		//Long triggerId = Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
+		/*
 		if (requestData.get("activateTriggerManuallyButton") != null) {
 			return ok(administratorActivateManually.render(triggerId));
 		} else if (requestData.get("activateTriggerPeriodicallyButton") != null) {
 			return ok(administratorActivatePeriodically.render(triggerId));
 		} else
 			return ok(administratorActivateRandomly.render(triggerId));
+			*/
+		if(activationType.equals("manualActivationButton"))
+			return ok(administratorActivateManually.render(triggerId));
+		else if(activationType.equals("periodicActivationButton"))
+			return ok(administratorActivatePeriodically.render(triggerId));
+		else //if(activationType.equals("randomActivationButton"))
+			return ok(administratorActivateRandomly.render(triggerId));
+	
 	}
 
 	public static Result viewRecipeLog() {

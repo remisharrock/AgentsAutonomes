@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,19 +19,19 @@ import play.Application;
 import play.GlobalSettings;
 import play.Logger;
 import scala.concurrent.duration.Duration;
-import actors.AllActors;
 
 import com.avaje.ebean.Ebean;
 
 import controllers.Scheduler;
+import controllers.Scheduler.CancellableRef;
 import controllers.StdRandom;
 import controllers.SystemController;
-import controllers.Scheduler.CancellableRef;
 import controllers.Scheduler.RandomPeriodFactory;
 import controllers.Scheduler.StopCriteria;
 
 public class Global extends GlobalSettings {
 
+	@SuppressWarnings("deprecation")
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
 		Logger.info("Deleting Database");
@@ -71,8 +74,9 @@ public class Global extends GlobalSettings {
 		}
 
 
-		Script.randomScript();
+		Script.random();
 
+		
 	}
 
 	public void onStop(Application app) {

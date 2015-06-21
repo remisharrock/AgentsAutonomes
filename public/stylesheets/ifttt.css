@@ -3219,7 +3219,7 @@ body {
 	.icon-heart-on, .icon-heart, .icon-lock, .icon-more, .icon-power,
 	.icon-share, .icon-test, .icon-unlock {
 	background-image:
-		url('http://icons.iconarchive.com/icons/custom-icon-design/mono-general-4/512/power-icon.png')
+		url(/images/power-icon.png)
 }
 
 .icon-activity {
