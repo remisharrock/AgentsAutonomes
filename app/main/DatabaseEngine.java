@@ -89,6 +89,8 @@ public class DatabaseEngine {
 	 * and will be put in a hashmap to have easy access
 	 */
 	public static void populateDB() {
+		
+		System.out.println("Populating DB...");
 		// Users
 				User user1 = new User("1", "1", "user", "home1");
 				user1.save();
@@ -365,6 +367,7 @@ public class DatabaseEngine {
 				
 				RecipeAkka.recipesMap.put(rec7.getId(), rec7.getRecipeAkka());
 				
+				System.out.println(RecipeAkka.recipesMap);
 				
 	}
 }

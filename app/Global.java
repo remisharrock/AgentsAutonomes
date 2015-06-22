@@ -1,40 +1,26 @@
-package main;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import models.Action;
-import models.AdminLog;
-import models.Channel;
-import models.Field;
-import models.Log;
+import java.util.HashMap;
+
+import main.DatabaseEngine;
+import main.Script;
 import models.Recipe;
 import models.RecipeAkka;
-import models.Trigger;
 import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
-import scala.concurrent.duration.Duration;
 
 import com.avaje.ebean.Ebean;
 
-import controllers.Scheduler;
-import controllers.Scheduler.CancellableRef;
-import controllers.StdRandom;
 import controllers.SystemController;
-import controllers.Scheduler.RandomPeriodFactory;
-import controllers.Scheduler.StopCriteria;
 
 public class Global extends GlobalSettings {
 
-	@SuppressWarnings("deprecation")
+	@Override
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
+		
+//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
 		Logger.info("Deleting Database");
 		/**
 		 * DatabaseEngine.deleteDB(); used to delete all the data in the database
@@ -43,10 +29,12 @@ public class Global extends GlobalSettings {
 		
 		/**
 		 * Instanciates the map that will contains the recipes and their corresponding RecipeAkka
+		 * We can avoid using this hashmap, but to avoid querying the database and consuming
+		 * some time, We cache all the recipes data in the map 
 		 */
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
 
-//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+
 
 		Logger.info("Populating database");
 		DatabaseEngine.populateDB();
