@@ -40,7 +40,6 @@ public class RecipeAkka {
 	
 	private User user;
 	
-	private Recipe recipe;
 	
 	
 	public RecipeAkka() {
@@ -101,14 +100,6 @@ public class RecipeAkka {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-	
-	public Recipe getRecipe() {
-		return recipe;
-	}
-
-	public void setRecipe(Recipe recipe) {
-		this.recipe = recipe;
 	}
 
 	public Field getTriggerField() {

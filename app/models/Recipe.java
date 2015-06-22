@@ -306,7 +306,6 @@ public class Recipe extends Model {
 
 	public void setRecipeAkka(RecipeAkka recipeAkka) {
 		this.recipeAkka = recipeAkka;
-		recipeAkka.setRecipe(this);
 	}
 
 	public Trigger getTrigger() {
