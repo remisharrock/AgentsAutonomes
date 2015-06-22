@@ -21,32 +21,35 @@ public class AdminLog extends Model {
 
 	@Id
 	private long id;
-	
+
 	private String recipeName;
-	
+
 	private String triggerChannelName;
-	
+
 	private String triggerMessage;
-	
+
+	private String stateOfTriggerActor;
+
 	private String actionChannelName;
-	
+
 	private String actionMessage;
-	
+
 	private String stateOfActionActor;
-	
 
 	@ManyToOne
 	private User user;
-	
+
+	private String userGroup;
+
 	private Date date;
-	
+
 	public static Model.Finder<Long, AdminLog> find = new Model.Finder<Long, AdminLog>(
 			Long.class, AdminLog.class);
 
 	public AdminLog(String recipeName, String triggerChannelName,
 			String triggerMessage, String actionChannelName,
 			String actionMessage, String stateOfActionActor, User user,
-			Date date) {
+			Date date, String userGroup) {
 		super();
 		this.recipeName = recipeName;
 		this.triggerChannelName = triggerChannelName;
@@ -56,6 +59,7 @@ public class AdminLog extends Model {
 		this.stateOfActionActor = stateOfActionActor;
 		this.user = user;
 		this.date = date;
+		this.userGroup = userGroup;
 	}
 
 	public String getRecipeName() {
@@ -98,6 +102,14 @@ public class AdminLog extends Model {
 		this.actionMessage = actionMessage;
 	}
 
+	public String getStateOfTriggerActor() {
+		return stateOfTriggerActor;
+	}
+
+	public void setStateOfTriggerActor(String stateOfTriggerActor) {
+		this.stateOfTriggerActor = stateOfTriggerActor;
+	}
+
 	public String getStateOfActionActor() {
 		return stateOfActionActor;
 	}
@@ -112,6 +124,7 @@ public class AdminLog extends Model {
 
 	public void setUser(User user) {
 		this.user = user;
+		setUserGroup(user.getUserGroup());
 	}
 
 	public Date getDate() {
@@ -121,18 +134,25 @@ public class AdminLog extends Model {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public String getDateString() {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String dateString = df.format(date);
-		System.out.println("my date: " + dateString);
 		return dateString;
 	}
 
 	public long getId() {
 		return id;
 	}
-	
+
+	public String getUserGroup() {
+		return userGroup;
+	}
+
+	public void setUserGroup(String userGroup) {
+		this.userGroup = userGroup;
+	}
+
 	public static List<AdminLog> getAllAdminLogs() {
 		return Ebean.find(AdminLog.class).findList();
 	}
@@ -146,7 +166,5 @@ public class AdminLog extends Model {
 				+ ", stateOfActionActor=" + stateOfActionActor + ", user="
 				+ user + ", date=" + date + "]";
 	}
-	
-	
-	
+
 }

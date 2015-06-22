@@ -17,10 +17,12 @@ create table admin_log (
   recipe_name               varchar(255),
   trigger_channel_name      varchar(255),
   trigger_message           varchar(255),
+  state_of_trigger_actor    varchar(255),
   action_channel_name       varchar(255),
   action_message            varchar(255),
   state_of_action_actor     varchar(255),
   user_id                   bigint,
+  user_group                varchar(255),
   date                      timestamp,
   constraint pk_admin_log primary key (id))
 ;

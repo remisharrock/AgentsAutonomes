@@ -162,7 +162,8 @@ public class Recipe extends Model {
 								.getId()) {
 							// it means that there is an actor that exists for
 							// this group of users and this channel
-//							System.out.println(RecipeAkka.recipesMap);
+							System.out.println("Recipes Map:" + RecipeAkka.recipesMap);
+							
 							ActorRef existingActor = RecipeAkka.recipesMap.get(
 									r.getId()).getTriggerChannelActor();
 							recipeAkka.setTriggerChannelActor(existingActor);
@@ -439,6 +440,7 @@ public class Recipe extends Model {
 					classNameFull);
 
 			System.out.println("classActorTrigger: " + classActor);
+			System.out.println("This Recipe ID: " + this.getId());
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
 					classNameFull + "Trigger" + getId());
 			return actor;
@@ -535,5 +537,6 @@ public class Recipe extends Model {
 	public static Recipe getRecipeById(Long id) {
 		return Recipe.find.byId(id);
 	}
+	
 
 }
