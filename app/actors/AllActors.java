@@ -87,8 +87,8 @@ public class AllActors {
 
 		@Override
 		public void onReceive(Object message) throws Exception {
-			System.out.println(AllMessages.getMapClassNameMessage()
-					.containsValue(message));
+//			System.out.println(AllMessages.getMapClassNameMessage()
+//					.containsValue(message));
 			System.out.println("class: " + message);
 			MessageEnvelope me = (MessageEnvelope) message;
 			RecipeAkka ra = me.getRecipeAkka();
@@ -238,26 +238,4 @@ public class AllActors {
 		}
 	}
 
-	/*
-	 * this hashmap will be used to get the .class of the class from the class
-	 * name when creating the recipe, we only have the class name of the actor
-	 * that we want to work with, but it will be difficult for us to get the
-	 * .class So this hashmap will return the .class by simply giving the
-	 * classname
-	 * 
-	 * !! The downside is that this map has to be filled manually
-	 */
-	private static final HashMap<String, Class<?>> mapClassNameActor;
-	static {
-		mapClassNameActor = new HashMap<String, Class<?>>();
-		mapClassNameActor.put("HumanActor", HumanActor.class);
-		mapClassNameActor.put("DetectorActor", DetectorActor.class);
-		mapClassNameActor.put("LampActor", LampActor.class);
-		mapClassNameActor.put("TemperatureDetectorActor", TemperatureDetectorActor.class);
-		mapClassNameActor.put("AirConditionerActor", AirConditionerActor.class);
-	}
-
-	public static HashMap<String, Class<?>> getMapClassNameActor() {
-		return mapClassNameActor;
-	}
 }

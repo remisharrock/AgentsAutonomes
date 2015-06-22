@@ -306,26 +306,8 @@ public class Recipe extends Model {
 
 	public void setRecipeAkka(RecipeAkka recipeAkka) {
 		this.recipeAkka = recipeAkka;
+		recipeAkka.setRecipe(this);
 	}
-
-	// public long getTriggerChannelId() {
-	// return triggerChannelId;
-	// }
-	//
-	//
-	// public void setTriggerChannelId(long triggerChannelId) {
-	// this.triggerChannelId = triggerChannelId;
-	// }
-	//
-	//
-	// public long getActionChannelId() {
-	// return actionChannelId;
-	// }
-	//
-	//
-	// public void setActionChannelId(long actionChannelId) {
-	// this.actionChannelId = actionChannelId;
-	// }
 
 	public Trigger getTrigger() {
 		return trigger;
@@ -436,8 +418,13 @@ public class Recipe extends Model {
 					"")
 					+ "Actor";
 			System.out.println("classNameTrigger: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(
-					classNameFull);
+			Class<?> classActor = null;
+			try {
+				classActor = Class.forName("actors.AllActors$" + classNameFull);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			System.out.println("classActorTrigger: " + classActor);
 			System.out.println("This Recipe ID: " + this.getId());
@@ -450,8 +437,13 @@ public class Recipe extends Model {
 					"")
 					+ "Actor";
 			System.out.println("classNameAction: " + classNameFull);
-			Class<?> classActor = AllActors.getMapClassNameActor().get(
-					classNameFull);
+			Class<?> classActor = null;
+			try {
+				classActor = Class.forName("actors.AllActors$" + classNameFull);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			System.out.println("classActorActionr: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
@@ -469,22 +461,23 @@ public class Recipe extends Model {
 				"")
 				+ "Message";
 		System.out.println("classNameMessage: " + classNameMessage);
-		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage()
-				.get(classNameMessage);
+//		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage()
+//				.get(classNameMessage);
+		Class<?> classTriggerMessage = null;
+		try {
+			classTriggerMessage = Class.forName("messages.AllMessages$" + classNameMessage);
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		System.out.println("classtriggerMessage: " + classTriggerMessage);
 		MessageEnvelope message = null;
 		try {
 			Class<?>[] types = new Class[] { messages.AllMessages.class,
 					RecipeAkka.class };
 			Constructor<?> cst = classTriggerMessage.getConstructor(types);
-			// Constructor c[] = classTriggerMessage.getConstructors();
-			// for(int i = 0; i < c.length; i++) {
-			// System.out.println(c[i]);
-			// }
 			message = (MessageEnvelope) cst.newInstance(
 					messages.AllMessages.getInstance(), recipe);
-			// message = (MessageEnvelope)
-			// classTriggerMessage.getDeclaredConstructor(RecipeAkka.class).newInstance(recipe);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
