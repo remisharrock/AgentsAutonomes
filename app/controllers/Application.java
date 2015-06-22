@@ -18,23 +18,7 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.administratorActivateManually;
-import views.html.administratorActivatePeriodically;
-import views.html.administratorActivateRandomly;
-import views.html.administratorChooseView;
-import views.html.administratorLog;
-import views.html.administratorView;
-import views.html.chooseAction;
-import views.html.chooseActionChannel;
-import views.html.chooseTrigger;
-import views.html.chooseTriggerChannel;
-import views.html.chooseView;
-import views.html.completeActionFields;
-import views.html.completeTriggerFields;
-import views.html.createRecipe;
-import views.html.index;
-import views.html.viewRecipeLog;
-import views.html.viewRecipes;
+import views.html.*;
 
 import com.avaje.ebean.Ebean;
 
@@ -50,7 +34,6 @@ public class Application extends Controller {
 	private static String activationType;
 
 	public static Result index() {
-		Script.export();
 		return ok(index.render());
 	}
 

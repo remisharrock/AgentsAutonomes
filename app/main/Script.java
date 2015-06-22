@@ -138,6 +138,7 @@ public class Script {
 
 			fw.write(Double.toString(StdRandom.random()));
 			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
+				System.out.println("Recipe: " + r);
 				fw.write(/**/
 				r.getTriggerChannelActor().path().name().toString()
 						+ "\t"

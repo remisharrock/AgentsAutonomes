@@ -150,14 +150,14 @@ public class Recipe extends Model {
 				if (r != this) {
 					System.out.println("r!=this");
 					if (r != null) {
-						System.out.println("r!=null");
-
-						System.out.println(r.getTitle());
-
-						System.out.println("ZE RECIPE: " + r.getActive());
-						System.out.println("recipe trigger channel: "
-								+ r.getTriggerChannel() + " / "
-								+ triggerChannel);
+//						System.out.println("r!=null");
+//
+//						System.out.println(r.getTitle());
+//
+//						System.out.println("ZE RECIPE: " + r.getActive());
+//						System.out.println("recipe trigger channel: "
+//								+ r.getTriggerChannel() + " / "
+//								+ triggerChannel);
 						if (r.getTriggerChannel().getId() == triggerChannel
 								.getId()) {
 							// it means that there is an actor that exists for
