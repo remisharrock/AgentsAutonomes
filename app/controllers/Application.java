@@ -1,16 +1,10 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import com.avaje.ebean.Ebean;
-
-import messages.AllMessages;
+import main.Script;
 import models.Action;
 import models.AdminLog;
 import models.Channel;
@@ -24,9 +18,25 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.administratorActivateManually;
+import views.html.administratorActivatePeriodically;
+import views.html.administratorActivateRandomly;
+import views.html.administratorChooseView;
+import views.html.administratorLog;
+import views.html.administratorView;
+import views.html.chooseAction;
+import views.html.chooseActionChannel;
+import views.html.chooseTrigger;
+import views.html.chooseTriggerChannel;
+import views.html.chooseView;
+import views.html.completeActionFields;
+import views.html.completeTriggerFields;
+import views.html.createRecipe;
 import views.html.index;
-import actors.AllActors;
-import views.html.*;
+import views.html.viewRecipeLog;
+import views.html.viewRecipes;
+
+import com.avaje.ebean.Ebean;
 
 public class Application extends Controller {
 
@@ -40,6 +50,7 @@ public class Application extends Controller {
 	private static String activationType;
 
 	public static Result index() {
+		Script.export();
 		return ok(index.render());
 	}
 
@@ -47,7 +58,7 @@ public class Application extends Controller {
 		// recipe=null;
 		if (userLoggedIn != null) {
 			if (userLoggedIn.getRole().equals("administrator"))
-				//return administratorView();
+				// return administratorView();
 				return ok(administratorChooseView.render());
 			else
 				return ok(chooseView.render(userLoggedIn));
@@ -86,26 +97,24 @@ public class Application extends Controller {
 		}
 
 	}
-	
+
 	public static Result administratorView() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 		List<Channel> channelsList = Channel.getAllChannels();
-		if (requestData.get("manualActivationButton") != null) 
+		if (requestData.get("manualActivationButton") != null)
 			activationType = "manualActivationButton";
-		else if (requestData.get("periodicActivationButton") != null) 
+		else if (requestData.get("periodicActivationButton") != null)
 			activationType = "periodicActivationButton";
-		else if (requestData.get("randomActivationButton") != null) 
+		else if (requestData.get("randomActivationButton") != null)
 			activationType = "randomActivationButton";
 		return ok(administratorView.render(channelsList));
 	}
-	
+
 	/*
-	public static Result administratorView() {
-		List<Channel> channelsList = Channel.getAllChannels();
-		return ok(administratorView.render(channelsList));
-	}
-	*/
-	
+	 * public static Result administratorView() { List<Channel> channelsList =
+	 * Channel.getAllChannels(); return
+	 * ok(administratorView.render(channelsList)); }
+	 */
 
 	public static Result chooseView() {
 
@@ -260,8 +269,7 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		System.out
-				.println("my recipe title: " + requestData.get("recipeTitle"));
+		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 
@@ -278,8 +286,7 @@ public class Application extends Controller {
 		userLoggedIn.getRecipes().add(recipe);
 		// recipe.setUser(userLoggedIn);
 
-		System.out.println("User's list size: "
-				+ userLoggedIn.getRecipes().size());
+		System.out.println("User's list size: " + userLoggedIn.getRecipes().size());
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
 		// System.out.println("Recipe created: " + recipe);
@@ -328,12 +335,9 @@ public class Application extends Controller {
 		for (int i = 0; i < recipesList.size(); i++) {
 			if (recipesList.get(i).getTriggerChannel().getId() == triggerId) {
 				Trigger trigger = null;
-				for (int j = 0; j < recipesList.get(i).getTriggerChannel()
-						.getTriggers().size(); j++) {
-					if (recipesList.get(i).getTriggerChannel().getTriggers()
-							.get(j).getId() == triggerId) {
-						trigger = recipesList.get(i).getTriggerChannel()
-								.getTriggers().get(j);
+				for (int j = 0; j < recipesList.get(i).getTriggerChannel().getTriggers().size(); j++) {
+					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId) {
+						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
 					}
 				}
 			}
@@ -344,26 +348,27 @@ public class Application extends Controller {
 
 	public static Result chooseActivationType(Long triggerId) {
 
-		//DynamicForm requestData = Form.form().bindFromRequest();
+		// DynamicForm requestData = Form.form().bindFromRequest();
 
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 
-		//Long triggerId = Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
+		// Long triggerId =
+		// Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
 		/*
-		if (requestData.get("activateTriggerManuallyButton") != null) {
+		 * if (requestData.get("activateTriggerManuallyButton") != null) {
+		 * return ok(administratorActivateManually.render(triggerId)); } else if
+		 * (requestData.get("activateTriggerPeriodicallyButton") != null) {
+		 * return ok(administratorActivatePeriodically.render(triggerId)); }
+		 * else return ok(administratorActivateRandomly.render(triggerId));
+		 */
+		if (activationType.equals("manualActivationButton"))
 			return ok(administratorActivateManually.render(triggerId));
-		} else if (requestData.get("activateTriggerPeriodicallyButton") != null) {
+		else if (activationType.equals("periodicActivationButton"))
 			return ok(administratorActivatePeriodically.render(triggerId));
-		} else
+		else
+			// if(activationType.equals("randomActivationButton"))
 			return ok(administratorActivateRandomly.render(triggerId));
-			*/
-		if(activationType.equals("manualActivationButton"))
-			return ok(administratorActivateManually.render(triggerId));
-		else if(activationType.equals("periodicActivationButton"))
-			return ok(administratorActivatePeriodically.render(triggerId));
-		else //if(activationType.equals("randomActivationButton"))
-			return ok(administratorActivateRandomly.render(triggerId));
-	
+
 	}
 
 	public static Result viewRecipeLog() {
