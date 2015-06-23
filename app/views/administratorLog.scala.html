@@ -1,12 +1,17 @@
-@(logs: List[AdminLog])
-@main("Administrator Log") {
+@(logs: List[AdminLog]) @main("Administrator Log") {
 <script type="text/javascript">
 
-      google.load("visualization", "1", {packages:["table"]});
-      google.setOnLoadCallback(drawTable);
+		if(navigator.onLine){
+			google.load("visualization", "1", {packages:["table"]});
+			var table = document.getElementById("table_div");
+			while (table_div.firstChild) {
+				myNode.removeChild(table.firstChild);
+			}
+			google.setOnLoadCallback(drawTable);
+		} else {
+			alert("a");
+		}
       
-      
-
       function drawTable() {
         var data = new google.visualization.DataTable();
 
@@ -23,7 +28,7 @@
 
         data.addRows([
                         @for(log <- logs){
-                                [@log.getId(),
+                                [ @log.getId(),
                                  '@log.getDateString()',
                                  '@log.getRecipeName()',
                                  '@log.getTriggerChannelName()',
@@ -43,81 +48,94 @@
     </script>
 
 <header class='l-header'>
-        <!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
+	<!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
                 rel="stylesheet" type="text/css"> -->
-        <div class="row1">
-                <div class="small-12 medium-4 large-6 columns namelogo">
-                        <h2 font-family= "Times New Roman">Agents Autonomes</h2>
-                </div>
-                <div class="small-12 medium-8 large-6 columns">
-                        <div class="nav-bar">
-                                <ul class="button-group">
-                                        <li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
-                                        <li><a href="@routes.Application.userLogOut()" class="button">Log
-out</a></li>
-                                </ul>
-                        </div>
-                </div>
-        </div>
+	<div class="row1">
+		<div class="small-12 medium-4 large-6 columns namelogo">
+			<h2 font-family="Times New Roman">Agents Autonomes</h2>
+		</div>
+		<div class="small-12 medium-8 large-6 columns">
+			<div class="nav-bar">
+				<ul class="button-group">
+					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
+					<li><a href="@routes.Application.administratorGraph()" class="button">View Graph</a></li>
+					<li><a href="@routes.Application.userLogOut()" class="button">Log
+							out</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </header>
 <article class="l-page-content">
-                <div id="statement_create" style="padding-bottom: 2em;">
-                        <form class="navbar-form pull-right">
-                                <br/>
-                                <div class="hero">
-                                        <div class="row">
-                                                 <div class="large-12 columns intro-text">
-                                                        <h2>Recipes Log</h2>
-                                                        <p>Hello Administrator</p>
-                                                </div>
-                                        </div>
-                                </div>
-                                </form>
-                                </div>
-<!--
-if(recipe.getLog().size()>0 ) {
-        for(log <- recipe.getLogReverseOrder() ){
-        if(log!=null){-->
+	<div id="statement_create" style="padding-bottom: 2em;">
+		<form class="navbar-form pull-right">
+			<br />
+			<div class="hero">
+				<div class="row">
+					<div class="large-12 columns intro-text">
+						<h2>Recipes Log</h2>
+						<p>Hello Administrator</p>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class='is-dimmable'>
+		<form class="navbar-form pull-right"
+			action="@routes.Application.viewAdministratorLog()">
+			<div class="buttonContainer">
+				<button type="submit" name="viewRecipesButton" value="View
+Recipes"
+					class="refreshButton" style="display: block; width: 100%;">Refresh
+					Log</button>
+			</div>
+		</form>
+		<div id="wrapper">
+			<div class="adminLog">
+				<div id="table_div">
+					<table id="keywords" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<th><span>ID</span></th>
+								<th><span>Date & Time</span></th>
+								<th><span>Recipe Name</span></th>
+								<th><span>Trigger Channel Name</span></th>
+								<th><span>Trigger Message</span></th>
+								<th><span>Action Channel Name</span></th>
+								<th><span>Action Message</span></th>
+								<th><span>State</span></th>
+								<th><span>User Group</span></th>
+								<th><span>Username</span></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for(log <- logs){
+							<tr>
+								<td class="lalign">@log.getId()</td>
+								<td>@log.getDateString()</td>
+								<td>@log.getRecipeName()</td>
+								<td>@log.getTriggerChannelName()</td>
+								<td>@log.getTriggerMessage()</td>
+								<td>@log.getActionChannelName()</td>
+								<td>@log.getActionMessage()</td>
+								<td>@log.getStateOfActionActor()</td>
+								<td>@log.getUserGroup()</td>
+								<td>@log.getUser().getUsername()</td>
+							</tr>
+							}
 
-        <div class='is-dimmable'>
-                        <!-- <a class='focus-here' href='#'></a>
-                        <h2 class='composer_section_header' style="font-size: 1rem;
-padding: 10px 120px 0px 0;">
-                                Log description
-                         <span class='composer_section_step'>step 1 of 7</span>
-                        </h2>
-                        <p class='composer_section_description' style="font-size: 90%;
-margin-bottom: 0px">
-                                Date
-                        </p> -->
-                        <form class="navbar-form pull-right"
-                                action="@routes.Application.viewAdministratorLog()">
-                        <div class="buttonContainer">
-                                <button type="submit" name="viewRecipesButton" value="View
-Recipes" class="refreshButton" style="display: block; width:
-100%;">Refresh Log</button>
-                        </div>
-                        </form>
-                        <div id="wrapper">
-                        <div class="adminLog">
-                         <div id="table_div"></div>
-                         </div>
-                         </div>
-        </div>
-        
-
-        
-<!-- }
-        }
-} else {
-The log is empty
-} -->        
- <!-- last line -->
-<div class='is-dimmable'>
-        <a class='focus-here' href='#'></a>
-        <h2 class='composer_section_header'> </h2>
-        <p class='composer_section_description'></p>
-</div>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- last line -->
+	<div class='is-dimmable'>
+		<a class='focus-here' href='#'></a>
+		<h2 class='composer_section_header'></h2>
+		<p class='composer_section_description'></p>
+	</div>
 
 
 
