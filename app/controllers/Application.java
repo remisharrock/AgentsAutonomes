@@ -1,8 +1,10 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import main.Script;
 import models.Action;
@@ -18,9 +20,14 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import scala.concurrent.duration.Duration;
 import views.html.*;
 
 import com.avaje.ebean.Ebean;
+
+import controllers.Scheduler.CancellableRef;
+import controllers.Scheduler.RandomPeriodStrategy;
+import controllers.Scheduler.StopCriteria;
 
 public class Application extends Controller {
 
@@ -254,57 +261,29 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
+		System.out
+				.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 
 		Log l1 = new Log("Recipe creation", new Date());
 		l1.setRecipe(recipe);
-		// l1.save();
-		// Log l2 = new Log("Recipe activated on creation");
-		// l2.setRecipe(recipe);
-		// l2.save();
+
 		recipe.getLog().add(l1);
 		// recipe.getLog().add(l2);
 
 		recipe.save();
 		// userLoggedIn.getRecipes().add(recipe);
+
 		// recipe.setUser(userLoggedIn);
 
-		System.out.println("User's list size: " + userLoggedIn.getRecipes().size());
+		System.out.println("User's list size: "
+				+ userLoggedIn.getRecipes().size());
+
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
-		// System.out.println("Recipe created: " + recipe);
 
-		// Channel trigger = recipe.getTriggerChannel();
-		// List<Recipe> recipesTrigger = trigger.getRecipes();
-		// recipesTrigger.add(recipe);
-		// trigger.save();
-		//
-		// Channel action = recipe.getActionChannel();
-		// List<Recipe> recipesAction = action.getRecipes();
-		// recipesAction.add(recipe);
-		// action.save();
-		//
-		// System.out.println("Showing trigger channel: " +
-		// recipe.getTriggerChannel());
-		// Channel c = recipe.getTriggerChannel();
-		// for (Recipe r : c.getRecipes()) {
-		// System.out.println("recipe title: " + r.getTitle());
-		// }
-		//
-		//
-		// List<Recipe> list = userLoggedIn.getRecipes();
-		// // for (Recipe r : list) {
-		// // System.out.println("Showing trigger channel: " +
-		// recipe.getTriggerChannel().getName());
-		// // }
-		// System.out.println("Saving recipe: " + list);
-		// // list.add(recipe);
-		// //
-		// // userLoggedIn.setRecipes(list);
-		// userLoggedIn.save();
-
+		Script.export();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -320,15 +299,100 @@ public class Application extends Controller {
 		for (int i = 0; i < recipesList.size(); i++) {
 			if (recipesList.get(i).getTriggerChannel().getId() == triggerId) {
 				Trigger trigger = null;
-				for (int j = 0; j < recipesList.get(i).getTriggerChannel().getTriggers().size(); j++) {
-					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId) {
-						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
+				for (int j = 0; j < recipesList.get(i).getTriggerChannel()
+						.getTriggers().size(); j++) {
+					if (recipesList.get(i).getTriggerChannel().getTriggers()
+							.get(j).getId() == triggerId) {
+						trigger = recipesList.get(i).getTriggerChannel()
+								.getTriggers().get(j);
 					}
 				}
 			}
 		}
-
+		
 		return ok();
+
+	}
+
+	public static Result randomlyActivationChosen(Long triggerId) {
+
+		DynamicForm requestData = Form.form().bindFromRequest();
+		//(requestData.get("userGroup"));
+		
+		
+
+		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
+
+		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+			if (requestData.get("activateTriggerPoissonButton") != null) {
+				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+					@Override
+					public Duration getPeriod() {
+						return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
+					}
+				};
+				SystemController.scheduler.periodicallyActivate(
+						randomPeriodStrategy,
+						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+						it);
+			}
+		}
+
+		List<AdminLog> logs = AdminLog.getAllAdminLogs();
+		return ok(administratorLog.render(logs));
+	}
+	
+
+	public static Result periodicallyActivationChosen(Long triggerId) {
+
+		DynamicForm requestData = Form.form().bindFromRequest();
+
+		final Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
+
+		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+			if (requestData.get("activateTriggerPeriodicallyButton") != null) {
+				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+					@Override
+					public Duration getPeriod() {
+						return Duration.create(period, TimeUnit.SECONDS);
+					}
+				};
+				SystemController.scheduler.periodicallyActivate(
+						randomPeriodStrategy,
+						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+						it);
+			}
+		}
+
+		List<AdminLog> logs = AdminLog.getAllAdminLogs();
+		return ok(administratorLog.render(logs));
+	}
+	
+
+	public static Result manualActivationChosen(Long triggerId) {
+		
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
+
+		DynamicForm requestData = Form.form().bindFromRequest();
+
+		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
+
+		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+			if (requestData.get("activateTriggerManuallyButton") != null) {
+				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+					@Override
+					public Duration getPeriod() {
+						return Duration.create(1, TimeUnit.SECONDS);
+					}
+				};
+				SystemController.scheduler.periodicallyActivate(
+						randomPeriodStrategy,
+						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
+						it);
+			}
+		}
+
+		return ok(administratorActivateManually.render(triggerId, userGroupList));
 	}
 
 	public static Result chooseActivationType(Long triggerId) {
@@ -336,6 +400,7 @@ public class Application extends Controller {
 		// DynamicForm requestData = Form.form().bindFromRequest();
 
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 
 		// Long triggerId =
 		// Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
@@ -347,12 +412,12 @@ public class Application extends Controller {
 		 * else return ok(administratorActivateRandomly.render(triggerId));
 		 */
 		if (activationType.equals("manualActivationButton"))
-			return ok(administratorActivateManually.render(triggerId));
+			return ok(administratorActivateManually.render(triggerId, userGroupList));
 		else if (activationType.equals("periodicActivationButton"))
-			return ok(administratorActivatePeriodically.render(triggerId));
+			return ok(administratorActivatePeriodically.render(triggerId, userGroupList));
 		else
 			// if(activationType.equals("randomActivationButton"))
-			return ok(administratorActivateRandomly.render(triggerId));
+			return ok(administratorActivateRandomly.render(triggerId, userGroupList));
 
 	}
 
@@ -375,8 +440,8 @@ public class Application extends Controller {
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
 			RecipeAkka.recipesMap.remove(r.getId());
+			Script.export();
 		}
-
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -423,6 +488,10 @@ public class Application extends Controller {
 			return viewAdministratorLog();
 		}
 		return index();
+	}
+	
+	public static Result administratorGraph() {
+		return ok(administratorGraph.render());
 	}
 
 }

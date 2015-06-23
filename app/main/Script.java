@@ -17,11 +17,11 @@ import controllers.Scheduler;
 import controllers.StdRandom;
 import controllers.SystemController;
 import controllers.Scheduler.CancellableRef;
-import controllers.Scheduler.RandomPeriodFactory;
+import controllers.Scheduler.RandomPeriodStrategy;
 import controllers.Scheduler.StopCriteria;
 
 public class Script {
-	
+
 	/**
 	 * Iterates through all the recipes that we have and launch their triggers
 	 */
@@ -37,12 +37,9 @@ public class Script {
 			if (recipe == null) {
 				Logger.info("No recipes are available.");
 			} else {
-				SystemController.userGroupActorRouterMap.get(
-						recipe.getUser().getUserGroup()).tell(
-						RecipeAkka.recipesMap.get(recipe.getId())
-								.getTriggerMessage(),
-						RecipeAkka.recipesMap.get(recipe.getId())
-								.getTriggerChannelActor());
+				SystemController.userGroupActorRouterMap.get(recipe.getUser().getUserGroup()).tell(
+						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerMessage(),
+						RecipeAkka.recipesMap.get(recipe.getId()).getTriggerChannelActor());
 
 				/**
 				 * This is the simple way to set up a random message issue.
@@ -51,17 +48,14 @@ public class Script {
 				 * will give us a new random duration each time it's invoked.
 				 * Then, we pass this implementation to the scheduler.
 				 */
-				RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+				RandomPeriodStrategy randomPeriodFactory = new RandomPeriodStrategy() {
 					@Override
 					public Duration getPeriod() {
-						return Duration.create(StdRandom.uniform(10, 15),
-								TimeUnit.SECONDS);
+						return Duration.create(StdRandom.uniform(10, 15), TimeUnit.SECONDS);
 					}
 				};
-				cancellableRef = SystemController.scheduler
-						.periodicallyActivate(randomPeriodFactory,
-								Scheduler.StopCriteria.set(StopCriteria.NEVER,
-										null), recipe);
+				cancellableRef = SystemController.scheduler.periodicallyActivate(randomPeriodFactory,
+						Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
 			}
 
 			/**
@@ -74,11 +68,10 @@ public class Script {
 			 * interface Runnable. We pass this object to the scheduler. Thus,
 			 * each time a issue is raised, we start this thread.
 			 */
-			RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+			RandomPeriodStrategy randomPeriodFactory = new RandomPeriodStrategy() {
 				@Override
 				public Duration getPeriod() {
-					return Duration.create(StdRandom.uniform(5),
-							TimeUnit.SECONDS);
+					return Duration.create(StdRandom.uniform(5), TimeUnit.SECONDS);
 				}
 			};
 			Runnable eventRunnable = new Runnable() {
@@ -89,8 +82,7 @@ public class Script {
 					// Randomly pick one of them up.
 					System.out.println("Size of recipe: " + recipes.size());
 					float nb = StdRandom.uniform(recipes.size());
-					Logger.info("Hi, I'm a random event, giving you a random number: "
-							+ nb);
+					Logger.info("Hi, I'm a random event, giving you a random number: " + nb);
 					Recipe r = recipes.get(Math.round(nb));
 
 					// If the recipe is null, do nothing but warn.
@@ -99,22 +91,16 @@ public class Script {
 						return;
 					}
 					// Activate it.
-					System.out
-							.println("launched recipe title: " + r.getTitle());
-					SystemController.userGroupActorRouterMap.get(
-							r.getUser().getUserGroup()).tell(
-							RecipeAkka.recipesMap.get(r.getId())
-									.getTriggerMessage(),
-							RecipeAkka.recipesMap.get(r.getId())
-									.getTriggerChannelActor());
+					System.out.println("launched recipe title: " + r.getTitle());
+					SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(
+							RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(),
+							RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
 					// Say hello to beloved logger.
 
 				}
 			};
-			SystemController.scheduler
-					.addRandomIssue(Duration.Zero(), randomPeriodFactory,
-							StopCriteria.set(StopCriteria.OCCURENCE, 15),
-							eventRunnable);
+			SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
+					StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
 
 			/*
 			 * So we are having two ways to activate a recipe. Let's cancel the
@@ -135,23 +121,13 @@ public class Script {
 		FileWriter fw;
 		try {
 			fw = new FileWriter(file, false);
-
-			fw.write(Double.toString(StdRandom.random()));
 			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
 				System.out.println("Recipe: " + r);
 				fw.write(/**/
-				r.getTriggerChannelActor().path().name().toString()
-						+ "\t"
-						+ /**/
-						r.getTriggerChannelActor().path()
-								.toStringWithoutAddress()
-						+ "\t"
-						+ /**/
-						r.getActionChannelActor().path().name().toString()
-						+ "\t"
-						+ /**/
-						r.getActionChannelActor().path()
-								.toStringWithoutAddress() + "\n");
+				r.getTriggerChannelActor().path().name().toString() + "\t" + /**/
+				r.getTriggerChannelActor().path().toStringWithoutAddress() + "\t" + /**/
+				r.getActionChannelActor().path().name().toString() + "\t" + /**/
+				r.getActionChannelActor().path().toStringWithoutAddress() + "\n");
 			}
 			fw.close();
 			/*
@@ -162,8 +138,11 @@ public class Script {
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
 			String format = "svg";
-			String output = "./image.svg";
-			//Runtime.getRuntime().exec(command + "--input " + filepath + " --format " + format + " --output " + output);
+			String output = "./public/images/graph.svg";
+			Process process = Runtime.getRuntime().exec(
+					command + "--input " + filepath + " --format " + format + " --output " + output);
+			Logger.info("Graph exported");
+			
 		} catch (IOException e) {
 		}
 
