@@ -185,5 +185,17 @@ public class User extends Model {
 		return groupsList;
 	}
 	
+	public static ArrayList<String> getAllUserGroupsExceptAdmin() {
+		ArrayList<String> groupsList = new ArrayList<String>();
+		for(User u: getAllUsers()) {
+			if (u.getRole().equals("administrator")) {
+				continue;
+			}
+			if (!groupsList.contains(u.getUserGroup())) {
+				groupsList.add(u.getUserGroup());
+			}
+		}
+		return groupsList;
+	}
 
 }

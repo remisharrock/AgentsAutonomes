@@ -370,7 +370,7 @@ public class Application extends Controller {
 
 	public static Result manualActivationChosen(Long triggerId) {
 		
-		ArrayList<String> userGroupList = User.getAllUserGroups();
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
@@ -399,7 +399,7 @@ public class Application extends Controller {
 		// DynamicForm requestData = Form.form().bindFromRequest();
 
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
-		ArrayList<String> userGroupList = User.getAllUserGroups();
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 
 		// Long triggerId =
 		// Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));

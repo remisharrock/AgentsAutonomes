@@ -17,6 +17,7 @@
 			<div class="nav-bar">
 				<ul class="button-group">
 					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
+					<li><a href="@routes.Application.administratorGraph()" class="button">View Graph</a></li>
 					<li><a href="@routes.Application.viewAdministratorLog()" class="button">View log</a></li>
 					<li><a href="@routes.Application.userLogOut()" class="button">Log out</a></li>
 				</ul>
@@ -58,7 +59,7 @@
 						Trigger @triggerId  <span class='composer_section_step'>step 4 of 4</span>
 					</h2>					
 						<input type='hidden' value="@triggerId" name="triggerId" id="triggerId">
-						<input placeholder="Enter Period (in sec)" name="periodTriggerActivation" type="number">
+						<input placeholder="Enter Period (in sec)" name="periodTriggerActivation" type="number" style="height:30px;">
 						<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Activate</button>								 
 				</div>
 			</form>	
