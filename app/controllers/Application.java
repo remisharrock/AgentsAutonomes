@@ -304,6 +304,7 @@ public class Application extends Controller {
 		// // userLoggedIn.setRecipes(list);
 		// userLoggedIn.save();
 
+		Script.export();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -374,8 +375,8 @@ public class Application extends Controller {
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
 			RecipeAkka.recipesMap.remove(r.getId());
+			Script.export();
 		}
-
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 

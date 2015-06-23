@@ -115,27 +115,6 @@ public class ExportJFrame {
 					.newEdge(known.get(edge.from.id), known.get(edge.to.id), 1f, true));
 		}
 
-		YifanHuLayout yifanHuLayout = new YifanHuLayout(null, new StepDisplacement(1f));
-		yifanHuLayout.setGraphModel(graphModel);
-		yifanHuLayout.initAlgo();
-		yifanHuLayout.resetPropertiesValues();
-		yifanHuLayout.setOptimalDistance(200f);
-
-		for (int i = 0; i < 10 && yifanHuLayout.canAlgo(); i++) {
-			yifanHuLayout.goAlgo();
-		}
-		yifanHuLayout.endAlgo();
-
-		ScaleLayout layout = (new Contract()).buildLayout();
-		layout.setGraphModel(graphModel);
-		layout.initAlgo();
-		layout.resetPropertiesValues();
-
-		for (int i = 0; i < 5 && layout.canAlgo(); i++) {
-			layout.goAlgo();
-		}
-		layout.endAlgo();
-
 		// Preview configuration
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		PreviewProperties props = model.getProperties();
