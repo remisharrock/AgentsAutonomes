@@ -346,7 +346,7 @@ public class Application extends Controller {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
+		final Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
 
 		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
 			if (requestData.get("activateTriggerPeriodicallyButton") != null) {

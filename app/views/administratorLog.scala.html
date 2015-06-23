@@ -1,17 +1,9 @@
 @(logs: List[AdminLog]) @main("Administrator Log") {
 <script type="text/javascript">
 
-		if(navigator.onLine){
-			google.load("visualization", "1", {packages:["table"]});
-			var table = document.getElementById("table_div");
-			while (table_div.firstChild) {
-				myNode.removeChild(table.firstChild);
-			}
-			google.setOnLoadCallback(drawTable);
-		} else {
-			alert("a");
-		}
-      
+		google.load("visualization", "1", {packages:["table"]});
+		google.setOnLoadCallback(drawTable);
+		
       function drawTable() {
         var data = new google.visualization.DataTable();
 
@@ -58,7 +50,8 @@
 			<div class="nav-bar">
 				<ul class="button-group">
 					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
-					<li><a href="@routes.Application.administratorGraph()" class="button">View Graph</a></li>
+					<li><a href="@routes.Application.administratorGraph()"
+						class="button">View Graph</a></li>
 					<li><a href="@routes.Application.userLogOut()" class="button">Log
 							out</a></li>
 				</ul>
@@ -92,41 +85,7 @@ Recipes"
 		</form>
 		<div id="wrapper">
 			<div class="adminLog">
-				<div id="table_div">
-					<table id="keywords" cellspacing="0" cellpadding="0">
-						<thead>
-							<tr>
-								<th><span>ID</span></th>
-								<th><span>Date & Time</span></th>
-								<th><span>Recipe Name</span></th>
-								<th><span>Trigger Channel Name</span></th>
-								<th><span>Trigger Message</span></th>
-								<th><span>Action Channel Name</span></th>
-								<th><span>Action Message</span></th>
-								<th><span>State</span></th>
-								<th><span>User Group</span></th>
-								<th><span>Username</span></th>
-							</tr>
-						</thead>
-						<tbody>
-							@for(log <- logs){
-							<tr>
-								<td class="lalign">@log.getId()</td>
-								<td>@log.getDateString()</td>
-								<td>@log.getRecipeName()</td>
-								<td>@log.getTriggerChannelName()</td>
-								<td>@log.getTriggerMessage()</td>
-								<td>@log.getActionChannelName()</td>
-								<td>@log.getActionMessage()</td>
-								<td>@log.getStateOfActionActor()</td>
-								<td>@log.getUserGroup()</td>
-								<td>@log.getUser().getUsername()</td>
-							</tr>
-							}
-
-						</tbody>
-					</table>
-				</div>
+				<div id="table_div"></div>
 			</div>
 		</div>
 	</div>
