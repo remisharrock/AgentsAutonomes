@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 
 import main.DatabaseEngine;
@@ -19,26 +18,25 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStart(Application app) {
 		// this map will containt the mapper from normal recipe to RecipeAkka
-		
-//		if (Ebean.find(Recipe.class).findRowCount() == 0) {
+
+		// if (Ebean.find(Recipe.class).findRowCount() == 0) {
 		Logger.info("Deleting Database");
 		/**
-		 * DatabaseEngine.deleteDB(); used to delete all the data in the database
+		 * DatabaseEngine.deleteDB(); used to delete all the data in the
+		 * database
 		 */
 		DatabaseEngine.deleteDB();
-		
+
 		/**
-		 * Instanciates the map that will contains the recipes and their corresponding RecipeAkka
-		 * We can avoid using this hashmap, but to avoid querying the database and consuming
-		 * some time, We cache all the recipes data in the map 
+		 * Instanciates the map that will contains the recipes and their
+		 * corresponding RecipeAkka We can avoid using this hashmap, but to
+		 * avoid querying the database and consuming some time, We cache all the
+		 * recipes data in the map
 		 */
 		RecipeAkka.recipesMap = new HashMap<Long, RecipeAkka>();
 
-
-
 		Logger.info("Populating database");
 		DatabaseEngine.populateDB();
-
 
 		/**
 		 * In this case we already have recipes on our database But those
@@ -46,24 +44,21 @@ public class Global extends GlobalSettings {
 		 * all the recipes that we have and create the equivalent recipeAkka for
 		 * each
 		 */
-		
+
 		Logger.info("creating maps");
 
 		// Create actor router for all the user groups that we have
 		/**
 		 * Creating the Actor router for each UserGroup
 		 */
-		SystemController.getSystemControllerInstance().createActorRouterMap(
-				User.getAllUserGroups());
+		SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
 		System.out.println("UserGroup - Router Map: "
-				+ SystemController.getSystemControllerInstance()
-						.getUserGroupActorRouterMap());
-
+				+ SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		/**
-		 * For the recipes that already exist in the database
-		 * We create the corresponding Recipe Akka
+		 * For the recipes that already exist in the database We create the
+		 * corresponding Recipe Akka
 		 */
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
 			if (!RecipeAkka.recipesMap.containsKey(r.getId())) {
@@ -76,13 +71,8 @@ public class Global extends GlobalSettings {
 			}
 		}
 
+		Script.export();
 
-		/**
-		 * Launching the recipes' triggers randomly for a certain amount of time
-		 */
-		Script.random();
-
-		
 	}
 
 	public void onStop(Application app) {
