@@ -34,6 +34,7 @@ public class Application extends Controller {
 	private static String activationType;
 
 	public static Result index() {
+		Script.export();
 		return ok(index.render());
 	}
 

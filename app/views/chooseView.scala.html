@@ -1,6 +1,12 @@
-@(user: models.User) @import java.math.BigInteger; var counter=0;
+@(user: models.User) 
+@import java.math.BigInteger; var counter=0;
 @main("Choose what to do") {
 
+<!DOCTYPE html>
+<html
+	class=' not-mobile brwsr-chrome brwsr-chrome42 os-mac non-forced-fullwidth     no-js'
+	debug='true' lang='en'>
+<body>
 
 <!-- 	<header class='l-header'>
 		<div class='l-site-header'>
@@ -42,10 +48,8 @@
 
 	<article class="l-page-content">
 		<div id="statement_create">
-			<form class="navbar-form pull-right"
-				action="@routes.Application.chooseView()">
+			<form class="navbar-form pull-right" action="@routes.Application.chooseView()">
 				<br />
-				</div> 
 				<div class="hero">
 					<div class="row">
 						 <div class="large-12 columns intro-text">
@@ -63,4 +67,6 @@
 			</form>
 		</div>
 	</article>
+	</body>
+	</html>
 	}

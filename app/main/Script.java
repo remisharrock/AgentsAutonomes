@@ -157,12 +157,13 @@ public class Script {
 			/*
 			 * How to export to a SVG file. Better than a PNG because it can be
 			 * zoomed :-)
+			 * java -jar lib/visual.jar --input export.txt --format svg --output impage.svg
 			 */
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
 			String format = "svg";
 			String output = "./image.svg";
-			Runtime.getRuntime().exec(command + "--input " + filepath + " --format " + format + " --output " + output);
+			//Runtime.getRuntime().exec(command + "--input " + filepath + " --format " + format + " --output " + output);
 		} catch (IOException e) {
 		}
 
