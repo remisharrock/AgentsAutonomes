@@ -40,12 +40,18 @@
 				</div>
 			</form>
 		<br/>
-		<form action="@routes.Application.chooseView()">
-				<div class="buttonsContainer" style="horizontal-align:middle;">
-					<button type="submit" name="createRecipesButton" value="Create Recipe" class="btn" 
-					style="float:left; display: block; height: 10%; width: 10%; "> Create Recipe </button>
-				</div>
-		</form>
+		
+		
+		<div class='is-dimmable'>
+        	<form class="navbar-form pull-right" action="@routes.Application.chooseView()">
+                 <div class="buttonContainer">
+                      <button type="submit" 
+                      name="createRecipesButton" value="Create Recipe" class="refreshButton" 
+                      style="display: block; width: 100%;"> Create Recipe </button>
+                	</div>
+          </form>          
+        </div>
+       
 		<br/>
 		<br/>
 		<br/>
