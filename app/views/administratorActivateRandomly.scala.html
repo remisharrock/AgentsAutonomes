@@ -1,4 +1,4 @@
-@(triggerId: Long)
+@(triggerId: Long, userGroupList: List[String])
 @main("Agents autonomes") {
 
 
@@ -38,17 +38,32 @@
 				</div>
 				</form>
 				</div>
-
-			<div class='is-dimmable'>
-				<a class='focus-here' href='#'></a>
-				<h2 class='composer_section_header'>
-					Trigger @triggerId 
-				</h2>
-				<p class='composer_section_description'>Choose a law distribution for the activation</p>
-				<button class="btn" type="submit" name="activateTriggerPoissonButton" value="Poisson Activation">Poisson</button>
-				<button class="btn" type="submit" name="activateTriggerBrownButton" value="Brown Activation">Brown</button>				 
-			</div>
-
+			
+			<form action="@routes.Application.randomlyActivationChosen(triggerId)">	
+				<div class='is-dimmable'>
+					<a class='focus-here' href='#'></a>
+					<h2 class='composer_section_header'>
+						Choose UserGroup <span class='composer_section_step'>step 3 of 4</span>
+					</h2>
+					<p class="composer_section_description">Choose a the UserGroup for the activation</p>
+										
+						@for((group, index) <- userGroupList.zipWithIndex){
+	                    	<input type="checkbox" name="userGroup[@index]" value="@group">@group</br>
+	                    }						 
+				</div>
+			
+				<div class='is-dimmable'>
+					<a class='focus-here' href='#'></a>
+					<h2 class='composer_section_header'>
+						Trigger @triggerId <span class='composer_section_step'>step 4 of 4</span>
+					</h2>
+							<input type='hidden' value="@triggerId" name="triggerId" id="triggerId">
+							<p class="composer_section_description">Choose a law distribution for the activation</p>
+							<button class="btn" type="submit" name="activateTriggerPoissonButton" value="Poisson Activation">Poisson</button>
+							<button class="btn" type="submit" name="activateTriggerBrownButton" value="Brown Activation">Brown</button>	
+							 
+				</div>
+			</form>	
 
 	</div>
 </article>

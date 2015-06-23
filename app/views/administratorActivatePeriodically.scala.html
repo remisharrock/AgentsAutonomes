@@ -1,4 +1,4 @@
-@(triggerId: Long)
+@(triggerId: Long, userGroupList: List[String])
 @main("Agents autonomes") {
 
 
@@ -39,15 +39,29 @@
 				</form>
 				</div>
 
-
-			<div class='is-dimmable'>
-				<a class='focus-here' href='#'></a>
-				<h2 class='composer_section_header'>
-					Trigger @triggerId 
-				</h2>
-				<input placeholder="Enter Period (in sec)" name="periodTriggerActivation" >
-				<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Activate</button>				 
-			</div>
+			<form action="@routes.Application.periodicallyActivationChosen(triggerId)">
+				<div class='is-dimmable'>
+					<a class='focus-here' href='#'></a>
+					<h2 class='composer_section_header'>
+						Choose UserGroup <span class='composer_section_step'>step 3 of 4</span>
+					</h2>
+					<p class="composer_section_description">Choose a the UserGroup for the activation</p>
+										
+						@for(group <- userGroupList){
+	                    	<input type="checkbox" name="userGroup[]" value="@group">@group</br>
+	                    }						 
+				</div>
+					
+				<div class='is-dimmable'>
+					<a class='focus-here' href='#'></a>
+					<h2 class='composer_section_header'>
+						Trigger @triggerId  <span class='composer_section_step'>step 4 of 4</span>
+					</h2>					
+						<input type='hidden' value="@triggerId" name="triggerId" id="triggerId">
+						<input placeholder="Enter Period (in sec)" name="periodTriggerActivation" type="number">
+						<button class="btn" type="submit" name="activateTriggerPeriodicallyButton" value="Periodic Activation">Activate</button>								 
+				</div>
+			</form>	
 
 
 	</div>

@@ -40,7 +40,7 @@ public class Scheduler {
 	 *            What to do when the event happen.
 	 * @return
 	 */
-	public CancellableRef addRandomIssue(Duration init, RandomPeriodFactory randomPeriodFactory,
+	public CancellableRef addRandomIssue(Duration init, RandomPeriodStrategy randomPeriodFactory,
 			StopCriteria stopCriteria, Runnable eventRunnable) {
 		CancellableRef cr = new CancellableRef(init, randomPeriodFactory, stopCriteria, eventRunnable);
 		ticks.add(cr);
@@ -60,7 +60,7 @@ public class Scheduler {
 	 *            The recipe we want to activate periodically.
 	 * @return The cancellable reference created.
 	 */
-	public CancellableRef periodicallyActivate(RandomPeriodFactory randomPeriodFactory, StopCriteria stopCriterion,
+	public CancellableRef periodicallyActivate(RandomPeriodStrategy randomPeriodFactory, StopCriteria stopCriterion,
 			final Recipe recipe) {
 		CancellableRef cr = new CancellableRef(FiniteDuration.Zero(), randomPeriodFactory, stopCriterion,
 				new Runnable() {
@@ -75,7 +75,7 @@ public class Scheduler {
 		return cr;
 	}
 
-	public CancellableRef addRandomIssue(FiniteDuration init, RandomPeriodFactory randomPeriodFactory,
+	public CancellableRef addRandomIssue(FiniteDuration init, RandomPeriodStrategy randomPeriodFactory,
 			StopCriteria stopCriteria, Runnable eventRunnable) {
 		CancellableRef cr = new CancellableRef(init, randomPeriodFactory, stopCriteria, eventRunnable);
 		ticks.add(cr);
@@ -104,7 +104,7 @@ public class Scheduler {
 		 *            <ul>
 		 *            <li>if NEVER, can be anything</li>
 		 *            <li>if OCCURENCE, must be an integer</li>
-		 *            <li>If TIME, must be java.time.LocalTime</li>
+		 *            <li>If DATE, must be Date</li>
 		 *            </ul>
 		 * @return
 		 */
@@ -132,7 +132,7 @@ public class Scheduler {
 		}
 	}
 
-	public static interface RandomPeriodFactory {
+	public static interface RandomPeriodStrategy {
 		/**
 		 * Each time it's called, return a new different period. The random law
 		 * is defined in the bodybut you're likely to get some help from
@@ -147,13 +147,13 @@ public class Scheduler {
 
 		private Cancellable cancellable;
 		private final Duration init;
-		private final RandomPeriodFactory randomPeriodFactory;
+		private final RandomPeriodStrategy randomPeriodFactory;
 		private final Runnable eventFunction;
 		private final StopCriteria stopCriteria;
 		private boolean isCancelled;
 		private final Thread thread;
 
-		public CancellableRef(Duration init, RandomPeriodFactory randomPeriodFactory, StopCriteria stopCriteria,
+		public CancellableRef(Duration init, RandomPeriodStrategy randomPeriodFactory, StopCriteria stopCriteria,
 				Runnable eventFunction) {
 			this.init = init;
 			this.randomPeriodFactory = randomPeriodFactory;
@@ -234,7 +234,7 @@ public class Scheduler {
 			return init;
 		}
 
-		public RandomPeriodFactory getRandomPeriodFactory() {
+		public RandomPeriodStrategy getRandomPeriodFactory() {
 			return randomPeriodFactory;
 		}
 

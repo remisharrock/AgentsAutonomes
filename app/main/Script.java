@@ -17,7 +17,7 @@ import controllers.Scheduler;
 import controllers.StdRandom;
 import controllers.SystemController;
 import controllers.Scheduler.CancellableRef;
-import controllers.Scheduler.RandomPeriodFactory;
+import controllers.Scheduler.RandomPeriodStrategy;
 import controllers.Scheduler.StopCriteria;
 
 public class Script {
@@ -51,7 +51,7 @@ public class Script {
 				 * will give us a new random duration each time it's invoked.
 				 * Then, we pass this implementation to the scheduler.
 				 */
-				RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+				RandomPeriodStrategy randomPeriodFactory = new RandomPeriodStrategy() {
 					@Override
 					public Duration getPeriod() {
 						return Duration.create(StdRandom.uniform(10, 15),
@@ -74,7 +74,7 @@ public class Script {
 			 * interface Runnable. We pass this object to the scheduler. Thus,
 			 * each time a issue is raised, we start this thread.
 			 */
-			RandomPeriodFactory randomPeriodFactory = new RandomPeriodFactory() {
+			RandomPeriodStrategy randomPeriodFactory = new RandomPeriodStrategy() {
 				@Override
 				public Duration getPeriod() {
 					return Duration.create(StdRandom.uniform(5),
