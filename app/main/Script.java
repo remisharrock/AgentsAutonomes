@@ -137,10 +137,14 @@ public class Script {
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
 			String format = "svg";
-			String output = "./public/images/graph.svg";
+			String output = "public/images/graph.svg";
+			File f = new File(output);
 			Process process = Runtime.getRuntime().exec(
-					command + "--input " + filepath + " --format " + format + " --output " + output);
+					command + "--input " + filepath + " --format " + format + " --output " +  f.getAbsolutePath());
 			Logger.info("Graph exported");
+			
+		
+			
 		} catch (IOException e) {
 		}
 
