@@ -27,54 +27,41 @@ public class DatabaseEngine {
 	public static void deleteDB() {
 		List<AdminLog> adminLogList = Ebean.find(AdminLog.class).findList();
 		for (AdminLog al : adminLogList) {
-			System.out.println(al);
 			al.delete();
 		}
 		
 		List<Log> logsList = Ebean.find(Log.class).findList();
 		for (Log l : logsList) {
-			System.out.println(l);
 			l.delete();
 		}
 		
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 		for (Recipe r : recipesList) {
-			System.out.println(r);
 			r.delete();
 		}
 
 		List<Field> fieldsList = Ebean.find(Field.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (Field f : fieldsList) {
-			System.out.println("deleting field...: " + f);
 			f.delete();
 		}
 
 		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
-		// triggersList.removeAll(triggersList);
 		for (Trigger t : triggersList) {
-			System.out.println(t.getName());
 			t.delete();
 		}
 
 		List<Action> actionsList = Ebean.find(Action.class).findList();
-		// triggersList.removeAll(actionsList);
 		for (Action a : actionsList) {
-			System.out.println(a.getName());
 			a.delete();
 		}
 
 		List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (Channel c : channelsList) {
-			System.out.println(c);
 			c.delete();
 		}
 
 		List<User> usersList = Ebean.find(User.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (User u : usersList) {
-			System.out.println(u);
 			u.delete();
 		}
 	}
@@ -119,12 +106,10 @@ public class DatabaseEngine {
 				human.save();
 
 				Action humanEnterRoomAction = new Action("Enter room", "Simulates a person entering a room");
-				human.getActions().add(humanEnterRoomAction);
 				humanEnterRoomAction.setChannel(human);
 				humanEnterRoomAction.save();
 
 				Action humanExitRoomAction = new Action("Exit room", "Simulates a person exiting a room");
-				human.getActions().add(humanExitRoomAction);
 				humanExitRoomAction.setChannel(human);
 				humanExitRoomAction.save();
 
@@ -367,7 +352,6 @@ public class DatabaseEngine {
 				
 				RecipeAkka.recipesMap.put(rec7.getId(), rec7.getRecipeAkka());
 				
-				System.out.println(RecipeAkka.recipesMap);
 				
 	}
 }

@@ -66,21 +66,11 @@ public class Application extends Controller {
 
 		else {
 			userLoggedIn = user;
-			System.out.println("MY USER:" + user);
 			if (userLoggedIn.getRole().equals("administrator")) {
 
 				List<Channel> channelsList = Channel.getAllChannels();
-				// HashMap<Channel, List<Trigger>> triggersDic = new
-				// HashMap<Channel, List<Trigger>>();
-				// for (int i = 0; i < channelsList.size(); i++) {
-				// triggersDic.put(channelsList.get(i), channelsList.get(i)
-				// .getTriggers());
-				// }
-
-				System.out.println("Im here");
 				return ok(administratorChooseView.render());
 			} else {
-				System.out.println("Im not here");
 				return ok(chooseView.render(userLoggedIn));
 
 			}
@@ -112,7 +102,6 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		if (requestData.get("viewRecipesButton") != null) {
-			System.out.println("VIEW RECIPES");
 			return ok(viewRecipes.render(userLoggedIn));
 		} else {
 			recipe = new Recipe();
@@ -129,62 +118,6 @@ public class Application extends Controller {
 	}
 
 	public static Result submitForm() throws IOException {
-		// Boolean lampOn = false;
-		//
-		// DynamicForm requestData = Form.form().bindFromRequest();
-		//
-		// turnOnCheckbox = requestData.get("turnOnCheckbox");
-		// turnOffCheckbox = requestData.get("turnOffCheckbox");
-		//
-		// System.out.println("turn off checkbox: " + turnOffCheckbox);
-		//
-		// if (requestData.get("enterRoomButton") != null) {
-		// // Tell the detector that a human entered the room
-		// if (turnOnCheckbox != null) {
-		// AllActors.detectorActor.tell(new AllMessages.EnterRoom(true),
-		// AllActors.humanActor);
-		// } else {
-		// AllActors.detectorActor.tell(new AllMessages.EnterRoom(false),
-		// AllActors.humanActor);
-		// }
-		//
-		// try {
-		// TimeUnit.MILLISECONDS.sleep(10);
-		// } catch (InterruptedException e) {
-		//
-		// e.printStackTrace();
-		// }
-		//
-		// if (AllActors.Lamp.state.equals("ON"))
-		// lampOn = true;
-		// else
-		// lampOn = false;
-		// System.out.println("Enter room button - LampOn is TRUE");
-		//
-		// } else if (requestData.get("exitRoomButton") != null) {
-		// // Tell the detector that a human exited the room
-		// if (turnOffCheckbox != null) {
-		// AllActors.detectorActor.tell(new AllMessages.ExitRoom(true),
-		// AllActors.humanActor);
-		// } else {
-		// AllActors.detectorActor.tell(new AllMessages.ExitRoom(false),
-		// AllActors.humanActor);
-		//
-		// }
-		// try {
-		// TimeUnit.MILLISECONDS.sleep(10);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// if (AllActors.Lamp.state.equals("OFF"))
-		// lampOn = false;
-		// else
-		// lampOn = true;
-		//
-		// System.out.println("Exit room button - LampOn is FALSE");
-		// }
-		//
 		List<Channel> channelsList = Channel.getAllChannels();
 		return ok(chooseTriggerChannel.render(channelsList));
 	}
@@ -201,13 +134,6 @@ public class Application extends Controller {
 		Trigger trigger = Trigger.find.byId(triggerId);
 		recipe.setTrigger(trigger);
 		DynamicForm requestData = Form.form().bindFromRequest();
-		System.out.println("My trigger: " + trigger.getName());
-
-		// HashMap<Field, String> triggerFields = new HashMap<Field, String>();
-		// for (Field f : trigger.getFields()) {
-		// triggerFields.put(f, requestData.get(f.getName()));
-		// }
-
 		String fieldName = trigger.getFieldName();
 		if (fieldName != null && !fieldName.equals("")) {
 			String triggerFieldValue = requestData.get(fieldName);
@@ -269,15 +195,8 @@ public class Application extends Controller {
 		l1.setRecipe(recipe);
 
 		recipe.getLog().add(l1);
-		// recipe.getLog().add(l2);
 
 		recipe.save();
-		// userLoggedIn.getRecipes().add(recipe);
-
-		// recipe.setUser(userLoggedIn);
-
-		System.out.println("User's list size: "
-				+ userLoggedIn.getRecipes().size());
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
@@ -434,7 +353,7 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 		if (userLoggedIn != null && requestData.get("deleteRecipe") != null) {
 			long recipeId = Long.parseLong(requestData.get("deleteRecipe"));
-			System.out.println("Delete recipe: " + recipeId);
+
 			Recipe r = userLoggedIn.getRecipesById(recipeId);
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
