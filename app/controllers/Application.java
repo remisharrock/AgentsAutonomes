@@ -391,7 +391,7 @@ public class Application extends Controller {
 	}
 	
 	public static Result administratorGraph() {
-		return ok(administratorGraph.render())
+		return ok(administratorGraph.render());
 	}
 
 }
