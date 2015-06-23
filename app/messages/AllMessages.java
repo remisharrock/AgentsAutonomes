@@ -159,59 +159,6 @@ public class AllMessages {
 			super(recipeAkka);
 		}
 	}
+
     
-    
-//    public class PresenceTriggerMessage extends MessageEnvelope implements Serializable {
-//		private static final long serialVersionUID = 1L;
-//		private Boolean changeState;
-//		
-//		public PresenceTriggerMessage(RecipeAkka recipeAkka) {
-//			super(recipeAkka);
-//		}
-//		
-//		public PresenceTriggerMessage() {
-//			super();
-//		}
-//		
-//		public Boolean getChangeState() {
-//			return changeState;
-//		}
-//	}
-//    
-//    public class NonPresenceTriggerMessage extends MessageEnvelope implements Serializable {
-//		private static final long serialVersionUID = 1L;
-//		private Boolean changeState;
-//		
-//		public NonPresenceTriggerMessage(RecipeAkka recipeAkka) {
-//			super(recipeAkka);
-//		}
-//		
-//		public NonPresenceTriggerMessage(Boolean changeState) {
-//			this.changeState = changeState;
-//		}
-//		
-//		public Boolean getChangeState() {
-//			return changeState;
-//		}
-//	}
-    
-	private static final HashMap<String, Class<?>> mapClassNameMessage;
-	static
-    {
-		mapClassNameMessage = new HashMap<String, Class<?>>();
-		mapClassNameMessage.put("EnterRoomMessage", EnterRoomMessage.class);
-		mapClassNameMessage.put("ExitRoomMessage", ExitRoomMessage.class);
-		mapClassNameMessage.put("DetectionOnMessage", DetectionOnMessage.class);
-		mapClassNameMessage.put("DetectionOffMessage", DetectionOffMessage.class);
-		mapClassNameMessage.put("TurnOnLampMessage", TurnOnLampMessage.class);
-		mapClassNameMessage.put("TurnOffLampMessage", TurnOffLampMessage.class);
-		mapClassNameMessage.put("HotTemperatureMessage", HotTemperatureMessage.class);
-		mapClassNameMessage.put("ColdTemperatureMessage", ColdTemperatureMessage.class);
-		mapClassNameMessage.put("TurnOnHeaterMessage", TurnOnHeaterMessage.class);
-		mapClassNameMessage.put("TurnOnCoolerMessage", TurnOnCoolerMessage.class);
-    }
-	
-	public static HashMap<String, Class<?>> getMapClassNameMessage(){
-		return mapClassNameMessage;
-	}
 }
