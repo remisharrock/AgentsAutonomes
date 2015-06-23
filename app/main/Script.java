@@ -161,7 +161,7 @@ public class Script {
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
 			String format = "svg";
-			String output = "./image.svg";
+			String output = "./public/images/graph.svg";
 			Runtime.getRuntime().exec(command + "--input " + filepath + " --format " + format + " --output " + output);
 		} catch (IOException e) {
 		}
