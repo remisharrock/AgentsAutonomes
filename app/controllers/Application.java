@@ -267,52 +267,22 @@ public class Application extends Controller {
 
 		Log l1 = new Log("Recipe creation", new Date());
 		l1.setRecipe(recipe);
-		// l1.save();
-		// Log l2 = new Log("Recipe activated on creation");
-		// l2.setRecipe(recipe);
-		// l2.save();
+
 		recipe.getLog().add(l1);
 		// recipe.getLog().add(l2);
 
 		recipe.save();
 		// userLoggedIn.getRecipes().add(recipe);
+
 		// recipe.setUser(userLoggedIn);
 
 		System.out.println("User's list size: "
 				+ userLoggedIn.getRecipes().size());
+
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
-		// System.out.println("Recipe created: " + recipe);
 
-		// Channel trigger = recipe.getTriggerChannel();
-		// List<Recipe> recipesTrigger = trigger.getRecipes();
-		// recipesTrigger.add(recipe);
-		// trigger.save();
-		//
-		// Channel action = recipe.getActionChannel();
-		// List<Recipe> recipesAction = action.getRecipes();
-		// recipesAction.add(recipe);
-		// action.save();
-		//
-		// System.out.println("Showing trigger channel: " +
-		// recipe.getTriggerChannel());
-		// Channel c = recipe.getTriggerChannel();
-		// for (Recipe r : c.getRecipes()) {
-		// System.out.println("recipe title: " + r.getTitle());
-		// }
-		//
-		//
-		// List<Recipe> list = userLoggedIn.getRecipes();
-		// // for (Recipe r : list) {
-		// // System.out.println("Showing trigger channel: " +
-		// recipe.getTriggerChannel().getName());
-		// // }
-		// System.out.println("Saving recipe: " + list);
-		// // list.add(recipe);
-		// //
-		// // userLoggedIn.setRecipes(list);
-		// userLoggedIn.save();
-
+		Script.export();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -469,8 +439,8 @@ public class Application extends Controller {
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
 			RecipeAkka.recipesMap.remove(r.getId());
+			Script.export();
 		}
-
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -517,6 +487,10 @@ public class Application extends Controller {
 			return viewAdministratorLog();
 		}
 		return index();
+	}
+	
+	public static Result administratorGraph() {
+		return ok(administratorGraph.render());
 	}
 
 }
