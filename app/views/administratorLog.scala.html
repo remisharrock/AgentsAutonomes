@@ -23,7 +23,7 @@
 
         data.addRows([
                         @for(log <- logs){
-                                [@log.getId(),
+                                [ @log.getId(),
                                  '@log.getDateString()',
                                  '@log.getRecipeName()',
                                  '@log.getTriggerChannelName()',
