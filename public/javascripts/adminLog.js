@@ -1,3 +1,3 @@
-$(function(){
-  $('#keywords').tablesorter(); 
-});
+//$(function(){
+//  $('#keywords').tablesorter(); 
+//});
