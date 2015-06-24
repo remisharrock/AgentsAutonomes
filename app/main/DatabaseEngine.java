@@ -1,5 +1,6 @@
 package main;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import models.Action;
@@ -27,54 +28,41 @@ public class DatabaseEngine {
 	public static void deleteDB() {
 		List<AdminLog> adminLogList = Ebean.find(AdminLog.class).findList();
 		for (AdminLog al : adminLogList) {
-			System.out.println(al);
 			al.delete();
 		}
 		
 		List<Log> logsList = Ebean.find(Log.class).findList();
 		for (Log l : logsList) {
-			System.out.println(l);
 			l.delete();
 		}
 		
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 		for (Recipe r : recipesList) {
-			System.out.println(r);
 			r.delete();
 		}
 
 		List<Field> fieldsList = Ebean.find(Field.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (Field f : fieldsList) {
-			System.out.println("deleting field...: " + f);
 			f.delete();
 		}
 
 		List<Trigger> triggersList = Ebean.find(Trigger.class).findList();
-		// triggersList.removeAll(triggersList);
 		for (Trigger t : triggersList) {
-			System.out.println(t.getName());
 			t.delete();
 		}
 
 		List<Action> actionsList = Ebean.find(Action.class).findList();
-		// triggersList.removeAll(actionsList);
 		for (Action a : actionsList) {
-			System.out.println(a.getName());
 			a.delete();
 		}
 
 		List<Channel> channelsList = Ebean.find(Channel.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (Channel c : channelsList) {
-			System.out.println(c);
 			c.delete();
 		}
 
 		List<User> usersList = Ebean.find(User.class).findList();
-		// channelsList.removeAll(channelsList);
 		for (User u : usersList) {
-			System.out.println(u);
 			u.delete();
 		}
 	}
@@ -119,12 +107,10 @@ public class DatabaseEngine {
 				human.save();
 
 				Action humanEnterRoomAction = new Action("Enter room", "Simulates a person entering a room");
-				human.getActions().add(humanEnterRoomAction);
 				humanEnterRoomAction.setChannel(human);
 				humanEnterRoomAction.save();
 
 				Action humanExitRoomAction = new Action("Exit room", "Simulates a person exiting a room");
-				human.getActions().add(humanExitRoomAction);
 				humanExitRoomAction.setChannel(human);
 				humanExitRoomAction.save();
 
@@ -207,7 +193,7 @@ public class DatabaseEngine {
 				airConditioner.save();
 
 				
-				
+					
 				// Creating Recipes => the recipe akkas will be created
 				Recipe rec = new Recipe();
 				rec.save();
@@ -226,11 +212,14 @@ public class DatabaseEngine {
 				rec.setActionField(f2);
 				rec.setActive(true);
 				rec.setLog(new ArrayList<Log>());
+				
+				//First Log Message for Recipes manually added to the database
+				Log l = new Log("Recipe create at Data Base creation", new Date());
+				l.setRecipe(rec);
+				rec.getLog().add(l);
 				rec.save();
 				
-				
 				RecipeAkka.recipesMap.put(rec.getId(), rec.getRecipeAkka());
-				
 				
 				
 				Recipe rec2 = new Recipe();
@@ -250,6 +239,10 @@ public class DatabaseEngine {
 				rec2.setActionField(f22);
 				rec2.setActive(true);
 				rec2.setLog(new ArrayList<Log>());
+				
+				Log l2 = new Log("Recipe create at Data Base creation", new Date());
+				l2.setRecipe(rec2);
+				rec2.getLog().add(l2);
 				rec2.save();
 				
 				RecipeAkka.recipesMap.put(rec2.getId(), rec2.getRecipeAkka());
@@ -272,6 +265,10 @@ public class DatabaseEngine {
 				rec3.setActionField(f32);
 				rec3.setActive(true);
 				rec3.setLog(new ArrayList<Log>());
+				
+				Log l3 = new Log("Recipe create at Data Base creation", new Date());
+				l3.setRecipe(rec3);
+				rec3.getLog().add(l3);
 				rec3.save();
 				
 				RecipeAkka.recipesMap.put(rec3.getId(), rec3.getRecipeAkka());
@@ -294,6 +291,10 @@ public class DatabaseEngine {
 				rec4.setActionField(f42);
 				rec4.setActive(true);
 				rec4.setLog(new ArrayList<Log>());
+				
+				Log l4 = new Log("Recipe create at Data Base creation", new Date());
+				l4.setRecipe(rec4);
+				rec4.getLog().add(l4);
 				rec4.save();
 				
 				RecipeAkka.recipesMap.put(rec4.getId(), rec4.getRecipeAkka());
@@ -317,6 +318,10 @@ public class DatabaseEngine {
 				rec5.setActionField(f52);
 				rec5.setActive(true);
 				rec5.setLog(new ArrayList<Log>());
+				
+				Log l5 = new Log("Recipe create at Data Base creation", new Date());
+				l5.setRecipe(rec5);
+				rec5.getLog().add(l5);
 				rec5.save();
 				
 				RecipeAkka.recipesMap.put(rec5.getId(), rec5.getRecipeAkka());
@@ -340,6 +345,10 @@ public class DatabaseEngine {
 				rec6.setActionField(f62);
 				rec6.setActive(true);
 				rec6.setLog(new ArrayList<Log>());
+				
+				Log l6 = new Log("Recipe create at Data Base creation", new Date());
+				l6.setRecipe(rec6);
+				rec6.getLog().add(l6);
 				rec6.save();
 				
 				RecipeAkka.recipesMap.put(rec6.getId(), rec6.getRecipeAkka());
@@ -363,11 +372,14 @@ public class DatabaseEngine {
 				rec7.setActionField(f72);
 				rec7.setActive(true);
 				rec7.setLog(new ArrayList<Log>());
+				
+				Log l7 = new Log("Recipe create at Data Base creation", new Date());
+				l7.setRecipe(rec7);
+				rec7.getLog().add(l7);
 				rec7.save();
 				
 				RecipeAkka.recipesMap.put(rec7.getId(), rec7.getRecipeAkka());
 				
-				System.out.println(RecipeAkka.recipesMap);
 				
 	}
 }

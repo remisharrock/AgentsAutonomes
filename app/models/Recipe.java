@@ -116,7 +116,6 @@ public class Recipe extends Model {
 	}
 
 	public void setTriggerChannel(Channel triggerChannel) {
-		System.out.println("TRIGGER CHANNEL: " + triggerChannel);
 		this.triggerChannel = triggerChannel;
 
 		// this.triggerChannelId = triggerChannel.getId();
@@ -134,7 +133,6 @@ public class Recipe extends Model {
 		 */
 		List<User> allUsersFromSameGroup;
 		if (controllers.Application.getUserLoggedIn() == null) {
-			System.out.println("this user: " + this.getUser());
 			allUsersFromSameGroup = User.getAllUsersFromSameGroup(this
 					.getUser().getUserGroup());
 		} else {
@@ -144,25 +142,13 @@ public class Recipe extends Model {
 		}
 
 		for (User u : allUsersFromSameGroup) {
-			System.out.println("user: " + u + " / recipeSize = "
-					+ u.getRecipes().size());
 			for (Recipe r : u.getRecipes()) {
 				if (r != this) {
-					System.out.println("r!=this");
 					if (r != null) {
-//						System.out.println("r!=null");
-//
-//						System.out.println(r.getTitle());
-//
-//						System.out.println("ZE RECIPE: " + r.getActive());
-//						System.out.println("recipe trigger channel: "
-//								+ r.getTriggerChannel() + " / "
-//								+ triggerChannel);
 						if (r.getTriggerChannel().getId() == triggerChannel
 								.getId()) {
 							// it means that there is an actor that exists for
 							// this group of users and this channel
-							System.out.println("Recipes Map:" + RecipeAkka.recipesMap);
 							
 							ActorRef existingActor = RecipeAkka.recipesMap.get(
 									r.getId()).getTriggerChannelActor();
@@ -198,8 +184,6 @@ public class Recipe extends Model {
 
 	public void setTriggerField(Field triggerField) {
 		this.triggerField = triggerField;
-
-		System.out.println("im here: " + recipeAkka.getTriggerMessage());
 		recipeAkka.setTriggerField(triggerField);
 //		recipeAkka.getTriggerMessage().setField(triggerField);
 	}
@@ -236,19 +220,9 @@ public class Recipe extends Model {
 		}
 
 		for (User u : allUsersFromSameGroup) {
-			System.out.println("user: " + u + " / recipeSize = "
-					+ u.getRecipes().size());
 			for (Recipe r : u.getRecipes()) {
 				if (r != this) {
-					System.out.println("r!=this");
 					if (r != null) {
-						System.out.println("r!=null");
-
-						System.out.println(r.getTitle());
-
-						System.out.println("ZE RECIPE: " + r.getActive());
-						System.out.println("recipe action channel: "
-								+ r.getActionChannel() + " / " + actionChannel);
 						if (r.getActionChannel().getId() == actionChannel
 								.getId()) {
 							// it means that there is an actor that exists for
@@ -277,8 +251,6 @@ public class Recipe extends Model {
 		ActorRef actorAction = createActorFromClassName(
 				actionChannel.getName(), "Action");
 		recipeAkka.setActionChannelActor(actorAction);
-		System.out.println("Recipe akka trigger: "
-				+ recipeAkka.getActionChannelActor());
 	}
 
 	public Field getActionField() {
@@ -316,7 +288,6 @@ public class Recipe extends Model {
 		this.trigger = trigger;
 		MessageEnvelope msg = createMessageFromClassName(trigger.getName(),
 				recipeAkka);
-		System.out.println("msg: " + msg);
 		recipeAkka.setTriggerMessage(msg);
 	}
 
@@ -356,9 +327,6 @@ public class Recipe extends Model {
 					 * trigger channel/actor of the recipe that we are working
 					 * on. so we use this actor
 					 */
-					System.out.println("The actor: "
-							+ RecipeAkka.recipesMap.get(r.getId())
-									.getTriggerChannelActor());
 					ra.setTriggerChannelActor(RecipeAkka.recipesMap.get(
 							r.getId()).getTriggerChannelActor());
 					triggerActorFound = true;
@@ -370,8 +338,6 @@ public class Recipe extends Model {
 					triggerChannel.getName(), "Trigger"));
 		}
 
-		System.out.println("Recipe akka trigger: "
-				+ ra.getTriggerChannelActor());
 
 		boolean actionActorFound = false;
 		for (Recipe r : Ebean.find(Recipe.class).findList()) {
@@ -397,7 +363,6 @@ public class Recipe extends Model {
 					actionChannel.getName(), "Action"));
 		}
 
-		System.out.println("Recipe akka action:" + ra.getActionChannelActor());
 
 		ra.setTriggerMessage(createMessageFromClassName(this.getTrigger()
 				.getName(), ra));
@@ -405,7 +370,6 @@ public class Recipe extends Model {
 		ra.setActionMessage(createMessageFromClassName(this.getAction()
 				.getName(), ra));
 
-		System.out.println("Message: " + ra.getTriggerMessage());
 
 		return ra;
 
@@ -416,7 +380,6 @@ public class Recipe extends Model {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
 					"")
 					+ "Actor";
-			System.out.println("classNameTrigger: " + classNameFull);
 			Class<?> classActor = null;
 			try {
 				classActor = Class.forName("actors.AllActors$" + classNameFull);
@@ -424,9 +387,6 @@ public class Recipe extends Model {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			System.out.println("classActorTrigger: " + classActor);
-			System.out.println("This Recipe ID: " + this.getId());
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
 					classNameFull + "Trigger" + getId());
 			return actor;
@@ -435,7 +395,6 @@ public class Recipe extends Model {
 			String classNameFull = WordUtils.capitalize(className).replace(" ",
 					"")
 					+ "Actor";
-			System.out.println("classNameAction: " + classNameFull);
 			Class<?> classActor = null;
 			try {
 				classActor = Class.forName("actors.AllActors$" + classNameFull);
@@ -444,7 +403,6 @@ public class Recipe extends Model {
 				e.printStackTrace();
 			}
 
-			System.out.println("classActorActionr: " + classActor);
 			ActorRef actor = AllActors.system.actorOf(Props.create(classActor),
 					classNameFull + "Action" + getId());
 			return actor;
@@ -459,9 +417,6 @@ public class Recipe extends Model {
 		String classNameMessage = WordUtils.capitalize(className).replace(" ",
 				"")
 				+ "Message";
-		System.out.println("classNameMessage: " + classNameMessage);
-//		Class<?> classTriggerMessage = AllMessages.getMapClassNameMessage()
-//				.get(classNameMessage);
 		Class<?> classTriggerMessage = null;
 		try {
 			classTriggerMessage = Class.forName("messages.AllMessages$" + classNameMessage);
@@ -469,7 +424,6 @@ public class Recipe extends Model {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		System.out.println("classtriggerMessage: " + classTriggerMessage);
 		MessageEnvelope message = null;
 		try {
 			Class<?>[] types = new Class[] { messages.AllMessages.class,

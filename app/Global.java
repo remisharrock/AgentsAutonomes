@@ -52,8 +52,6 @@ public class Global extends GlobalSettings {
 		 * Creating the Actor router for each UserGroup
 		 */
 		SystemController.getSystemControllerInstance().createActorRouterMap(User.getAllUserGroups());
-		System.out.println("UserGroup - Router Map: "
-				+ SystemController.getSystemControllerInstance().getUserGroupActorRouterMap());
 
 		// CREATE AKKA RECIPES WITH ACTOR FOR ALL RECIPES
 		/**

@@ -32,7 +32,6 @@ public class Script {
 
 		for (Recipe recipe : Ebean.find(Recipe.class).findList()) {
 			// We just declare something well use later on.
-			System.out.println("recipe launched");
 			CancellableRef cancellableRef = null;
 			if (recipe == null) {
 				Logger.info("No recipes are available.");
@@ -80,7 +79,6 @@ public class Script {
 					// Get all the recipes.
 					List<Recipe> recipes = Ebean.find(Recipe.class).findList();
 					// Randomly pick one of them up.
-					System.out.println("Size of recipe: " + recipes.size());
 					float nb = StdRandom.uniform(recipes.size());
 					Logger.info("Hi, I'm a random event, giving you a random number: " + nb);
 					Recipe r = recipes.get(Math.round(nb));
@@ -91,7 +89,6 @@ public class Script {
 						return;
 					}
 					// Activate it.
-					System.out.println("launched recipe title: " + r.getTitle());
 					SystemController.userGroupActorRouterMap.get(r.getUser().getUserGroup()).tell(
 							RecipeAkka.recipesMap.get(r.getId()).getTriggerMessage(),
 							RecipeAkka.recipesMap.get(r.getId()).getTriggerChannelActor());
@@ -122,7 +119,6 @@ public class Script {
 		try {
 			fw = new FileWriter(file, false);
 			for (RecipeAkka r : RecipeAkka.recipesMap.values()) {
-				System.out.println("Recipe: " + r);
 				fw.write(/**/
 				r.getTriggerChannelActor().path().name().toString() + "\t" + /**/
 				r.getTriggerChannelActor().path().toStringWithoutAddress() + "\t" + /**/
@@ -133,6 +129,7 @@ public class Script {
 			/*
 			 * How to export to a SVG file. Better than a PNG because it can be
 			 * zoomed :-)
+			 * java -jar lib/visual.jar --input export.txt --format svg --output impage.svg
 			 */
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
@@ -141,6 +138,7 @@ public class Script {
 			Process process = Runtime.getRuntime().exec(
 					command + "--input " + filepath + " --format " + format + " --output " + output);
 			Logger.info("Graph exported");
+			
 		} catch (IOException e) {
 		}
 
