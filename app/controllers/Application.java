@@ -45,6 +45,40 @@ public class Application extends Controller {
 		Script.export();
 		return ok(index.render());
 	}
+	
+	public static Result homeForm() {
+		if (userLoggedIn != null) {
+			if (userLoggedIn.getRole().equals("administrator"))
+				// return administratorView();
+				return ok(administratorChooseView.render());
+			else
+				return ok(chooseView.render(userLoggedIn));
+		}
+
+		DynamicForm requestData = Form.form().bindFromRequest();
+
+		String username = requestData.get("username");
+		String password = requestData.get("password");
+
+		User user = User.authenticate(username, password);
+		if (user == null) {
+			return ok(index.render());
+		}
+
+		else {
+			userLoggedIn = user;
+			if (userLoggedIn.getRole().equals("administrator")) {
+
+				List<Channel> channelsList = Channel.getAllChannels();
+				return ok(administratorChooseView.render());
+			} else {
+				return ok(chooseView.render(userLoggedIn));
+
+			}
+
+		}
+
+	}
 
 	public static Result loginForm() {
 		// recipe=null;
@@ -197,17 +231,18 @@ public class Application extends Controller {
 		l1.setRecipe(recipe);
 
 		recipe.getLog().add(l1);
-
+		
 		recipe.save();
 
-		userLoggedIn.getRecipes().add(recipe);
-		userLoggedIn.save();
-		
-		
-		
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
-
-
+		
+//		System.out.println("recipes size: " + userLoggedIn.getRecipes().size());
+//		recipe.refresh();
+//		userLoggedIn.refresh();
+//		userLoggedIn.save();
+//		
+//		System.out.println("recipes size: " + userLoggedIn.getRecipes().size());
+		
 		Script.export();
 		return ok(viewRecipes.render(userLoggedIn));
 	}
@@ -427,5 +462,6 @@ public class Application extends Controller {
 	public static Result administratorGraph() {
 		return ok(administratorGraph.render());
 	}
+
 
 }
