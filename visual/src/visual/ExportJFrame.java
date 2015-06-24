@@ -157,17 +157,20 @@ public class ExportJFrame {
 		// Preview configuration
 		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
 		PreviewModel previewModel = previewController.getModel();
-		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLUE));
-		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT,
-				previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(78));
+		PreviewProperties props = previewModel.getProperties();
 
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_RADIUS, 10f);
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
+		props.putValue(PreviewProperty.EDGE_OPACITY, 50);
+		props.putValue(PreviewProperty.EDGE_RADIUS, 10f);
+		props.putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
 
-		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
+		props.putValue(PreviewProperty.SHOW_NODE_LABELS, true);
+		props.putValue(PreviewProperty.EDGE_CURVED, false);
+		props.putValue(PreviewProperty.ARROW_SIZE, 8f);
+		props.putValue(PreviewProperty.EDGE_THICKNESS, 8f);
+		props.putValue(PreviewProperty.NODE_LABEL_FONT,
+				props.getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(java.awt.Font.PLAIN, 10f));
+
+		props.putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
 
 		previewController.refreshPreview();
 
@@ -307,7 +310,7 @@ public class ExportJFrame {
 		@SuppressWarnings("rawtypes")
 		AbstractColorTransformer colorTransformer = (AbstractColorTransformer) rankingController.getModel()
 				.getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_COLOR);
-		colorTransformer.setColors(new Color[] { new Color(0xFEF0D9), new Color(0xB30000) });
+		colorTransformer.setColors(new Color[] { new Color(0xD09332), new Color(0xB30000) });
 
 		@SuppressWarnings("rawtypes")
 		AbstractSizeTransformer sizeTransformer = (AbstractSizeTransformer) rankingController.getModel()
