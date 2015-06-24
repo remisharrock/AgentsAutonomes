@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import main.Scheduler;
 import main.Script;
+import main.StdRandom;
+import main.Scheduler.CancellableRef;
+import main.Scheduler.RandomPeriodStrategy;
+import main.Scheduler.StopCriteria;
 import models.Action;
 import models.AdminLog;
 import models.Channel;
@@ -26,10 +31,6 @@ import views.html.*;
 
 import com.avaje.ebean.Ebean;
 
-import controllers.Scheduler.CancellableRef;
-import controllers.Scheduler.RandomPeriodStrategy;
-import controllers.Scheduler.StopCriteria;
-
 public class Application extends Controller {
 
 	private static User userLoggedIn = null;
@@ -42,7 +43,7 @@ public class Application extends Controller {
 	private static String activationType;
 
 	public static Result index() {
-		Script.export();
+		Script.export("svg");
 		return ok(index.render());
 	}
 
@@ -188,8 +189,7 @@ public class Application extends Controller {
 	public static Result viewRecipesAfterCreate() {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
-		System.out
-				.println("my recipe title: " + requestData.get("recipeTitle"));
+		System.out.println("my recipe title: " + requestData.get("recipeTitle"));
 		recipe.setTitle(requestData.get("recipeTitle"));
 		recipe.setActive(true);
 
@@ -202,8 +202,7 @@ public class Application extends Controller {
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
-
-		Script.export();
+		Script.export("svg");
 		return ok(viewRecipes.render(userLoggedIn));
 	}
 
@@ -219,17 +218,14 @@ public class Application extends Controller {
 		for (int i = 0; i < recipesList.size(); i++) {
 			if (recipesList.get(i).getTriggerChannel().getId() == triggerId) {
 				Trigger trigger = null;
-				for (int j = 0; j < recipesList.get(i).getTriggerChannel()
-						.getTriggers().size(); j++) {
-					if (recipesList.get(i).getTriggerChannel().getTriggers()
-							.get(j).getId() == triggerId) {
-						trigger = recipesList.get(i).getTriggerChannel()
-								.getTriggers().get(j);
+				for (int j = 0; j < recipesList.get(i).getTriggerChannel().getTriggers().size(); j++) {
+					if (recipesList.get(i).getTriggerChannel().getTriggers().get(j).getId() == triggerId) {
+						trigger = recipesList.get(i).getTriggerChannel().getTriggers().get(j);
 					}
 				}
 			}
 		}
-		
+
 		return ok();
 
 	}
@@ -239,7 +235,6 @@ public static Result randomlyActivationChosen(Long triggerId) {
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-
 
 		play.Logger.info("liste " + userGroupsChosen);		
 
@@ -260,6 +255,7 @@ public static Result randomlyActivationChosen(Long triggerId) {
 							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
 							it);
 				}
+
 			}
 		}
 		else {
@@ -289,7 +285,6 @@ public static Result randomlyActivationChosen(Long triggerId) {
 		List<AdminLog> logs = AdminLog.getAllAdminLogs();
 		return ok(administratorLog.render(logs));
 	}
-	
 
 	public static Result periodicallyActivationChosen(Long triggerId) {
 	
@@ -342,14 +337,12 @@ public static Result randomlyActivationChosen(Long triggerId) {
 		List<AdminLog> logs = AdminLog.getAllAdminLogs();
 		return ok(administratorLog.render(logs));
 	}
-	
 
 	public static Result manualActivationChosen(Long triggerId) {
-		
+
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-		 
 		
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 		
@@ -368,6 +361,7 @@ public static Result randomlyActivationChosen(Long triggerId) {
 							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
 							it);
 				}
+
 			}
 		}
 		else {
@@ -441,7 +435,7 @@ public static Result randomlyActivationChosen(Long triggerId) {
 			userLoggedIn.getRecipes().remove(r);
 			r.delete();
 			RecipeAkka.recipesMap.remove(r.getId());
-			Script.export();
+			Script.export("svg");
 		}
 		return ok(viewRecipes.render(userLoggedIn));
 	}
@@ -490,9 +484,9 @@ public static Result randomlyActivationChosen(Long triggerId) {
 		}
 		return index();
 	}
-	
+
 	public static Result administratorGraph() {
+		Script.export("svg");
 		return ok(administratorGraph.render());
 	}
-
 }
