@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -294,6 +295,17 @@ public class Application extends Controller {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
 
+		HashMap<String, String> userGroupsChosen = new HashMap<String, String>();
+		
+		/**
+		 * if home1 is checked => its value will be "on"
+		 * else =>its value is "null"
+		 */
+		for (String userGroup: userGroupList) {
+			userGroupsChosen.put(userGroup, requestData.get(userGroup));
+		}
+		
+		System.out.println("User Groups Chosen: " + userGroupsChosen);
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 
 		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
