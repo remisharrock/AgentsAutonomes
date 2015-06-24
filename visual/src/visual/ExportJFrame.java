@@ -133,7 +133,7 @@ public class ExportJFrame {
 		}
 	}
 
-	public void outputWin(File file) {
+	public void outputWin(final File file) {
 		(new Thread() {
 			@Override
 			public void run() {
