@@ -31,6 +31,12 @@ import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.types.DependantOriginalColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.Transformer;
+import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
+import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
+import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 
 import processing.core.PApplet;
@@ -88,6 +94,7 @@ public class ExportJFrame {
 		ExportJFrame jframe = new ExportJFrame(parse(inputFile));
 		jframe.populateGraph();
 		jframe.layoutGraph();
+		jframe.beautifyGraph();
 
 		if (format.contentEquals("svg")) {
 			jframe.outputSvg(outputFile);
@@ -101,14 +108,17 @@ public class ExportJFrame {
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		PreviewProperties props = model.getProperties();
 		props.putValue(PreviewProperty.SHOW_NODE_LABELS, true);
-		props.putValue(PreviewProperty.EDGE_CURVED, true);
-		props.putValue(PreviewProperty.MARGIN, 20);
+		props.putValue(PreviewProperty.EDGE_CURVED, false);
+		props.putValue(PreviewProperty.ARROW_SIZE, 8f);
+		props.putValue(PreviewProperty.EDGE_THICKNESS, 8f);
+		props.putValue(PreviewProperty.MARGIN, 30);
 		props.putValue(PreviewProperty.NODE_LABEL_FONT,
 				model.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT)
-						.deriveFont(java.awt.Font.PLAIN, 75f));
+						.deriveFont(java.awt.Font.PLAIN, 10f));
 		SVGExporter svgExporter = new SVGExporter();
 		svgExporter.setScaleStrokes(true);
 		svgExporter.setWorkspace(workspace);
+		svgExporter.setScaleStrokes(true);
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter(file);
@@ -150,7 +160,7 @@ public class ExportJFrame {
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
 		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLUE));
 		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT,
-				previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(8));
+				previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(78));
 
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
@@ -158,7 +168,6 @@ public class ExportJFrame {
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
 
 		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
-		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
 
 		previewController.refreshPreview();
 
@@ -285,5 +294,28 @@ public class ExportJFrame {
 			layout.goAlgo();
 		}
 		layout.endAlgo();
+	}
+
+	/**
+	 * We make it somewhat more beautiful by playing on node colour and size.
+	 */
+	private void beautifyGraph() {
+		RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+		@SuppressWarnings("rawtypes")
+		Ranking degreeRanking = rankingController.getModel().getRanking(Ranking.NODE_ELEMENT, Ranking.DEGREE_RANKING);
+
+		@SuppressWarnings("rawtypes")
+		AbstractColorTransformer colorTransformer = (AbstractColorTransformer) rankingController.getModel()
+				.getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_COLOR);
+		colorTransformer.setColors(new Color[] { new Color(0xFEF0D9), new Color(0xB30000) });
+
+		@SuppressWarnings("rawtypes")
+		AbstractSizeTransformer sizeTransformer = (AbstractSizeTransformer) rankingController.getModel()
+				.getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_SIZE);
+		sizeTransformer.setMinSize(15);
+		sizeTransformer.setMaxSize(20);
+
+		rankingController.transform(degreeRanking, colorTransformer);
+		rankingController.transform(degreeRanking, sizeTransformer);
 	}
 }
