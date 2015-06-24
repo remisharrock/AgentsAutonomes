@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import controllers.Scheduler;
+import main.Scheduler;
 import messages.AllMessages;
 import messages.AllMessages.DetectionOffMessage;
 import messages.AllMessages.MessageEnvelope;

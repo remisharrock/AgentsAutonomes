@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import main.Scheduler.CancellableRef;
+import main.Scheduler.RandomPeriodStrategy;
+import main.Scheduler.StopCriteria;
 import models.Recipe;
 import models.RecipeAkka;
 import play.Logger;
@@ -13,12 +16,7 @@ import scala.concurrent.duration.Duration;
 
 import com.avaje.ebean.Ebean;
 
-import controllers.Scheduler;
-import controllers.StdRandom;
 import controllers.SystemController;
-import controllers.Scheduler.CancellableRef;
-import controllers.Scheduler.RandomPeriodStrategy;
-import controllers.Scheduler.StopCriteria;
 
 public class Script {
 
@@ -112,7 +110,7 @@ public class Script {
 	/**
 	 * Used to display all the relations in a graph
 	 */
-	public static void export() {
+	public static void export(String format) {
 		String filepath = "./export.txt";
 		File file = new File(filepath);
 		FileWriter fw;
@@ -128,17 +126,16 @@ public class Script {
 			fw.close();
 			/*
 			 * How to export to a SVG file. Better than a PNG because it can be
-			 * zoomed :-)
-			 * java -jar lib/visual.jar --input export.txt --format svg --output impage.svg
+			 * zoomed :-) java -jar lib/visual.jar --input export.txt --format
+			 * svg --output impage.svg
 			 */
 			String command = "java -jar lib/visual.jar ";
 			String input = filepath;
-			String format = "svg";
 			String output = "./public/images/graph.svg";
 			Process process = Runtime.getRuntime().exec(
 					command + "--input " + filepath + " --format " + format + " --output " + output + " &");
 			Logger.info("Graph exported");
-			
+
 		} catch (IOException e) {
 		}
 

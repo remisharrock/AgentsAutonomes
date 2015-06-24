@@ -28,6 +28,7 @@ GET		/randomlyActivationChosen		controllers.Application.randomlyActivationChosen
 GET		/periodicallyActivationChosen	controllers.Application.periodicallyActivationChosen(triggerId: Long)	
 GET		/manualActivationChosen			controllers.Application.manualActivationChosen(triggerId: Long)	
 GET		/administratorGraph				controllers.Application.administratorGraph()
+GET		/displayGraph					controllers.Application.displayGraph()
 
 
 # Map static resources from the /public folder to the /assets URL path
