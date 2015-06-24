@@ -3,6 +3,7 @@ bin/
 .project
 activator-launch-1.2.10.jar
 conf/evolutions/default/1.sql
+public/images/graph.svg
 activator
 /.sbtserver/
 .settings/

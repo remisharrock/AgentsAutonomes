@@ -6,7 +6,7 @@
 var evt = new Event(),
 	m = new Magnifier(evt);
 m.attach({
-    thumb: '#thumb',
+    thumb: document.getElementById('thumb'),
     large: '@routes.Assets.at("images/graph.svg")',
     largeWrapper: 'preview'
 });

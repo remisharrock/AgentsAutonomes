@@ -112,28 +112,29 @@ var Magnifier = function (evt, options) {
 
             return list;
         },
-        $ = function (selector) {
-            var idx = '',
-                type = selector.charAt(0),
-                result = null;
-
-            if (type === '#' || type === '.') {
-                idx = selector.substr(1, selector.length);
-            }
-
-            if (idx !== '') {
-                switch (type) {
-                case '#':
-                    result = document.getElementById(idx);
-                    break;
-                case '.':
-                    result = getElementsByClass(idx);
-                    break;
-                }
-            }
-
-            return result;
-        },
+        
+//        $ = function (selector) {
+//            var idx = '',
+//                type = selector.charAt(0),
+//                result = null;
+//
+//            if (type === '#' || type === '.') {
+//                idx = selector.substr(1, selector.length);
+//            }
+//
+//            if (idx !== '') {
+//                switch (type) {
+//                case '#':
+//                    result = document.getElementById(idx);
+//                    break;
+//                case '.':
+//                    result = getElementsByClass(idx);
+//                    break;
+//                }
+//            }
+//
+//            return result;
+//        },
         createLens = function (thumb, idx) {
             var lens = document.createElement('div');
 
@@ -289,6 +290,7 @@ var Magnifier = function (evt, options) {
             }
         },
         onThumbEnter = function () {
+        	alert("thumb enter");
             curData = data[curIdx];
             curLens = $('#' + curIdx + '-lens');
 
@@ -413,7 +415,6 @@ var Magnifier = function (evt, options) {
 
         var thumb = $(options.thumb),
             i = 0;
-        alert(thumb);
         
         if (thumb.length != null && thumb.length !== undefined) {
             for (i; i < thumb.length; i += 1) {
