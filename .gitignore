@@ -2,6 +2,7 @@ bin/
 .classpath
 .project
 activator-launch-1.2.10.jar
+conf/evolutions/default/1.sql
 activator
 /.sbtserver/
 .settings/
