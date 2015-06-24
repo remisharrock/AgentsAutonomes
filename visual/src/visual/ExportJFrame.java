@@ -97,12 +97,15 @@ public class ExportJFrame {
 
 	}
 
-	public void outputSvg(File file) throws UnsupportedEncodingException {
-		// Preview configuration
+	public void outputSvg(File file) {
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		PreviewProperties props = model.getProperties();
 		props.putValue(PreviewProperty.SHOW_NODE_LABELS, true);
 		props.putValue(PreviewProperty.EDGE_CURVED, true);
+		props.putValue(PreviewProperty.MARGIN, 20);
+		props.putValue(PreviewProperty.NODE_LABEL_FONT,
+				model.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT)
+						.deriveFont(java.awt.Font.PLAIN, 75f));
 		SVGExporter svgExporter = new SVGExporter();
 		svgExporter.setScaleStrokes(true);
 		svgExporter.setWorkspace(workspace);
@@ -147,10 +150,17 @@ public class ExportJFrame {
 		PreviewModel previewModel = previewController.getModel();
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
 		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLUE));
+		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT,
+				previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(8));
+
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 50);
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_RADIUS, 10f);
+		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
+
 		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
+		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
+
 		previewController.refreshPreview();
 
 		// New Processing target, get the PApplet
