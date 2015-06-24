@@ -408,7 +408,7 @@ public class Application extends Controller {
 	}
 
 	public static Result administratorGraph() {
-		Script.export("win");
+		Script.export("svg");
 		return ok(administratorGraph.render());
 	}
 }
