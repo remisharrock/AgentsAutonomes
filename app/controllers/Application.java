@@ -237,6 +237,8 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		play.Logger.info("liste " + userGroupsChosen);
+		int numberOccurences = Integer.parseInt(requestData.get("numberOccurences"));
+		play.Logger.info("occurences " + numberOccurences);
 
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 
@@ -254,7 +256,7 @@ public class Application extends Controller {
 						};
 						SystemController.scheduler.periodicallyActivate(
 								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, numberOccurences),
 								it);
 					}
 				}			
@@ -279,7 +281,7 @@ public class Application extends Controller {
 						};
 						SystemController.scheduler.periodicallyActivate(
 								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, numberOccurences),
 								it);
 					}
 
@@ -297,7 +299,8 @@ public class Application extends Controller {
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-
+		
+		int numberOccurences = Integer.parseInt(requestData.get("numberOccurences"));
 		final Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
 
 		if (requestData.get("allUserGroups") != null) {
@@ -313,7 +316,7 @@ public class Application extends Controller {
 						};
 						SystemController.scheduler.periodicallyActivate(
 								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, numberOccurences),
 								it);
 					}
 
@@ -338,7 +341,7 @@ public class Application extends Controller {
 						};
 						SystemController.scheduler.periodicallyActivate(
 								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, numberOccurences),
 								it);
 					}
 
