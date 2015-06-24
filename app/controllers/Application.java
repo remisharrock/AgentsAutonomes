@@ -411,4 +411,9 @@ public class Application extends Controller {
 		Script.export("svg");
 		return ok(administratorGraph.render());
 	}
+
+	public static Result displayGraph() {
+		Script.export("win");
+		return ok(administratorGraph.render());
+	}
 }
