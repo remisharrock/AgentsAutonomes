@@ -136,7 +136,7 @@ public class Script {
 			String format = "svg";
 			String output = "./public/images/graph.svg";
 			Process process = Runtime.getRuntime().exec(
-					command + "--input " + filepath + " --format " + format + " --output " + output);
+					command + "--input " + filepath + " --format " + format + " --output " + output + " &");
 			Logger.info("Graph exported");
 			
 		} catch (IOException e) {

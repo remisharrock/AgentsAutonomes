@@ -112,7 +112,6 @@ public class ExportJFrame {
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter(file);
-			System.out.println(file.getAbsolutePath());
 			svgExporter.setWriter(fw);
 			svgExporter.execute();
 		} catch (Exception ex) {
