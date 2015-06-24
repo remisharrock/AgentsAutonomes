@@ -45,7 +45,8 @@
 							Choose UserGroup <span class='composer_section_step'>step 3 of 4</span>
 						</h2>
 						<p class="composer_section_description">Choose a the UserGroup for the activation</p>
-											
+							
+							<input type="checkbox" name="allUserGroups" value="allUserGroups">All UserGroups</br>				
 							@for(group <- userGroupList){
 		                    	<input type="checkbox" name="userGroup[]" value="@group">@group</br>
 		                    }						 
