@@ -230,49 +230,110 @@ public class Application extends Controller {
 
 	}
 
-	public static Result randomlyActivationChosen(Long triggerId) {
-
+public static Result randomlyActivationChosen(Long triggerId) {
+		
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
+		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-		play.Logger.info("liste " + requestData.data());
+
+		play.Logger.info("liste " + userGroupsChosen);		
 
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 
-		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-			if (requestData.get("activateTriggerPoissonButton") != null) {
-				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
-					@Override
-					public Duration getPeriod() {
-						return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
-					}
-				};
-				SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
-						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40), it);
+		if (requestData.get("allUserGroups") != null){
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+				
+				if ((requestData.get("activateTriggerPoissonButton") != null)) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+							it);
+				}
+
 			}
 		}
+		else {
+			for (String userGroup: userGroupList) {
+				if (requestData.get(userGroup) != null){	
+					userGroupsChosen.add(userGroup);
+				}
+			}
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
 
+				if ((requestData.get("activateTriggerPoissonButton") != null)&&
+						(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+							it);
+				}
+			}
+		}
+		
 		List<AdminLog> logs = AdminLog.getAllAdminLogs();
 		return ok(administratorLog.render(logs));
 	}
 
 	public static Result periodicallyActivationChosen(Long triggerId) {
-
+	
+		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
+		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-
+	
 		final Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
-
-		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-			if (requestData.get("activateTriggerPeriodicallyButton") != null) {
-				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
-					@Override
-					public Duration getPeriod() {
-						return Duration.create(period, TimeUnit.SECONDS);
-					}
-				};
-				SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
-						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40), it);
+		
+		if (requestData.get("allUserGroups") != null){
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+				if (requestData.get("activateTriggerPeriodicallyButton") != null) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(period, TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+							it);
+				}
 			}
 		}
-
+		else {
+			for (String userGroup: userGroupList) {
+				if (requestData.get(userGroup) != null){	
+					userGroupsChosen.add(userGroup);
+				}
+			}
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+				if ((requestData.get("activateTriggerPeriodicallyButton") != null)&&
+						(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(period, TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
+							it);
+				}
+			}
+		}
+		
+	
 		List<AdminLog> logs = AdminLog.getAllAdminLogs();
 		return ok(administratorLog.render(logs));
 	}
@@ -280,35 +341,52 @@ public class Application extends Controller {
 	public static Result manualActivationChosen(Long triggerId) {
 
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
-
+		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
-
-		HashMap<String, String> userGroupsChosen = new HashMap<String, String>();
-
-		/**
-		 * if home1 is checked => its value will be "on" else =>its value is
-		 * "null"
-		 */
-		for (String userGroup : userGroupList) {
-			userGroupsChosen.put(userGroup, requestData.get(userGroup));
-		}
-
-		System.out.println("User Groups Chosen: " + userGroupsChosen);
+		
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
+		
+		
+		if (requestData.get("allUserGroups") != null){
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+				if (requestData.get("activateTriggerManuallyButton") != null) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(0, TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
+							it);
+				}
 
-		for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-			if (requestData.get("activateTriggerManuallyButton") != null) {
-				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
-					@Override
-					public Duration getPeriod() {
-						return Duration.create(0, TimeUnit.SECONDS);
-					}
-				};
-				SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
-						Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1), it);
 			}
 		}
-
+		else {
+			for (String userGroup: userGroupList) {
+				if (requestData.get(userGroup) != null){	
+					userGroupsChosen.add(userGroup);
+				}
+			}
+			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
+				if ((requestData.get("activateTriggerManuallyButton") != null)&&
+						(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+					RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+						@Override
+						public Duration getPeriod() {
+							return Duration.create(0, TimeUnit.SECONDS);
+						}
+					};
+					SystemController.scheduler.periodicallyActivate(
+							randomPeriodStrategy,
+							Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
+							it);
+				}
+			}
+		}
+		
 		return ok(administratorActivateManually.render(triggerId, userGroupList));
 	}
 
