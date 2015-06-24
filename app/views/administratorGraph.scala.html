@@ -1,5 +1,17 @@
 @main("Administrator Graph") {
 
+<script src="@routes.Assets.at("javascripts/Event.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/Magnifier.js")" type="text/javascript"></script>
+<script type="text/javascript">
+var evt = new Event(),
+	m = new Magnifier(evt);
+m.attach({
+    thumb: '#thumb',
+    large: '@routes.Assets.at("images/graph.svg")',
+    largeWrapper: 'preview'
+});
+
+</script>
 <header class='l-header'>
         <!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
                 rel="stylesheet" type="text/css"> -->
@@ -35,9 +47,15 @@ out</a></li>
                                 </div>
 
 
-                                <img src='@routes.Assets.at("images/graph.svg")'>
-
         
+        
+<div>
+    <a class="magnifier-thumb-wrapper">
+    	<img id="thumb" src='@routes.Assets.at("images/graph.svg")' style="width: 200px; height: 133px">
+    </a>
+    <div class="magnifier-preview" id="preview" style="width: 200px; height: 133px">Administrator's Graph</div>
+</div>
+
 <div class='is-dimmable'>
         <a class='focus-here' href='#'></a>
         <h2 class='composer_section_header'> </h2>

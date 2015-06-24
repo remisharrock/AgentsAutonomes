@@ -200,6 +200,11 @@ public class Application extends Controller {
 
 		recipe.save();
 
+		userLoggedIn.getRecipes().add(recipe);
+		userLoggedIn.save();
+		
+		
+		
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
 
 
