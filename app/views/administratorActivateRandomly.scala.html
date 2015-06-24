@@ -47,9 +47,9 @@
 					</h2>
 					<p class="composer_section_description">Choose a the UserGroup for the activation</p>
 					
-						<input type="checkbox" name="allUserGroups" value="allUserGroups">All UserGroups</br>				
-						@for((group, index) <- userGroupList.zipWithIndex){
-	                    	<input type="checkbox" name="userGroup[@index]" value="@group">@group</br>
+						<input type="checkbox" name="allUserGroups">All UserGroups</br>				
+						@for(group <- userGroupList){
+	                    	<input type="checkbox" name="@group" >@group</br>
 	                    }						 
 				</div>
 			
@@ -62,6 +62,8 @@
 							<p class="composer_section_description">Choose a law distribution for the activation</p>
 							<button class="btn" type="submit" name="activateTriggerPoissonButton" value="Poisson Activation">Poisson</button>
 							<button class="btn" type="submit" name="activateTriggerBrownButton" value="Brown Activation">Brown</button>	
+							</br>
+							<input placeholder="Enter the number of occurences" name="numberOccurences" type="number" style="height:30px;">
 							 
 				</div>
 			</form>	
