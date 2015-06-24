@@ -236,9 +236,7 @@ public class Application extends Controller {
 	public static Result randomlyActivationChosen(Long triggerId) {
 
 		DynamicForm requestData = Form.form().bindFromRequest();
-		//(requestData.get("userGroup"));
-		
-		
+		play.Logger.info("liste " + requestData.data());		
 
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 
@@ -301,7 +299,7 @@ public class Application extends Controller {
 				RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 					@Override
 					public Duration getPeriod() {
-						return Duration.create(1, TimeUnit.SECONDS);
+						return Duration.create(0, TimeUnit.SECONDS);
 					}
 				};
 				SystemController.scheduler.periodicallyActivate(
