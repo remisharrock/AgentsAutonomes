@@ -69,7 +69,7 @@ public class Global extends GlobalSettings {
 			}
 		}
 
-		Script.export();
+		Script.export("svg");
 
 	}
 
