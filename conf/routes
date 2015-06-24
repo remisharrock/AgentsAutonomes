@@ -5,7 +5,8 @@
 # Home page
 GET     /                           	controllers.Application.index()
 GET		/submitForm						controllers.Application.submitForm()
-GET		/loginForm						controllers.Application.loginForm()
+POST	/loginForm						controllers.Application.loginForm()
+GET		/homeForm						controllers.Application.homeForm()
 GET		/chooseView						controllers.Application.chooseView()
 GET		/chooseTrigger					controllers.Application.chooseTrigger(channelId: Long)
 GET		/activateTrigger				controllers.Application.activateTrigger(triggerId: Long)

@@ -46,6 +46,40 @@ public class Application extends Controller {
 		Script.export("svg");
 		return ok(index.render());
 	}
+	
+	public static Result homeForm() {
+		if (userLoggedIn != null) {
+			if (userLoggedIn.getRole().equals("administrator"))
+				// return administratorView();
+				return ok(administratorChooseView.render());
+			else
+				return ok(chooseView.render(userLoggedIn));
+		}
+
+		DynamicForm requestData = Form.form().bindFromRequest();
+
+		String username = requestData.get("username");
+		String password = requestData.get("password");
+
+		User user = User.authenticate(username, password);
+		if (user == null) {
+			return ok(index.render());
+		}
+
+		else {
+			userLoggedIn = user;
+			if (userLoggedIn.getRole().equals("administrator")) {
+
+				List<Channel> channelsList = Channel.getAllChannels();
+				return ok(administratorChooseView.render());
+			} else {
+				return ok(chooseView.render(userLoggedIn));
+
+			}
+
+		}
+
+	}
 
 	public static Result loginForm() {
 		// recipe=null;
@@ -197,11 +231,10 @@ public class Application extends Controller {
 		l1.setRecipe(recipe);
 
 		recipe.getLog().add(l1);
-
+		
 		recipe.save();
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
-
 		Script.export("svg");
 		return ok(viewRecipes.render(userLoggedIn));
 	}
@@ -511,8 +544,10 @@ public class Application extends Controller {
 		return ok(administratorGraph.render());
 	}
 
+
 	public static Result displayGraph() {
 		Script.export("win");
 		return ok(administratorGraph.render());
 	}
+	
 }

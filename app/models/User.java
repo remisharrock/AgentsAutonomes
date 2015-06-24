@@ -197,5 +197,9 @@ public class User extends Model {
 		}
 		return groupsList;
 	}
+	
+	public List<Recipe> getAllRecipesForUser() {
+		return Ebean.find(Recipe.class).where().eq("USER_ID", id).findList();
+	}
 
 }

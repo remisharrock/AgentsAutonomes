@@ -1,17 +1,5 @@
 @() 
 @main("Agents autonomes") {
-<!--  <form class="navbar-form" action="@routes.Application.loginForm()">
- 	 <input class="span2" type="text" placeholder="Email" name="username">
- 	 <input class="span2" type="password" placeholder="Password" name="password">
-	<button type="submit" class="btn">Sign in</button>
-
-<!-- Main hero unit for a primary marketing message or call to action
-</form>
-<br>
-<div class="hero-unit">
-	<h1>Agents autonomes</h1>
-	<p>INF380</p>
-</div> -->
 
 <!DOCTYPE html>
 <html
@@ -21,7 +9,7 @@
 
 
 <header class='l-header'>
-	<form class="navbar-form" action="@routes.Application.loginForm()">
+	<form class="navbar-form" action="@routes.Application.loginForm()" method="POST">
 	<!-- <link href="http://fonts.googleapis.com/css?family=Raleway:600,400,200"
 		rel="stylesheet" type="text/css"> -->
 	<div class="row1">
@@ -29,16 +17,10 @@
 			<h2 font-family= "Times New Roman">Agents Autonomes</h2>
 		</div>
 		<div class="small-12 medium-8 large-6 columns">
-			<input class="span2" type="text" placeholder="Email" name="username"> <input
-				class="span2" type="password" placeholder="Password" name="password">
+			<input class="span2" type="text" placeholder="Email" name="username"> 
+			<input class="span2" type="password" placeholder="Password" name="password">
 				<button type="submit" class="btn">Sign in</button>
 			<br />
-			<!--  <div class="nav-bar">
-				<ul class="button-group">
-					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
-					<li><a href="@routes.Application.userLogOut()" class="button">Log out</a></li>
-				</ul>
-			</div>-->
 		</div>
 	</div>
 	</form>

@@ -12,7 +12,7 @@
 		<div class="small-12 medium-8 large-6 columns">
 			<div class="nav-bar">
 				<ul class="button-group">
-					<li><a href="@routes.Application.loginForm()" class="button">Home</a></li>
+					<li><a href="@routes.Application.homeForm()" class="button">Home</a></li>
 					<li><a href="@routes.Application.userLogOut()" class="button">Log out</a></li>
 				</ul>
 			</div>
@@ -77,7 +77,7 @@
 				{"value":"@channel.getName()",
 				 "name":"@channel.getName()",
 				 "id":@channel.getId(),
-				 "imgUrl":"https://d3rnbxvnd0hlox.cloudfront.net/images/channels/83/icons/small.png",
+				 "imgUrl":"@channel.getLogo()",
 				 "url":"/@channel.getName()"},
 				}
 			}
