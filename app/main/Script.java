@@ -52,7 +52,7 @@ public class Script {
 					}
 				};
 				cancellableRef = SystemController.scheduler.periodicallyActivate(randomPeriodFactory,
-						Scheduler.StopCriteria.set(StopCriteria.NEVER, null), recipe);
+						new Scheduler.StopCriteria(StopCriteria.TYPE.NEVER, null), recipe);
 			}
 
 			/**
@@ -94,8 +94,8 @@ public class Script {
 
 				}
 			};
-			SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory,
-					StopCriteria.set(StopCriteria.OCCURENCE, 15), eventRunnable);
+			SystemController.scheduler.addRandomIssue(Duration.Zero(), randomPeriodFactory, new StopCriteria(
+					StopCriteria.TYPE.OCCURENCE, 15), eventRunnable);
 
 			/*
 			 * So we are having two ways to activate a recipe. Let's cancel the

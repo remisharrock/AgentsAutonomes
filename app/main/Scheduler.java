@@ -83,39 +83,29 @@ public class Scheduler {
 		return cr;
 	}
 
-	public static enum StopCriteria {
-		/**
-		 * Time barrier of type java.time.LocalTime.
-		 */
-		DATE,
-		/**
-		 * Will raise the given number then get killed.
-		 */
-		OCCURENCE,
-		/**
-		 * Never stop
-		 */
-		NEVER;
+	public static class StopCriteria {
+
+		private final TYPE type;
 		private Object stopCriteria;
 
 		/**
-		 * @param criteria
-		 *            enum
-		 * @param stopCriteria
+		 * @param type
 		 *            <ul>
 		 *            <li>if NEVER, can be anything</li>
 		 *            <li>if OCCURENCE, must be an integer</li>
 		 *            <li>If DATE, must be Date</li>
 		 *            </ul>
+		 * @param criteria
+		 *            enum
 		 * @return
 		 */
-		public static StopCriteria set(StopCriteria criteria, Object stopCriteria) {
-			criteria.stopCriteria = stopCriteria;
-			return criteria;
+		public StopCriteria(TYPE type, Object stopCriteria) {
+			this.type = type;
+			this.stopCriteria = stopCriteria;
 		}
 
 		public boolean getCriteria() {
-			switch (this) {
+			switch (this.type) {
 			default:
 			case NEVER:
 				return true;
@@ -129,14 +119,42 @@ public class Scheduler {
 			case DATE:
 				return (new Date()).before((Date) stopCriteria);
 			}
+		}
 
+		@Override
+		public String toString() {
+			switch (this.type) {
+			default:
+			case NEVER:
+				return "never false";
+			case OCCURENCE:
+				int occurence = ((Integer) this.stopCriteria);
+				return "occurence left: " + occurence;
+			case DATE:
+				return "until" + ((Date) stopCriteria).toString();
+			}
+		}
+
+		public static enum TYPE {
+			/**
+			 * Time barrier of type java.time.LocalTime.
+			 */
+			DATE,
+			/**
+			 * Will raise the given number then get killed.
+			 */
+			OCCURENCE,
+			/**
+			 * Never stops
+			 */
+			NEVER;
 		}
 	}
 
 	public static interface RandomPeriodStrategy {
 		/**
 		 * Each time it's called, return a new different period. The random law
-		 * is defined in the bodybut you're likely to get some help from
+		 * is defined in the body but you're likely to get some help from
 		 * StdRandom.
 		 * 
 		 * @return
@@ -217,9 +235,8 @@ public class Scheduler {
 				}, AllActors.system.dispatcher());
 				try {
 					long timeInMillis = randomPeriodFactory.getPeriod().toMillis();
-					// Logger.info("CancellableRef " + thread.getName() +
-					// " current issue scheduled, will now wait for "
-					// + (int) timeInMillis / 1000 + " seconds.");
+					Logger.info("CancellableRef " + thread.getName() + " (" + this.stopCriteria.toString() + ") "
+							+ " current issue scheduled, will now wait for " + (int) timeInMillis / 1000 + " seconds.");
 					Thread.sleep(timeInMillis);
 				} catch (InterruptedException e) {
 				}
