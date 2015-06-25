@@ -1,6 +1,5 @@
----
-title: 'Manuel d’installation – '
-...
+Manuel d’installation – Getting Started
+=======================================
 
 Ce petit manuel indique la marche à suivre pour être capable de
 reprendre ultérieurement le développement de ce projet. La version la
