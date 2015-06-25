@@ -46,7 +46,7 @@ public class Application extends Controller {
 		Script.export("svg");
 		return ok(index.render());
 	}
-	
+
 	public static Result homeForm() {
 		if (userLoggedIn != null) {
 			if (userLoggedIn.getRole().equals("administrator"))
@@ -231,7 +231,7 @@ public class Application extends Controller {
 		l1.setRecipe(recipe);
 
 		recipe.getLog().add(l1);
-		
+
 		recipe.save();
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
@@ -270,14 +270,16 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		play.Logger.info("liste " + userGroupsChosen);
+		int numberOccurences = Integer.parseInt(requestData.get("numberOccurences"));
+		play.Logger.info("occurences " + numberOccurences);
 
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
 
 		if (requestData.get("allUserGroups") != null) {
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
 				play.Logger.info("boolean recipe " + it.getActive() + "pour " + it.getTitle());
-				
-				if (it.getActive()){
+
+				if (it.getActive()) {
 					if ((requestData.get("activateTriggerPoissonButton") != null)) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
@@ -285,13 +287,11 @@ public class Application extends Controller {
 								return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
 					}
-				}			
-				
+				}
+
 			}
 		} else {
 			for (String userGroup : userGroupList) {
@@ -300,24 +300,22 @@ public class Application extends Controller {
 				}
 			}
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-				
-				if (it.getActive()){
-					if ((requestData.get("activateTriggerPoissonButton") != null)&&
-							(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+
+				if (it.getActive()) {
+					if ((requestData.get("activateTriggerPoissonButton") != null)
+							&& (userGroupsChosen.contains(it.getUser().getUserGroup()))) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
 							public Duration getPeriod() {
 								return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
 					}
 
 				}
-				
+
 			}
 		}
 
@@ -331,12 +329,13 @@ public class Application extends Controller {
 		ArrayList<String> userGroupsChosen = new ArrayList<String>();
 		DynamicForm requestData = Form.form().bindFromRequest();
 
+		int numberOccurences = Integer.parseInt(requestData.get("numberOccurences"));
 		final Long period = Long.parseLong(requestData.get("periodTriggerActivation"));
 
 		if (requestData.get("allUserGroups") != null) {
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-	
-				if (it.getActive()){
+
+				if (it.getActive()) {
 					if (requestData.get("activateTriggerPeriodicallyButton") != null) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
@@ -344,14 +343,12 @@ public class Application extends Controller {
 								return Duration.create(period, TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
 					}
 
 				}
-				
+
 			}
 		} else {
 			for (String userGroup : userGroupList) {
@@ -360,23 +357,21 @@ public class Application extends Controller {
 				}
 			}
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-				if (it.getActive()){
-					if ((requestData.get("activateTriggerPeriodicallyButton") != null)&&
-							(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+				if (it.getActive()) {
+					if ((requestData.get("activateTriggerPeriodicallyButton") != null)
+							&& (userGroupsChosen.contains(it.getUser().getUserGroup()))) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
 							public Duration getPeriod() {
 								return Duration.create(period, TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 40),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
 					}
 
 				}
-				
+
 			}
 		}
 
@@ -395,7 +390,7 @@ public class Application extends Controller {
 		if (requestData.get("allUserGroups") != null) {
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
 
-				if (it.getActive()){
+				if (it.getActive()) {
 					if (requestData.get("activateTriggerManuallyButton") != null) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
@@ -403,13 +398,10 @@ public class Application extends Controller {
 								return Duration.create(0, TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, 1), it);
 					}
-				}			
-
+				}
 
 			}
 		} else {
@@ -419,23 +411,21 @@ public class Application extends Controller {
 				}
 			}
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
-				if (it.getActive()){
-					if ((requestData.get("activateTriggerManuallyButton") != null)&&
-							(userGroupsChosen.contains(it.getUser().getUserGroup()))) {
+				if (it.getActive()) {
+					if ((requestData.get("activateTriggerManuallyButton") != null)
+							&& (userGroupsChosen.contains(it.getUser().getUserGroup()))) {
 						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
 							@Override
 							public Duration getPeriod() {
 								return Duration.create(0, TimeUnit.SECONDS);
 							}
 						};
-						SystemController.scheduler.periodicallyActivate(
-								randomPeriodStrategy,
-								Scheduler.StopCriteria.set(StopCriteria.OCCURENCE, 1),
-								it);
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, 1), it);
 					}
 
 				}
-				
+
 			}
 		}
 
@@ -449,15 +439,6 @@ public class Application extends Controller {
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
 
-		// Long triggerId =
-		// Long.parseLong(requestData.get("trigger_chosen_to_activate_id"));
-		/*
-		 * if (requestData.get("activateTriggerManuallyButton") != null) {
-		 * return ok(administratorActivateManually.render(triggerId)); } else if
-		 * (requestData.get("activateTriggerPeriodicallyButton") != null) {
-		 * return ok(administratorActivatePeriodically.render(triggerId)); }
-		 * else return ok(administratorActivateRandomly.render(triggerId));
-		 */
 		if (activationType.equals("manualActivationButton"))
 			return ok(administratorActivateManually.render(triggerId, userGroupList));
 		else if (activationType.equals("periodicActivationButton"))
@@ -541,10 +522,9 @@ public class Application extends Controller {
 		return ok(administratorGraph.render());
 	}
 
-
 	public static Result displayGraph() {
 		Script.export("win");
 		return ok(administratorGraph.render());
 	}
-	
+
 }

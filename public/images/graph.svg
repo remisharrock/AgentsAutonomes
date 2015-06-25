@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+    "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg contentScriptType="text/ecmascript" width="595px"
+     xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify"
+     contentStyleType="text/css" viewBox="-474 -468 903 924" height="608px"
+     preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+     version="1.1">
+    <g id="edges">
+        <path fill="none" stroke-width="5.27131796"
+              d="M 223.346405,186.548950 L -215.747711,10.258699" class="1 2"
+              stroke-opacity="1.0" stroke="#c14919"/>
+        <path fill="none" stroke-width="5.27131796"
+              d="M 223.346405,186.548950 L 239.617249,-73.750259" class="1 3"
+              stroke-opacity="1.0" stroke="#c14919"/>
+        <path fill="none" stroke-width="5.27131796"
+              d="M -107.514862,267.811737 L -75.965630,-200.292160" class="4 5"
+              stroke-opacity="1.0" stroke="#d09332"/>
+    </g>
+    <g id="arrows">
+        <polyline fill="#c14919" fill-opacity="1.0" class="1 2"
+                  points="-275.139740,-13.586381 -203.825165,-19.437311 -227.670258,39.954712"
+                  stroke="none"/>
+        <polyline fill="#c14919" fill-opacity="1.0" class="1 3"
+                  points="243.609985,-137.625595 271.554901,-71.753891 207.679581,-75.746628"
+                  stroke="none"/>
+        <polyline fill="#d09332" fill-opacity="1.0" class="4 5"
+                  points="-71.661926,-264.147308 -44.038063,-198.140305 -107.893196,-202.444016"
+                  stroke="none"/>
+    </g>
+    <g id="nodes">
+        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="223.3464"
+                class="1" cy="186.54895" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.65891474"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-289.98773"
+                class="2" cy="-19.547651" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.65891474"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="244.60817"
+                class="3" cy="-153.59442" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.65891474"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-107.51486"
+                class="4" cy="267.81174" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.65891474"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-70.586"
+                class="5" cy="-280.11108" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.65891474"/>
+    </g>
+    <g id="node-labels">
+        <text font-size="40" x="223.3464" y="196.22668" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Dialog" class="1">
+            DetectorActorTrigger609
+        </text>
+        <text font-size="30" x="-289.98773" y="-13.741987" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Dialog" class="2">
+            HumanActorAction611
+        </text>
+        <text font-size="30" x="244.60817" y="-146.33612" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Dialog" class="3">
+            LampActorAction609
+        </text>
+        <text font-size="30" x="-107.51486" y="275.07004" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Dialog" class="4">
+            TemperatureDetectorActorTrigger612
+        </text>
+        <text font-size="30" x="-70.586" y="-274.30542" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Dialog" class="5">
+            AirConditionerActorAction612
+        </text>
+    </g>
+</svg>

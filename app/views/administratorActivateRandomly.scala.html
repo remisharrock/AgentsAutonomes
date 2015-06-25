@@ -58,12 +58,16 @@
 					<h2 class='composer_section_header'>
 						Trigger @triggerId <span class='composer_section_step'>step 4 of 4</span>
 					</h2>
+					<p class="composer_section_description">Choose the number of occurences for the activation</p>
+							<input placeholder="Number of occurences" name="numberOccurences" type="number" style="height:30px;">
 							<input type='hidden' value="@triggerId" name="triggerId" id="triggerId">
+							</br>
+							</br>
 							<p class="composer_section_description">Choose a law distribution for the activation</p>
 							<button class="btn" type="submit" name="activateTriggerPoissonButton" value="Poisson Activation">Poisson</button>
 							<button class="btn" type="submit" name="activateTriggerBrownButton" value="Brown Activation">Brown</button>	
 							</br>
-							<input placeholder="Enter the number of occurences" name="numberOccurences" type="number" style="height:30px;">
+							
 							 
 				</div>
 			</form>	
