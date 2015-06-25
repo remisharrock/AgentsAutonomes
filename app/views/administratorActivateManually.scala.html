@@ -1,4 +1,4 @@
-@(triggerId: Long, userGroupList: List[String])
+@(triggerId: Long, userGroupList: List[String], triggerName: String)
 @main("Agents autonomes") {
 
 <!DOCTYPE html>
@@ -56,7 +56,7 @@
 				<div class='is-dimmable'>
 					<a class='focus-here' href='#'></a>
 					<h2 class='composer_section_header'>
-						Trigger @triggerId   <span class='composer_section_step'>step 4 of 4</span>
+						Trigger @triggerName   <span class='composer_section_step'>step 4 of 4</span>
 					</h2>
 					
 						<input type='hidden' value="@triggerId" name="triggerId" id="triggerId">
