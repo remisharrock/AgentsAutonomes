@@ -46,6 +46,8 @@ public class Global extends GlobalSettings {
 		 */
 
 		Logger.info("creating maps");
+		
+		
 
 		// Create actor router for all the user groups that we have
 		/**

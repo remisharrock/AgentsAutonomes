@@ -381,5 +381,87 @@ public class DatabaseEngine {
 				RecipeAkka.recipesMap.put(rec7.getId(), rec7.getRecipeAkka());
 				
 				
+				
+				Recipe rec8 = new Recipe();
+				rec8.save();
+				rec8.setTitle("Recipe8");
+				rec8.setUser(user1);
+				rec8.setTriggerChannel(temperatureDetector);
+				rec8.setTrigger(tempTrigger2);
+				Field f81 = new Field("totasdo", "tatqwea");
+				f81.save();
+				rec8.setTriggerField(f81);
+
+				rec8.setActionChannel(lamp);
+				rec8.setAction(lampAction1);
+				Field f82 = new Field("lamp color", "blue");
+				rec8.save();
+				rec8.setActionField(f82);
+				rec8.setActive(true);
+				rec8.setLog(new ArrayList<Log>());
+				
+				Log l8 = new Log("Recipe create at Data Base creation", new Date());
+				l8.setRecipe(rec8);
+				rec8.getLog().add(l8);
+				rec8.save();
+				
+				RecipeAkka.recipesMap.put(rec8.getId(), rec8.getRecipeAkka());
+				
+				
+				
+				Recipe rec9 = new Recipe();
+				rec9.save();
+				rec9.setTitle("Recipe9");
+				rec9.setUser(user1);
+				rec9.setTriggerChannel(detector);
+				rec9.setTrigger(detectorTrigger1);
+				Field f91 = new Field("totasdo", "tatqwea");
+				f91.save();
+				rec9.setTriggerField(f91);
+
+				rec9.setActionChannel(lamp);
+				rec9.setAction(lampAction1);
+				Field f92 = new Field("lamp color", "red");
+				rec9.save();
+				rec9.setActionField(f92);
+				rec9.setActive(true);
+				rec9.setLog(new ArrayList<Log>());
+				
+				Log l9 = new Log("Recipe create at Data Base creation", new Date());
+				l9.setRecipe(rec9);
+				rec9.getLog().add(l9);
+				rec9.save();
+				
+				RecipeAkka.recipesMap.put(rec9.getId(), rec9.getRecipeAkka());
+				
+				
+				
+				Recipe rec10 = new Recipe();
+				rec10.save();
+				rec10.setTitle("Recipe10");
+				rec10.setUser(user1);
+				rec10.setTriggerChannel(detector);
+				rec10.setTrigger(detectorTrigger2);
+				Field f101 = new Field("totasdo", "tatqwea");
+				f101.save();
+				rec10.setTriggerField(f101);
+
+				rec10.setActionChannel(airConditioner);
+				rec10.setAction(turnOnCooler);
+				Field f102 = new Field("temperature", "0 degree");
+				rec10.save();
+				rec10.setActionField(f102);
+				rec10.setActive(true);
+				rec10.setLog(new ArrayList<Log>());
+				
+				Log l10 = new Log("Recipe create at Data Base creation", new Date());
+				l10.setRecipe(rec10);
+				rec10.getLog().add(l10);
+				rec10.save();
+				
+				RecipeAkka.recipesMap.put(rec10.getId(), rec10.getRecipeAkka());
+				
+				
+				
 	}
 }
