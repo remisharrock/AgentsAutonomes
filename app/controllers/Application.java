@@ -290,6 +290,26 @@ public class Application extends Controller {
 						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
 								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
 					}
+					else if ((requestData.get("activateTriggerUniformButton") != null)) {
+						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+							@Override
+							public Duration getPeriod() {
+								return Duration.create(StdRandom.uniform(5, 10), TimeUnit.SECONDS);
+							}
+						};
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
+					}
+					else if ((requestData.get("activateTriggerGaussianButton") != null)) {
+						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+							@Override
+							public Duration getPeriod() {
+								return Duration.create(StdRandom.gaussian(), TimeUnit.SECONDS);
+							}
+						};
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
+					}
 				}
 
 			}
@@ -308,6 +328,26 @@ public class Application extends Controller {
 							@Override
 							public Duration getPeriod() {
 								return Duration.create(StdRandom.poisson(40), TimeUnit.SECONDS);
+							}
+						};
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
+					}
+					else if ((requestData.get("activateTriggerUniformButton") != null)) {
+						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+							@Override
+							public Duration getPeriod() {
+								return Duration.create(StdRandom.uniform(5, 10), TimeUnit.SECONDS);
+							}
+						};
+						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
+								new Scheduler.StopCriteria(StopCriteria.TYPE.OCCURENCE, numberOccurences), it);
+					}
+					else if ((requestData.get("activateTriggerGaussianButton") != null)) {
+						RandomPeriodStrategy randomPeriodStrategy = new RandomPeriodStrategy() {
+							@Override
+							public Duration getPeriod() {
+								return Duration.create(StdRandom.gaussian(), TimeUnit.SECONDS);
 							}
 						};
 						SystemController.scheduler.periodicallyActivate(randomPeriodStrategy,
