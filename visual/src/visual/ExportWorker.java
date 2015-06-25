@@ -28,7 +28,6 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.types.DependantOriginalColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ranking.api.Ranking;
@@ -36,7 +35,6 @@ import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
 import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
-import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 
 import processing.core.PApplet;
@@ -47,13 +45,13 @@ import com.beust.jcommander.JCommander;
  * This is the main class. The purpose of this object is to deal with graph is a
  * loosy-coupling way.
  */
-public class ExportJFrame {
+public class ExportWorker {
 
 	List<visual.Edge> edges;
 	ProjectController pc;
 	Workspace workspace;
 
-	public ExportJFrame(List<visual.Edge> edges) {
+	public ExportWorker(List<visual.Edge> edges) {
 		this.edges = edges;
 		// Init a project - and therefore a workspace
 		pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -91,7 +89,7 @@ public class ExportJFrame {
 		File outputFile = new File(arguments.getOutput());
 		final String format = arguments.getFormat();
 
-		ExportJFrame jframe = new ExportJFrame(parse(inputFile));
+		ExportWorker jframe = new ExportWorker(parse(inputFile));
 		jframe.populateGraph();
 		jframe.layoutGraph();
 		jframe.beautifyGraph();
