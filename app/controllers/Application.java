@@ -170,18 +170,20 @@ public class Application extends Controller {
 
 		Trigger trigger = Trigger.find.byId(triggerId);
 		recipe.setTrigger(trigger);
-		DynamicForm requestData = Form.form().bindFromRequest();
-		String fieldName = trigger.getFieldName();
-		if (fieldName != null && !fieldName.equals("")) {
-			String triggerFieldValue = requestData.get(fieldName);
-			Field f = new Field(fieldName, triggerFieldValue);
-			recipe.setTriggerField(f);
-		}
 
 		return ok(completeTriggerFields.render(trigger));
 	}
 
 	public static Result chooseActionChannel() {
+		DynamicForm requestData = Form.form().bindFromRequest();
+		String fieldName = recipe.getTrigger().getFieldName();
+		if (fieldName != null && !fieldName.equals("")) {
+			String triggerFieldValue = requestData.get("field");
+			System.out.println("field name: " + fieldName + "field value: " +triggerFieldValue);
+			Field f = new Field(fieldName, triggerFieldValue);
+			recipe.setTriggerField(f);
+		}
+		
 		List<Channel> channelsList = Channel.getAllChannels();
 		return ok(chooseActionChannel.render(channelsList));
 	}
@@ -197,26 +199,23 @@ public class Application extends Controller {
 	public static Result completeActionFields(Long actionId) {
 
 		Action action = Action.find.byId(actionId);
-
-		DynamicForm requestData = Form.form().bindFromRequest();
-
 		recipe.setAction(action);
-		// HashMap<Field, String> actionFields = new HashMap<Field, String>();
-		// for (Field f : action.getFields()) {
-		// actionFields.put(f, requestData.get(f.getName()));
-		// }
-
-		String fieldName = action.getFieldName();
-		if (fieldName != null && !fieldName.equals("")) {
-			String actionFieldValue = requestData.get(fieldName);
-			Field f = new Field(fieldName, actionFieldValue);
-			recipe.setActionField(f);
-		}
-
 		return ok(completeActionFields.render(action));
 	}
 
 	public static Result createRecipe() {
+		
+		DynamicForm requestData = Form.form().bindFromRequest();
+		String fieldName = recipe.getAction().getFieldName();
+		if (fieldName != null && !fieldName.equals("")) {
+			String actionFieldValue = requestData.get("field");
+			System.out.println("field name: " + fieldName + "field value: " + actionFieldValue);
+
+			Field f = new Field(fieldName, actionFieldValue);
+			recipe.setActionField(f);
+		}
+
+		
 		return ok(createRecipe.render(recipe));
 	}
 
@@ -235,6 +234,8 @@ public class Application extends Controller {
 		recipe.save();
 
 		RecipeAkka.recipesMap.put(recipe.getId(), recipe.getRecipeAkka());
+		
+//		System.out.println(RecipeAkka.recipesMap);
 		Script.export("svg");
 		return ok(viewRecipes.render(userLoggedIn));
 	}

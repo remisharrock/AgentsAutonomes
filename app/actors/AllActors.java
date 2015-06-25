@@ -108,16 +108,20 @@ public class AllActors {
 			if (message instanceof AllMessages.ExitRoomMessage) {
 				state = "Exited room";
 				if (field != null) {
-					 state +=" / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				} else {
 					System.out.println("trigger field IS null");
 				}
 			} else if (message instanceof AllMessages.EnterRoomMessage) {
 				state = "Entered room";
 				if (field != null) {
-					 state += " / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			}
 			
@@ -137,16 +141,20 @@ public class AllActors {
 			if (message instanceof AllMessages.DetectionOffMessage) {
 				state = "No Detection";
 				if (field != null) {
-					 state +=" / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				} else {
 					System.out.println("trigger field IS null");
 				}
 			} else if (message instanceof AllMessages.DetectionOnMessage) {
 				state = "Detection";
 				if (field != null) {
-					 state += " / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			}
 			
@@ -167,14 +175,18 @@ public class AllActors {
 			if (message instanceof AllMessages.TurnOffLampMessage) {
 				state = "OFF";
 				if (field != null) {
-					 state +=" / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			} else if (message instanceof AllMessages.TurnOnLampMessage) {
 				state = "ON";
 				if (field != null) {
-					 state += " / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			}
 			
@@ -194,14 +206,18 @@ public class AllActors {
 			if (message instanceof AllMessages.HotTemperatureMessage) {
 				state = "Room is Hot";
 				if (field != null) {
-					 state +=" / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			} else if (message instanceof AllMessages.ColdTemperatureMessage) {
 				state = "Room is Cold";
 				if (field != null) {
-					 state += " / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			}
 			
@@ -216,19 +232,29 @@ public class AllActors {
 		}
 
 		public void onReceive(Object message) {
+			if (message == null) {
+				System.out.println("The message is null");
+			}
+			System.out.println("received message: " + message);
 			MessageEnvelope msg = (MessageEnvelope) message;
+			System.out.println("message envelope: " + msg.getRecipeAkka().getTitle());
 			Field field = msg.getRecipeAkka().getActionField();
 			if (message instanceof AllMessages.TurnOnCoolerMessage) {
 				state = "Turned on Cooler";
 				if (field != null) {
-					 state +=" / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
 				}
 			} else if (message instanceof AllMessages.TurnOnHeaterMessage) {
 				state = "Turned on Heater";
 				if (field != null) {
-					 state += " / " + field.getName() + ": "
-							+ field.getValue().toUpperCase();
+					if (field.getName() != null && field.getValue() != null) {
+						state += " / " + field.getName() + ": "
+								+ field.getValue().toUpperCase();
+					}
+					 
 				}
 			}
 			

@@ -80,22 +80,22 @@ public class DatabaseEngine {
 		
 		System.out.println("Populating DB...");
 		// Users
-				User user1 = new User("1", "1", "user", "home1");
+				User user1 = new User("user1", "1", "user", "home1");
 				user1.save();
 
-				User user11 = new User("11", "11", "user", "home1");
+				User user11 = new User("user11", "11", "user", "home1");
 				user11.save();
 
-				User user111 = new User("11", "11", "user", "home1");
+				User user111 = new User("user111", "11", "user", "home1");
 				user111.save();
 
-				User user2 = new User("2", "2", "user", "home2");
+				User user2 = new User("user2", "2", "user", "home2");
 				user2.save();
 
-				User user22 = new User("22", "22", "user", "home2");
+				User user22 = new User("user22", "22", "user", "home2");
 				user22.save();
 
-				User user222 = new User("222", "222", "user", "home2");
+				User user222 = new User("user222", "222", "user", "home2");
 				user222.save();
 
 				User admin = new User("admin", "admin", "administrator", "admin1");
@@ -258,9 +258,9 @@ public class DatabaseEngine {
 				f31.save();
 				rec3.setTriggerField(f31);
 
-				rec3.setActionChannel(human);
-				rec3.setAction(humanExitRoomAction);
-				Field f32 = new Field("speed", "fast");
+				rec3.setActionChannel(airConditioner);
+				rec3.setAction(turnOnHeater);
+				Field f32 = new Field("temperature", "29 degrees");
 				f32.save();
 				rec3.setActionField(f32);
 				rec3.setActive(true);
@@ -441,7 +441,7 @@ public class DatabaseEngine {
 				rec10.setTitle("Recipe10");
 				rec10.setUser(user1);
 				rec10.setTriggerChannel(detector);
-				rec10.setTrigger(detectorTrigger2);
+				rec10.setTrigger(detectorTrigger1);
 				Field f101 = new Field("totasdo", "tatqwea");
 				f101.save();
 				rec10.setTriggerField(f101);
@@ -461,6 +461,60 @@ public class DatabaseEngine {
 				
 				RecipeAkka.recipesMap.put(rec10.getId(), rec10.getRecipeAkka());
 				
+				
+				
+				Recipe rec11 = new Recipe();
+				rec11.save();
+				rec11.setTitle("Recipe11");
+				rec11.setUser(user11);
+				rec11.setTriggerChannel(detector);
+				rec11.setTrigger(detectorTrigger1);
+				Field f111 = new Field("totasdo", "tatqwea");
+				f111.save();
+				rec11.setTriggerField(f111);
+
+				rec11.setActionChannel(lamp);
+				rec11.setAction(lampAction1);
+				Field f112 = new Field("lamp color", "blue");
+				rec11.save();
+				rec11.setActionField(f112);
+				rec11.setActive(true);
+				rec11.setLog(new ArrayList<Log>());
+				
+				Log l11 = new Log("Recipe create at Data Base creation", new Date());
+				l11.setRecipe(rec11);
+				rec11.getLog().add(l11);
+				rec11.save();
+				
+				RecipeAkka.recipesMap.put(rec11.getId(), rec11.getRecipeAkka());
+				
+				
+				
+				
+				Recipe rec111 = new Recipe();
+				rec111.save();
+				rec111.setTitle("Recipe111");
+				rec111.setUser(user111);
+				rec111.setTriggerChannel(detector);
+				rec111.setTrigger(detectorTrigger1);
+				Field f1111 = new Field("totasdo", "tatqwea");
+				f1111.save();
+				rec111.setTriggerField(f1111);
+
+				rec111.setActionChannel(lamp);
+				rec111.setAction(lampAction1);
+				Field f1112 = new Field("lamp color", "white");
+				rec111.save();
+				rec111.setActionField(f1112);
+				rec111.setActive(true);
+				rec111.setLog(new ArrayList<Log>());
+				
+				Log l111 = new Log("Recipe create at Data Base creation", new Date());
+				l111.setRecipe(rec111);
+				rec111.getLog().add(l111);
+				rec111.save();
+				
+				RecipeAkka.recipesMap.put(rec111.getId(), rec111.getRecipeAkka());
 				
 				
 	}

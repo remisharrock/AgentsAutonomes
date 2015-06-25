@@ -297,8 +297,10 @@ public class Recipe extends Model {
 
 	public void setAction(Action action) {
 		this.action = action;
-		recipeAkka.setActionMessage(createMessageFromClassName(
-				action.getName(), recipeAkka));
+		
+		MessageEnvelope msg = createMessageFromClassName(action.getName(),
+				recipeAkka);
+		recipeAkka.setActionMessage(msg);
 	}
 
 	public RecipeAkka createRecipeAkkaFromRecipe() {
