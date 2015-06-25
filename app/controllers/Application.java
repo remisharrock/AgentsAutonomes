@@ -386,6 +386,8 @@ public class Application extends Controller {
 		DynamicForm requestData = Form.form().bindFromRequest();
 
 		// Long triggerId = Long.parseLong(requestData.get("trigger_id"));
+		
+		String triggerName = Trigger.find.byId(triggerId).getName();
 
 		if (requestData.get("allUserGroups") != null) {
 			for (Recipe it : Trigger.find.byId(triggerId).getRecipes()) {
@@ -429,7 +431,7 @@ public class Application extends Controller {
 			}
 		}
 
-		return ok(administratorActivateManually.render(triggerId, userGroupList));
+		return ok(administratorActivateManually.render(triggerId, userGroupList, triggerName));
 	}
 
 	public static Result chooseActivationType(Long triggerId) {
@@ -438,14 +440,16 @@ public class Application extends Controller {
 
 		List<Recipe> recipesList = Ebean.find(Recipe.class).findList();
 		ArrayList<String> userGroupList = User.getAllUserGroupsExceptAdmin();
+		
+		String triggerName = Trigger.find.byId(triggerId).getName();
 
 		if (activationType.equals("manualActivationButton"))
-			return ok(administratorActivateManually.render(triggerId, userGroupList));
+			return ok(administratorActivateManually.render(triggerId, userGroupList, triggerName));
 		else if (activationType.equals("periodicActivationButton"))
-			return ok(administratorActivatePeriodically.render(triggerId, userGroupList));
+			return ok(administratorActivatePeriodically.render(triggerId, userGroupList, triggerName));
 		else
 			// if(activationType.equals("randomActivationButton"))
-			return ok(administratorActivateRandomly.render(triggerId, userGroupList));
+			return ok(administratorActivateRandomly.render(triggerId, userGroupList, triggerName));
 
 	}
 
