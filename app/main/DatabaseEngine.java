@@ -517,5 +517,62 @@ public class DatabaseEngine {
 				RecipeAkka.recipesMap.put(rec111.getId(), rec111.getRecipeAkka());
 				
 				
+				
+				
+				Recipe rec12 = new Recipe();
+				rec12.save();
+				rec12.setTitle("Recipe12");
+				rec12.setUser(user2);
+				rec12.setTriggerChannel(detector);
+				rec12.setTrigger(detectorTrigger1);
+				Field f121 = new Field("totasdo", "tatqwea");
+				f121.save();
+				rec12.setTriggerField(f121);
+
+				rec12.setActionChannel(lamp);
+				rec12.setAction(lampAction1);
+				Field f122 = new Field("lamp color", "purple");
+				rec12.save();
+				rec12.setActionField(f122);
+				rec12.setActive(true);
+				rec12.setLog(new ArrayList<Log>());
+				
+				Log l12 = new Log("Recipe create at Data Base creation", new Date());
+				l12.setRecipe(rec12);
+				rec12.getLog().add(l12);
+				rec12.save();
+				
+				RecipeAkka.recipesMap.put(rec12.getId(), rec12.getRecipeAkka());
+				
+				
+				
+				
+				
+				Recipe rec13 = new Recipe();
+				rec13.save();
+				rec13.setTitle("Recipe13");
+				rec13.setUser(user22);
+				rec13.setTriggerChannel(detector);
+				rec13.setTrigger(detectorTrigger1);
+				Field f131 = new Field("totasdo", "tatqwea");
+				f131.save();
+				rec13.setTriggerField(f131);
+
+				rec13.setActionChannel(lamp);
+				rec13.setAction(lampAction1);
+				Field f133 = new Field("lamp color", "black");
+				rec13.save();
+				rec13.setActionField(f133);
+				rec13.setActive(true);
+				rec13.setLog(new ArrayList<Log>());
+				
+				Log l13 = new Log("Recipe create at Data Base creation", new Date());
+				l13.setRecipe(rec13);
+				rec13.getLog().add(l13);
+				rec13.save();
+				
+				RecipeAkka.recipesMap.put(rec13.getId(), rec13.getRecipeAkka());
+				
+				
 	}
 }

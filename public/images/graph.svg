@@ -3,96 +3,117 @@
     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg contentScriptType="text/ecmascript" width="595px"
      xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify"
-     contentStyleType="text/css" viewBox="-575 -578 1149 1149" height="841px"
+     contentStyleType="text/css" viewBox="-572 -606 1180 1208" height="609px"
      preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
      version="1.1">
     <g id="edges">
-        <path fill="none" stroke-width="4.14273262"
-              d="M -1.764997,-0.691540 L 191.490448,197.547791" class="1 2"
+        <path fill="none" stroke-width="4.03389835"
+              d="M 1.251960,2.057691 L 182.287521,226.901489" class="1 2"
               stroke-opacity="1.0" stroke="#d09332"/>
-        <path fill="none" stroke-width="4.14273262"
-              d="M 95.456223,-342.542786 L 287.778198,-145.103912" class="3 4"
-              stroke-opacity="1.0" stroke="#c14919"/>
-        <path fill="none" stroke-width="4.14273262"
-              d="M 95.456223,-342.542786 L -75.994659,263.878906" class="3 7"
-              stroke-opacity="1.0" stroke="#c14919"/>
-        <path fill="none" stroke-width="4.14273262"
-              d="M -247.153275,-253.371628 L -322.729553,9.153900" class="5 6"
+        <path fill="none" stroke-width="4.03389835"
+              d="M -83.684387,-359.658630 L 300.663330,-53.907784" class="3 4"
+              stroke-opacity="1.0" stroke="#b30000"/>
+        <path fill="none" stroke-width="4.03389835"
+              d="M -83.684387,-359.658630 L -79.498665,270.967712" class="3 5"
+              stroke-opacity="1.0" stroke="#b30000"/>
+        <path fill="none" stroke-width="4.03389835"
+              d="M -330.840271,-156.607544 L 284.219482,-19.486916" class="6 4"
+              stroke-opacity="1.0" stroke="#b30000"/>
+        <path fill="none" stroke-width="4.03389835"
+              d="M -330.840271,-156.607544 L -116.425156,279.680542" class="6 5"
+              stroke-opacity="1.0" stroke="#b30000"/>
+        <path fill="none" stroke-width="4.03389835"
+              d="M 229.077637,-288.911102 L -272.077545,114.275726" class="7 8"
               stroke-opacity="1.0" stroke="#d09332"/>
     </g>
     <g id="arrows">
         <polyline fill="#d09332" fill-opacity="1.0" class="1 2"
-                  points="236.165543,243.375031 168.576828,219.885345 214.404068,175.210236"
+                  points="222.424698,276.751343 157.362595,246.970078 207.212448,206.832901"
                   stroke="none"/>
-        <polyline fill="#c14919" fill-opacity="1.0" class="3 4"
-                  points="332.435059,-99.258904 264.855682,-122.775482 310.700714,-167.432343"
+        <polyline fill="#b30000" fill-opacity="1.0" class="3 4"
+                  points="350.748566,-14.064698 280.741791,-28.865175 320.584869,-78.950394"
                   stroke="none"/>
-        <polyline fill="#c14919" fill-opacity="1.0" class="3 7"
-                  points="-93.406570,325.464813 -106.787613,255.172943 -45.201702,272.584869"
+        <polyline fill="#b30000" fill-opacity="1.0" class="3 5"
+                  points="-79.073875,334.966309 -111.497963,271.180115 -47.499367,270.755310"
                   stroke="none"/>
-        <polyline fill="#d09332" fill-opacity="1.0" class="5 6"
-                  points="-340.434937,70.656097 -353.480652,0.301221 -291.978455,18.006580"
+        <polyline fill="#b30000" fill-opacity="1.0" class="6 4"
+                  points="346.685944,-5.560720 277.256378,11.746325 291.182587,-50.720154"
+                  stroke="none"/>
+        <polyline fill="#b30000" fill-opacity="1.0" class="6 5"
+                  points="-88.196892,337.118896 -145.144333,293.794678 -87.705978,265.566406"
+                  stroke="none"/>
+        <polyline fill="#d09332" fill-opacity="1.0" class="7 8"
+                  points="-321.943146,154.393341 -292.136353,89.342926 -252.018738,139.208527"
                   stroke="none"/>
     </g>
     <g id="nodes">
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-1.7649965"
-                class="1" cy="-0.6915401" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="247.33432"
-                class="2" cy="254.83183" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="95.45622"
-                class="3" cy="-342.5428" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="343.59927"
-                class="4" cy="-87.79765" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-247.15327"
-                class="5" cy="-253.37163" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-344.86127"
-                class="6" cy="86.03165" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
-        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-97.75955"
-                class="7" cy="340.8613" stroke="#000000" stroke-opacity="1.0"
-                stroke-width="0.5178416"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="1.2519603"
+                class="1" cy="2.057691" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="232.45898"
+                class="2" cy="289.2138" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="-83.68439"
+                class="3" cy="-359.65863" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="367.18277"
+                class="4" cy="-0.9911871" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="-78.934494"
+                class="5" cy="355.96585" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#b30000" r="20.0" cx="-330.84027"
+                class="6" cy="-156.60754" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="229.07764"
+                class="7" cy="-288.9111" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
+        <circle fill-opacity="1.0" fill="#d09332" r="15.0" cx="-334.40955"
+                class="8" cy="164.42274" stroke="#000000" stroke-opacity="1.0"
+                stroke-width="0.5042373"/>
     </g>
     <g id="node-labels">
-        <text font-size="30" x="-1.7649965" y="6.2786746" fill="#000000"
+        <text font-size="30" x="1.2519603" y="9.026686" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="1">
-            TemperatureDetectorActorTrigger34
+            DetectorActorTrigger2613
         </text>
-        <text font-size="30" x="247.33432" y="260.3885" fill="#000000"
+        <text font-size="30" x="232.45898" y="296.0949" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="2">
-            AirConditionerActorAction34
+            LampActorAction2613
         </text>
-        <text font-size="40" x="95.45622" y="-333.24918" fill="#000000"
+        <text font-size="40" x="-83.68439" y="-350.36664" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="3">
-            DetectorActorTrigger33
+            DetectorActorTrigger2601
         </text>
-        <text font-size="30" x="343.59927" y="-82.31181" fill="#000000"
+        <text font-size="40" x="367.18277" y="8.183618" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="4">
-            HumanActorAction35
+            LampActorAction2601
         </text>
-        <text font-size="30" x="-247.15327" y="-246.40141" fill="#000000"
+        <text font-size="40" x="-78.934494" y="363.3682" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="5">
-            TemperatureDetectorActorTrigger36
+            AirConditionerActorAction2602
         </text>
-        <text font-size="30" x="-344.86127" y="91.58829" fill="#000000"
+        <text font-size="40" x="-330.84027" y="-147.31555" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="6">
-            AirConditionerActorAction36
+            TemperatureDetectorActorTrigger2602
         </text>
-        <text font-size="30" x="-97.75955" y="347.74362" fill="#000000"
+        <text font-size="30" x="229.07764" y="-281.9421" fill="#000000"
               style="text-anchor: middle; dominant-baseline: central;"
               font-family="Arial" class="7">
-            LampActorAction33
+            TemperatureDetectorActorTrigger2604
+        </text>
+        <text font-size="30" x="-334.40955" y="169.9745" fill="#000000"
+              style="text-anchor: middle; dominant-baseline: central;"
+              font-family="Arial" class="8">
+            AirConditionerActorAction2604
         </text>
     </g>
-</svg> </g>
+</svg>
+    </g>
 </svg>
